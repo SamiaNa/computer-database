@@ -1,0 +1,17 @@
+.settings/
+.classpath
+.project
+build/
+bin
+target/
+
+*~
+*.class
+*.log
+
+*.jar
+*.war
+*.zip
+*.tar.gz
+*.rar
+
