@@ -51,6 +51,7 @@ public class UserInterface {
 				break;
 		
 			case 4:
+				
 			    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 				System.out.println("Enter name");
 				String name = scanner.next();
@@ -59,7 +60,7 @@ public class UserInterface {
 				String time = scanner.next();
 				time += " "+scanner.next();
 				java.util.Date date = dateFormat.parse(time);
-		        Timestamp ti = new Timestamp(date.getTime());
+		        Timestamp ti =new Timestamp(date.getTime());
 		        
 				System.out.println("Enter discontinued");
 				
