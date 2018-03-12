@@ -6,13 +6,28 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Scanner;
 
+import com.excilys.java.formation.mapper.Computer;
 import com.excilys.java.formation.model.persistence.MySQLConnection;
 import com.excilys.java.formation.model.service.CompanyService;
 import com.excilys.java.formation.model.service.ComputerService;
 
 
 
+
 public class UserInterface {
+	
+	private static Timestamp nextTimestamp(Scanner sc) throws ParseException {
+	    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String time = sc.nextLine();
+		Timestamp ti;
+		if (time.toLowerCase().equals("null") || time.equals("")) {
+			 ti = null;
+		}else {
+			java.util.Date date = dateFormat.parse(time);
+	        ti = new Timestamp(date.getTime());
+		}
+	    return ti;
+	}
 	
 	public static void main (String [] args) throws ClassNotFoundException, SQLException, IOException, ParseException{
 		System.out.println("Computer database application");
@@ -96,11 +111,47 @@ public class UserInterface {
 			case 5:
 				System.out.println("Enter id of computer to update");
 				long id = scanner.nextLong();
-				System.out.println("Enter new name :");
-				scanner.nextLine();
-				String newName = scanner.nextLine();
-				computerS.updateComputer(id, newName);
+				Computer c = computerS.getComputerDetails(id);
+				if (c == null) {
+					System.out.println("No computer with id : "+id);
+				}else {
+					System.out.println("Current name : "+c.getName()+". Do you want to update the name?");
+					String validation = scanner.next();
+					if (validation.toLowerCase().equals("y")) {
+						System.out.println("Enter new name");
+						scanner.nextLine();
+						String newName = scanner.nextLine();
+						computerS.updateComputerName(id, newName);
+					}
+					System.out.println("Current date of introduction : "+c.getIntroduced()+". Do you want to update the date?");
+					validation = scanner.next();
+					if (validation.toLowerCase().equals("y")) {
+						System.out.println("Enter new date");
+						scanner.nextLine();
+						Timestamp t = nextTimestamp(scanner);
+						computerS.updateComputerIntroduced(id, t);
+					}
+					System.out.println("Current date of discontinuation: "+c.getDiscontinued()+". Do you want to update the date?");
+					validation = scanner.next();
+					if (validation.toLowerCase().equals("y")) {
+						System.out.println("Enter new date");
+						scanner.nextLine();
+						Timestamp t = nextTimestamp(scanner);
+						computerS.updateComputerDiscontinued(id, t);
+					}
+					System.out.println("Current company id : "+c.getCompany_id()+". Do you want to update the id?");
+					validation = scanner.next();
+					if (validation.toLowerCase().equals("y")) {
+						System.out.println("Enter new id");
+						scanner.nextLine();
+						Long newCompanyId = scanner.nextLong();
+						String newName = scanner.nextLine();
+						computerS.updateComputerCompanyID(id, newCompanyId);
+					}
+					
+				}
 				
+				break;
 				
 			case 6:
 				System.out.println("Enter id of computer to delete");

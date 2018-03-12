@@ -32,13 +32,17 @@ public class ComputerService {
 	 * @param id
 	 * @throws SQLException
 	 */
-	public void printComputerDetails(int id) throws SQLException {
+	public void printComputerDetails(long id) throws SQLException {
 		Computer c = compDAO.getComputerDetails(id);
 		if (c == null) {
 			System.out.println("No computer found with id "+id);
 		}else {
 			System.out.println(c);
 		}
+	}
+	
+	public Computer getComputerDetails(long id) throws SQLException{
+		return compDAO.getComputerDetails(id);
 	}
 	
 	public void createComputer(String name, Timestamp ti, Timestamp td, Long company_id) throws SQLException{
@@ -49,7 +53,20 @@ public class ComputerService {
 		compDAO.delete(id);
 	}
 	
-	public void updateComputer (long id, String name) throws SQLException {
-		compDAO.update(id, name);
+	public void updateComputerName (long id, String name) throws SQLException {
+		compDAO.updateName(id, name);
 	}
+	
+	public void updateComputerIntroduced (long id, Timestamp t) throws SQLException {
+		compDAO.updateIntroduced(id, t);
+	}
+	
+	public void updateComputerDiscontinued (long id, Timestamp t) throws SQLException {
+		compDAO.updateDiscontinued(id, t);
+	}
+	
+	public void updateComputerCompanyID (long id, long companyId) throws SQLException {
+		compDAO.updateCompanyID (id, companyId);
+	}
+	
 }
