@@ -52,7 +52,7 @@ public class UserInterface {
 		
 			case 4:
 				
-			    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+			    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				System.out.println("Enter name");
 				String name = scanner.next();
 				System.out.println("Enter introduced");
@@ -69,10 +69,14 @@ public class UserInterface {
 		        Timestamp td = new Timestamp(date.getTime());
 		        
 				System.out.println("Enter company id");
-				Long company_id = scanner.nextLong();
-				System.out.println(name+" "+ti+" "+td+" "+company_id);
-				computerS.createComputer(name, ti, td, company_id);
-				
+				Long companyId = scanner.nextLong();
+				System.out.println(name+" "+ti+" "+td+" "+companyId);
+				computerS.createComputer(name, ti, td, companyId);
+			
+			case 6:
+				System.out.println("Enter id of computer to delete");
+				Long computerId = scanner.nextLong();
+				computerS.deleteComputer(computerId);
 			default:
 				break;
 		}

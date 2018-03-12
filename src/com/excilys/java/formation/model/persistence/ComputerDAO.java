@@ -134,4 +134,37 @@ public class ComputerDAO {
 		
 		}
 	}
+	
+	public void delete(long id) throws SQLException {
+		PreparedStatement stmt = null;
+		try {
+			
+			conn.setAutoCommit(false);
+			String query = "DELETE FROM computer WHERE id = ?";
+			stmt = conn.prepareStatement(query);
+			stmt.setLong(1,id);
+			int res = stmt.executeUpdate();
+			conn.commit();
+
+			if (res == 1) {
+				System.out.println("Successful deletion");
+			}else {
+				System.out.println("No computer found with id "+id);
+			}
+				
+		} catch(SQLException se) {
+		
+		for (Throwable e : se) {
+			System.out.println("Problem : "+e);	
+		}
+		conn.rollback();
+		
+		}finally {
+		
+			if (stmt != null) {
+				stmt.close();
+			}
+		
+		}
+	}
 }
