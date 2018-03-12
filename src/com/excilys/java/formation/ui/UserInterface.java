@@ -56,16 +56,15 @@ public class UserInterface {
 				System.out.println("Enter name");
 				String name = scanner.next();
 				System.out.println("Enter introduced");
-			
-				String time = scanner.next();
-				time += " "+scanner.next();
+				scanner.nextLine();
+				String time = scanner.nextLine();
 				java.util.Date date = dateFormat.parse(time);
 		        Timestamp ti =new Timestamp(date.getTime());
 		        
+		        
 				System.out.println("Enter discontinued");
 				
-				time = scanner.next();
-				time += " "+scanner.next();
+				time = scanner.nextLine();
 				date = dateFormat.parse(time);
 		        Timestamp td = new Timestamp(date.getTime());
 		        

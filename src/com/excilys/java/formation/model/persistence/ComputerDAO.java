@@ -90,13 +90,22 @@ public class ComputerDAO {
 		return c;
 	}
 
+	@SuppressWarnings("resource")
 	public void createComputer(Computer c) throws SQLException {
 		PreparedStatement stmt = null;
 		try {
 			
 			conn.setAutoCommit(false);
-			String query = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
-			stmt = conn.prepareStatement(query);
+			String selectQuery = "SELECT id FROM company WHERE id = ?";
+			stmt = conn.prepareStatement(selectQuery);
+			stmt.setLong(1, c.getCompany_id());
+			ResultSet rSet = stmt.executeQuery();
+			if (!rSet.next()) {
+				System.out.println("No existing company with id "+c.getId());
+				return;
+			}
+			String insertQuery = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
+			stmt = conn.prepareStatement(insertQuery);
 			stmt.setString(1, c.getName());
 			stmt.setTimestamp(2, c.getIntroduced());
 			stmt.setTimestamp(3, c.getDiscontinued());
