@@ -46,7 +46,11 @@ public class ComputerService {
 	}
 	
 	public void createComputer(String name, Timestamp ti, Timestamp td, Long company_id) throws SQLException{
-		compDAO.createComputer(new Computer(name, ti, td, company_id));
+		if (ti != null && td != null && ti.after(td)){
+			System.out.println("Date of introduction must be anterior to date of discontinuation");
+		}else {
+			compDAO.createComputer(new Computer(name, ti, td, company_id));
+		}
 	}
 	
 	public void deleteComputer(long id) throws SQLException {
@@ -57,12 +61,20 @@ public class ComputerService {
 		compDAO.updateName(id, name);
 	}
 	
-	public void updateComputerIntroduced (long id, Timestamp t) throws SQLException {
-		compDAO.updateIntroduced(id, t);
+	public void updateComputerIntroduced (long id, Timestamp ti, Timestamp td) throws SQLException {
+		if (ti != null && td != null && ti.after(td)){
+			System.out.println("Date of introduction must be anterior to date of discontinuation");
+		}else {
+			compDAO.updateIntroduced(id, ti);
+		}
 	}
 	
-	public void updateComputerDiscontinued (long id, Timestamp t) throws SQLException {
-		compDAO.updateDiscontinued(id, t);
+	public void updateComputerDiscontinued (long id, Timestamp ti, Timestamp td) throws SQLException {
+		if (ti != null && td != null && ti.after(td)){
+			System.out.println("Date of introduction must be anterior to date of discontinuation");
+		}else {
+		compDAO.updateDiscontinued(id, td);
+		}
 	}
 	
 	public void updateComputerCompanyID (long id, long companyId) throws SQLException {

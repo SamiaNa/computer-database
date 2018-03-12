@@ -13,7 +13,6 @@ import com.excilys.java.formation.model.service.ComputerService;
 
 
 
-
 public class UserInterface {
 	
 	private static Timestamp nextTimestamp(Scanner sc) throws ParseException {
@@ -27,6 +26,17 @@ public class UserInterface {
 	        ti = new Timestamp(date.getTime());
 		}
 	    return ti;
+	}
+	
+	private static boolean validation(String question, Scanner sc, String varName) {
+		System.out.println(question);
+		String validation = sc.next();
+		if (validation.toLowerCase().equals("y")) {
+			System.out.println("Enter new "+varName);
+			sc.nextLine();
+			return true;
+		}
+		return false;
 	}
 	
 	public static void main (String [] args) throws ClassNotFoundException, SQLException, IOException, ParseException{
@@ -115,37 +125,28 @@ public class UserInterface {
 				if (c == null) {
 					System.out.println("No computer with id : "+id);
 				}else {
-					System.out.println("Current name : "+c.getName()+". Do you want to update the name?");
-					String validation = scanner.next();
-					if (validation.toLowerCase().equals("y")) {
-						System.out.println("Enter new name");
-						scanner.nextLine();
+		
+					String question = "Current name : "+c.getName()+". Do you want to update the name?";
+					if (validation(question, scanner, "name")) {
 						String newName = scanner.nextLine();
 						computerS.updateComputerName(id, newName);
 					}
-					System.out.println("Current date of introduction : "+c.getIntroduced()+". Do you want to update the date?");
-					validation = scanner.next();
-					if (validation.toLowerCase().equals("y")) {
-						System.out.println("Enter new date");
-						scanner.nextLine();
+					
+					question = "Current date of introduction : "+c.getIntroduced()+". Do you want to update the date?";
+					if (validation(question, scanner, "date")) {
 						Timestamp t = nextTimestamp(scanner);
-						computerS.updateComputerIntroduced(id, t);
+						computerS.updateComputerIntroduced(id, t, c.getDiscontinued());
 					}
-					System.out.println("Current date of discontinuation: "+c.getDiscontinued()+". Do you want to update the date?");
-					validation = scanner.next();
-					if (validation.toLowerCase().equals("y")) {
-						System.out.println("Enter new date");
-						scanner.nextLine();
+					
+					question = "Current date of discontinuation: "+c.getDiscontinued()+". Do you want to update the date?";
+					if (validation(question, scanner, "date")) {
 						Timestamp t = nextTimestamp(scanner);
-						computerS.updateComputerDiscontinued(id, t);
+						computerS.updateComputerDiscontinued(id, c.getIntroduced(), t);
 					}
-					System.out.println("Current company id : "+c.getCompany_id()+". Do you want to update the id?");
-					validation = scanner.next();
-					if (validation.toLowerCase().equals("y")) {
-						System.out.println("Enter new id");
-						scanner.nextLine();
+					
+					question = "Current company id : "+c.getCompany_id()+". Do you want to update the id?";
+					if (validation(question, scanner, "id")) {
 						Long newCompanyId = scanner.nextLong();
-						String newName = scanner.nextLine();
 						computerS.updateComputerCompanyID(id, newCompanyId);
 					}
 					
