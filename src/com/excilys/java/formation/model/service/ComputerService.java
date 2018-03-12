@@ -41,11 +41,15 @@ public class ComputerService {
 		}
 	}
 	
-	public void createComputer(String name, Timestamp ti, Timestamp td, long company_id) throws SQLException{
+	public void createComputer(String name, Timestamp ti, Timestamp td, Long company_id) throws SQLException{
 		compDAO.createComputer(new Computer(name, ti, td, company_id));
 	}
 	
 	public void deleteComputer(long id) throws SQLException {
 		compDAO.delete(id);
+	}
+	
+	public void updateComputer (long id, String name) throws SQLException {
+		compDAO.update(id, name);
 	}
 }

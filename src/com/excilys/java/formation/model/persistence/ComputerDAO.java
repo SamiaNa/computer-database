@@ -71,7 +71,7 @@ public class ComputerDAO {
 			conn.commit();
 	
 			if (res.next()) {
-				c = new Computer (res.getInt(1), res.getString(2), res.getTimestamp(3), res.getTimestamp(4), res.getInt(5));
+				c = new Computer (res.getLong(1), res.getString(2), res.getTimestamp(3), res.getTimestamp(4), res.getLong(5));
 			}
 		} catch(SQLException se) {
 		
@@ -96,20 +96,26 @@ public class ComputerDAO {
 		try {
 			
 			conn.setAutoCommit(false);
-			String selectQuery = "SELECT id FROM company WHERE id = ?";
-			stmt = conn.prepareStatement(selectQuery);
-			stmt.setLong(1, c.getCompany_id());
-			ResultSet rSet = stmt.executeQuery();
-			if (!rSet.next()) {
-				System.out.println("No existing company with id "+c.getId());
-				return;
+			if (c.getCompany_id() != null) {
+				String selectQuery = "SELECT id FROM company WHERE id = ?";
+				stmt = conn.prepareStatement(selectQuery);
+				stmt.setLong(1, c.getCompany_id());
+				ResultSet rSet = stmt.executeQuery();
+				if (!rSet.next()) {
+					System.out.println("No existing company with id "+c.getId());
+					return;
+				}
 			}
-			String insertQuery = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
+			String insertQuery = "INSERT INTO computer (name, company_id, introduced, discontinued) VALUES (?, ?, ?, ?)";
 			stmt = conn.prepareStatement(insertQuery);
 			stmt.setString(1, c.getName());
-			stmt.setTimestamp(2, c.getIntroduced());
-			stmt.setTimestamp(3, c.getDiscontinued());
-			stmt.setLong(4, c.getCompany_id());
+			stmt.setTimestamp(3, c.getIntroduced());
+			stmt.setTimestamp(4, c.getDiscontinued());
+			if (c.getCompany_id() == null) {
+				stmt.setNull(2, java.sql.Types.BIGINT);
+			}else {
+				stmt.setLong(2, c.getCompany_id());
+			}
 			int res = stmt.executeUpdate();
 			conn.commit();
 	
@@ -148,6 +154,40 @@ public class ComputerDAO {
 
 			if (res == 1) {
 				System.out.println("Successful deletion");
+			}else {
+				System.out.println("No computer found with id "+id);
+			}
+				
+		} catch(SQLException se) {
+		
+		for (Throwable e : se) {
+			System.out.println("Problem : "+e);	
+		}
+		conn.rollback();
+		
+		}finally {
+		
+			if (stmt != null) {
+				stmt.close();
+			}
+		
+		}
+	}
+	
+	public void update (long id, String name) throws SQLException {
+		PreparedStatement stmt = null;
+		try {
+			
+			conn.setAutoCommit(false);
+			String query = "UPDATE computer SET name = ? WHERE id = ?";
+			stmt = conn.prepareStatement(query);
+			stmt.setString(1, name);
+			stmt.setLong(2,id);
+			int res = stmt.executeUpdate();
+			conn.commit();
+
+			if (res == 1) {
+				System.out.println("Successful update");
 			}else {
 				System.out.println("No computer found with id "+id);
 			}

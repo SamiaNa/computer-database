@@ -14,7 +14,7 @@ import com.excilys.java.formation.model.service.ComputerService;
 
 public class UserInterface {
 	
-	public static void main (String [] args) throws ClassNotFoundException, SQLException, IOException, ParseException {
+	public static void main (String [] args) throws ClassNotFoundException, SQLException, IOException, ParseException{
 		System.out.println("Computer database application");
 		Connection conn = null;
 		try {
@@ -55,24 +55,53 @@ public class UserInterface {
 			    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				System.out.println("Enter name");
 				String name = scanner.next();
+				
+				
 				System.out.println("Enter introduced");
 				scanner.nextLine();
 				String time = scanner.nextLine();
-				java.util.Date date = dateFormat.parse(time);
-		        Timestamp ti =new Timestamp(date.getTime());
+				Timestamp ti;
+				if (time.toLowerCase().equals("null") || time.equals("")) {
+					 ti = null;
+				}else {
+					java.util.Date date = dateFormat.parse(time);
+			        ti = new Timestamp(date.getTime());
+				}
 		        
 		        
 				System.out.println("Enter discontinued");
 				
 				time = scanner.nextLine();
-				date = dateFormat.parse(time);
-		        Timestamp td = new Timestamp(date.getTime());
-		        
+				Timestamp td;
+				if (time.toLowerCase().equals("null") || time.equals("")) {
+					 td = null;
+					 System.out.println("ici");
+				}else {
+					java.util.Date date = dateFormat.parse(time);
+			        td = new Timestamp(date.getTime());
+				}
+		   		        
 				System.out.println("Enter company id");
-				Long companyId = scanner.nextLong();
+				String companyIdStr = scanner.nextLine();
+				Long companyId;
+				if (companyIdStr.toLowerCase().equals("null") || companyIdStr.equals("")) {
+					companyId = null;
+				}else {
+					companyId = Long.parseLong(companyIdStr);
+				}
 				System.out.println(name+" "+ti+" "+td+" "+companyId);
 				computerS.createComputer(name, ti, td, companyId);
+				break;
 			
+			case 5:
+				System.out.println("Enter id of computer to update");
+				long id = scanner.nextLong();
+				System.out.println("Enter new name :");
+				scanner.nextLine();
+				String newName = scanner.nextLine();
+				computerS.updateComputer(id, newName);
+				
+				
 			case 6:
 				System.out.println("Enter id of computer to delete");
 				Long computerId = scanner.nextLong();

@@ -9,14 +9,14 @@ public class Computer {
 	private String name;
 	private Timestamp introduced;
 	private Timestamp discontinued;
-	private long company_id;
+	private Long company_id;
 	
 	public Computer (long id, String name) {
 		this.id = id;
 		this.name = name;
 	}
 
-	public Computer (long id, String name, Timestamp introduced, Timestamp discontinued, long company_id) {
+	public Computer (long id, String name, Timestamp introduced, Timestamp discontinued, Long company_id) {
 		this.id = id;
 		this.name = name;
 		this.introduced = introduced;
@@ -24,7 +24,7 @@ public class Computer {
 		this.company_id = company_id;
 	}
 	
-	public Computer (String name, Timestamp introduced, Timestamp discontinued, long company_id) {
+	public Computer (String name, Timestamp introduced, Timestamp discontinued, Long company_id) {
 		this.id = -1;
 		this.name = name;
 		this.introduced = introduced;
@@ -64,11 +64,11 @@ public class Computer {
 		this.discontinued = discontinued;
 	}
 
-	public long getCompany_id() {
-		return company_id;
+	public Long getCompany_id() {
+		return this.company_id;
 	}
 
-	public void setCompany_id(long company_id) {
+	public void setCompany_id(Long company_id) {
 		this.company_id = company_id;
 	}
 	

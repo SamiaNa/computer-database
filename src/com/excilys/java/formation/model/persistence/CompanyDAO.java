@@ -30,18 +30,14 @@ public class CompanyDAO {
 			}
 					
 		}catch(SQLException se) {
-			
 			for (Throwable e : se) {
 				System.out.println("Problem : "+e);	
 			}
 			conn.rollback();
-			
-		}finally {
-			
+		}finally {	
 			if (stmt != null) {
 				stmt.close();
 			}
-			
 		}
 		return companies;
 	}
