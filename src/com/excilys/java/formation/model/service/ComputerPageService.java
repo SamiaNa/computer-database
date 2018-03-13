@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-import com.excilys.java.formation.mapper.Computer;
+import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.model.persistence.ComputerDAO;
 
 public class ComputerPageService {

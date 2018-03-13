@@ -1,19 +1,16 @@
 package com.excilys.java.formation.model.service;
 
-import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Date;
 import java.util.List;
 
-import com.excilys.java.formation.mapper.Computer;
+import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.model.persistence.ComputerDAO;
 
 public class ComputerService {
 
 	public static ComputerService computerService;
 	
-	public ComputerService() throws SQLException {
-	}
+	
 	
 	public static ComputerService getService() throws SQLException {
 		if (computerService == null) {
@@ -42,8 +39,8 @@ public class ComputerService {
 			System.out.println(c);
 		}
 	}*/
-	
-	/*public void printNextPage() throws SQLException {
+	/*
+	public void printNextPage() throws SQLException {
 		List<Computer> computers =  compPage.getNextPage();
 		for (Computer c : computers) {
 			System.out.println(c);

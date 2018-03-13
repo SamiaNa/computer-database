@@ -33,4 +33,10 @@ public class MySQLConnection {
 				conn.close();
 			}
 	}
+	
+	public static void printExceptionList(SQLException se) {
+		for (Throwable e : se) {
+			System.out.println("Problem : "+e);	
+		}
+	}
 }

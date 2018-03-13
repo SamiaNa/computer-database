@@ -1,4 +1,4 @@
-package com.excilys.java.formation.mapper;
+package com.excilys.java.formation.entities;
 
 import java.sql.Date;
 

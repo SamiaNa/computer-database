@@ -2,7 +2,7 @@ package com.excilys.java.formation.model.persistence;
 
 import java.util.List;
 
-import com.excilys.java.formation.mapper.Computer;
+import com.excilys.java.formation.entities.Computer;
 
 import java.util.ArrayList;
 import java.sql.*;
@@ -10,8 +10,7 @@ import java.sql.*;
 public class ComputerDAO {
 	
 	private static ComputerDAO computerDAO;
-	public ComputerDAO() {
-	}
+	
 	
 	public static ComputerDAO getDAO() {
 		if (computerDAO == null) {
@@ -26,27 +25,20 @@ public class ComputerDAO {
 	 * @throws SQLException
 	 * @throws ClassNotFoundException 
 	 */
-	public List<Computer> getAll() throws SQLException, ClassNotFoundException {
-		Statement stmt = null;
+	public List<Computer> getAll() throws ClassNotFoundException, SQLException{
 		Connection connection = MySQLConnection.getConnection();
+		ComputerMapper computerMapper = ComputerMapper.getMapper();
+		Statement stmt = null;
 		List<Computer> computers = new ArrayList<>();
 		try {
 			connection.setAutoCommit(false);
-			String query = "SELECT * FROM computer";
 			stmt = connection.createStatement();
-			ResultSet res = stmt.executeQuery(query);
-			connection.commit();
-			while (res.next()) {
-				computers.add(new Computer (res.getLong(1), res.getString(2), res.getDate(3), res.getDate(4), res.getLong(5)));
-			}
-					
-		}catch(SQLException se) {
-			
-			for (Throwable e : se) {
-				System.out.println("Problem : "+e);	
-			}
-			connection.rollback();
-			
+			ResultSet res = stmt.executeQuery("SELECT * FROM computer");
+			computers = computerMapper.createComputerListFromResultSet(res);
+			connection.commit();			
+		}catch(SQLException se) {		
+			MySQLConnection.printExceptionList(se);
+			connection.rollback();		
 		}finally {
 			if (stmt != null) {
 				stmt.close();
@@ -54,7 +46,6 @@ public class ComputerDAO {
 			connection.close();
 		}
 		return computers;
-
 	}
 	
 /*

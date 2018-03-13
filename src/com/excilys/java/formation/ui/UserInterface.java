@@ -3,6 +3,7 @@ package com.excilys.java.formation.ui;
 import java.sql.SQLException;
 import java.util.Scanner;
 
+import com.excilys.java.formation.model.service.CompanyService;
 import com.excilys.java.formation.model.service.ComputerService;
 
 
@@ -124,7 +125,9 @@ public class UserInterface {
 				break;
 			}
 		}
-	}*/
+	}
+	
+	*/
 	
 	private static void printComputerList() throws SQLException, ClassNotFoundException {
 		Scanner scanner = ScannerHelper.getScanner();
@@ -133,8 +136,14 @@ public class UserInterface {
 		computerService.printListComputers();
 	}
 	
-
-	
+	private static void printCompaniesList() throws SQLException, ClassNotFoundException {
+		Scanner scanner = ScannerHelper.getScanner();
+		scanner.nextLine();
+		CompanyService companyService = CompanyService.getService();
+		companyService.printCompaniesList();
+		
+	}
+		
 	public static void startUI() throws SQLException, ClassNotFoundException {
 		System.out.println("Computer database application\n"+
 				"Select operation:\n"+ 
@@ -149,6 +158,8 @@ public class UserInterface {
 		switch(featureChoice) {
 		case 1:
 			printComputerList();
+		case 2:
+			printCompaniesList();
 		}
 		
 	}
