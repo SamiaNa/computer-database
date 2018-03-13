@@ -48,6 +48,29 @@ public class ComputerDAO {
 		return computers;
 	}
 	
+
+	public Computer getComputerById(long id) throws SQLException, NoComputerInResultSetException, ClassNotFoundException  {
+		Connection connection = MySQLConnection.getConnection();
+		ComputerMapper computerMapper = ComputerMapper.getMapper();
+		PreparedStatement stmt = null;
+		Computer c = null;
+		try {
+			connection.setAutoCommit(false);
+			stmt = connection.prepareStatement("SELECT * FROM computer WHERE id = ?");
+			stmt.setLong(1, id);
+			ResultSet res = stmt.executeQuery();
+			connection.commit();
+			c = computerMapper.createComputerFromResultSet(res);
+			} catch(SQLException se) {
+				MySQLConnection.printExceptionList(se);
+				connection.rollback();
+			}finally {
+				if (stmt != null) {
+					stmt.close();
+				}
+			}
+		return c;
+	}
 /*
 	public List<Computer> get(int offset, int size) throws SQLException {
 		PreparedStatement stmt = null;
@@ -82,43 +105,7 @@ public class ComputerDAO {
 
 	}
 	*/
-	/**
-	 * 
-	 * @param id
-	 * @return
-	 * @throws SQLException
-	 *//*
-	public Computer getComputerDetails(long id) throws SQLException  {
-		PreparedStatement stmt = null;
-		Computer c = null;
-		try {
-			
-			conn.setAutoCommit(false);
-			String query = "SELECT * FROM computer WHERE id = ?";
-			stmt = conn.prepareStatement(query);
-			stmt.setLong(1, id);
-			ResultSet res = stmt.executeQuery();
-			conn.commit();
-	
-			if (res.next()) {
-				c = new Computer (res.getLong(1), res.getString(2), res.getDate(3), res.getDate(4), res.getLong(5));
-			}
-		} catch(SQLException se) {
-		
-		for (Throwable e : se) {
-			System.out.println("Problem : "+e);	
-		}
-		conn.rollback();
-		
-		}finally {
-		
-			if (stmt != null) {
-				stmt.close();
-			}
-		
-		}
-		return c;
-	}
+/*
 
 	public void createComputer(Computer c) throws SQLException {
 		PreparedStatement stmt = null;

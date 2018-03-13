@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.model.persistence.ComputerDAO;
+import com.excilys.java.formation.model.persistence.NoComputerInResultSetException;
 
 public class ComputerService {
 
@@ -29,6 +30,16 @@ public class ComputerService {
 		List<Computer> computers = computerDAO.getAll();
 		for (Computer c : computers) {
 			System.out.println(c);
+		}
+	}
+	
+	public void printComputerById(long id) throws SQLException, ClassNotFoundException {
+		ComputerDAO computerDAO = ComputerDAO.getDAO();
+		try {
+			Computer c = computerDAO.getComputerById(id);
+			System.out.println(c);
+		} catch (NoComputerInResultSetException e) {
+			System.out.println("No computer found in database with id "+id);
 		}
 	}
 	

@@ -141,8 +141,16 @@ public class UserInterface {
 		scanner.nextLine();
 		CompanyService companyService = CompanyService.getService();
 		companyService.printCompaniesList();
-		
 	}
+	
+	private static void printComputerByID() throws SQLException, ClassNotFoundException {
+		Scanner scanner = ScannerHelper.getScanner();
+		System.out.println("Enter id of computer : ");
+		int computerId = scanner.nextInt();
+		ComputerService computerService = ComputerService.getService();
+		computerService.printComputerById(computerId);
+	}
+	
 		
 	public static void startUI() throws SQLException, ClassNotFoundException {
 		System.out.println("Computer database application\n"+
@@ -158,8 +166,13 @@ public class UserInterface {
 		switch(featureChoice) {
 		case 1:
 			printComputerList();
+			break;
 		case 2:
 			printCompaniesList();
+			break;
+		case 3:
+			printComputerByID();
+			break;
 		}
 		
 	}
@@ -167,24 +180,9 @@ public class UserInterface {
 		startUI();
 	
 	
-/*		int featureChoice = scanner.nextInt();
-		
-		ComputerService computerS = new ComputerService(conn);
-		CompanyService  companyS = new CompanyService(conn);
-		switch (featureChoice) {
-			case 1:
-				printComputerList(scanner, computerS);
-				break;
-				
-			case 2:
-				companyS.printListCompanies();
-				break;
-				
+			/*	
 			case 3:
-				System.out.println("Enter id of computer");
-				int computerID = scanner.nextInt();
-				computerS.printComputerDetails(computerID);
-				break;
+				
 		
 			case 4:
 				createComputer(scanner, computerS);
