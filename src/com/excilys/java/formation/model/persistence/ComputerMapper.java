@@ -31,13 +31,12 @@ public class ComputerMapper {
 		return computers;
 	}
 	
-	// Créer une exception si pas de computer trouvé
-	public Computer createComputerFromResultSet(ResultSet res) throws SQLException, NoComputerInResultSetException {
+	public Computer createComputerFromResultSet(ResultSet res, long id) throws SQLException, NoComputerInResultSetException {
 		if (res.next()) {
 			return new Computer (res.getLong(1), res.getString(2), 
 				res.getDate(3), res.getDate(4), res.getLong(5));}
 		else {
-			throw new NoComputerInResultSetException ();
+			throw new NoComputerInResultSetException ("No computer found with id : "+id);
 		}
 	}
 

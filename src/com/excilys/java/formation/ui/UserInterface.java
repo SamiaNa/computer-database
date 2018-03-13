@@ -143,10 +143,12 @@ public class UserInterface {
 		companyService.printCompaniesList();
 	}
 	
+	
 	private static void printComputerByID() throws SQLException, ClassNotFoundException {
 		Scanner scanner = ScannerHelper.getScanner();
+		scanner.nextLine();
 		System.out.println("Enter id of computer : ");
-		int computerId = scanner.nextInt();
+		String computerId = scanner.nextLine();
 		ComputerService computerService = ComputerService.getService();
 		computerService.printComputerById(computerId);
 	}

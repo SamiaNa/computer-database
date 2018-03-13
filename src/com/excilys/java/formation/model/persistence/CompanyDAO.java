@@ -21,12 +21,11 @@ public class CompanyDAO {
 		}
 		return companyDAO;
 	}
-	
 
 
 	public List<Company> getAll() throws SQLException, ClassNotFoundException{
 		Connection connection = MySQLConnection.getConnection();
-		ComputerMapper computerMapper = ComputerMapper.getMapper();
+		CompanyMapper companyMapper = CompanyMapper.getMapper();
 		Statement stmt = null;
 		List<Company> companies = new ArrayList<>();
 		try {
@@ -34,9 +33,7 @@ public class CompanyDAO {
 			stmt = connection.createStatement();
 			ResultSet res = stmt.executeQuery("SELECT * FROM company");
 			connection.commit();
-			while (res.next()) {
-				companies.add(new Company (res.getInt(1), res.getString(2)));
-			}
+			companies = companyMapper.createCompanyListFromResultSet(res);
 		}catch(SQLException se) {		
 			MySQLConnection.printExceptionList(se);
 			connection.rollback();		

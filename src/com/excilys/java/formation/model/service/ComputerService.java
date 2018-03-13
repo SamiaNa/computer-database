@@ -33,13 +33,19 @@ public class ComputerService {
 		}
 	}
 	
-	public void printComputerById(long id) throws SQLException, ClassNotFoundException {
+	public void printComputerById(String strId) throws SQLException, ClassNotFoundException{
+		ComputerValidator computerValidator = ComputerValidator.getValidator();
 		ComputerDAO computerDAO = ComputerDAO.getDAO();
+		Long id;
+		Computer c;
 		try {
-			Computer c = computerDAO.getComputerById(id);
+			id = computerValidator.getLongId(strId);
+			c = computerDAO.getComputerById(id);
 			System.out.println(c);
-		} catch (NoComputerInResultSetException e) {
-			System.out.println("No computer found in database with id "+id);
+		} catch (ValidatorException ve) {
+			System.out.println(ve.getMessage());
+		} catch (NoComputerInResultSetException ce) {
+			System.out.println(ce.getMessage());
 		}
 	}
 	

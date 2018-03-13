@@ -60,7 +60,7 @@ public class ComputerDAO {
 			stmt.setLong(1, id);
 			ResultSet res = stmt.executeQuery();
 			connection.commit();
-			c = computerMapper.createComputerFromResultSet(res);
+			c = computerMapper.createComputerFromResultSet(res, id);
 			} catch(SQLException se) {
 				MySQLConnection.printExceptionList(se);
 				connection.rollback();
