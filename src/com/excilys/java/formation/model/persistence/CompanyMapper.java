@@ -29,4 +29,12 @@ public class CompanyMapper {
 		}
 		return companies;
 	}
+	
+	public Company createCompanyFromResultSet(ResultSet res, long id) throws SQLException, NoComputerInResultSetException {
+		if (res.next()) {
+			return new Company(res.getLong(1), res.getString(2));}
+		else {
+			throw new NoComputerInResultSetException ("No company found with id : "+id);
+		}
+	}
 }

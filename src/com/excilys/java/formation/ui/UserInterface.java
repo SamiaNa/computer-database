@@ -1,10 +1,12 @@
 package com.excilys.java.formation.ui;
 
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.Scanner;
 
 import com.excilys.java.formation.model.service.CompanyService;
 import com.excilys.java.formation.model.service.ComputerService;
+import com.excilys.java.formation.model.service.ComputerValidator;
 
 
 
@@ -34,49 +36,6 @@ public class UserInterface {
 	}*/
 	
 /*
-	private static void createComputer(Scanner sc, ComputerService computerS) throws SQLException {
-		System.out.println("Enter name");
-		
-		sc.nextLine();
-		String name = sc.nextLine();
-		
-		while (name.equals("")) {
-			System.out.println("Name can't be an empty string");
-			name = sc.nextLine();
-		}
-		
-		System.out.println("Enter introduced");
-		String time = sc.nextLine();
-		Date ti;
-		if (time.toLowerCase().equals("null") || time.equals("")) {
-			 ti = null;
-		}else {
-			ti = Date.valueOf(time);
-		}
-        
-        
-		System.out.println("Enter discontinued");
-		
-		time = sc.nextLine();
-		Date td;
-		if (time.toLowerCase().equals("null") || time.equals("")) {
-			 td = null;
-		}else {
-			td = Date.valueOf(time);
-		}
-   		        
-		System.out.println("Enter company id");
-		String companyIdStr = sc.nextLine();
-		Long companyId;
-		if (companyIdStr.toLowerCase().equals("null") || companyIdStr.equals("")) {
-			companyId = null;
-		}else {
-			companyId = Long.parseLong(companyIdStr);
-		}
-		System.out.println(name+" "+ti+" "+td+" "+companyId);
-		computerS.createComputer(name, ti, td, companyId);
-		
-	}
 	
 	
 	private static void updateComputer(Scanner sc, ComputerService computerS) throws  SQLException {
@@ -153,6 +112,35 @@ public class UserInterface {
 		computerService.printComputerById(computerId);
 	}
 	
+	/* MOVE VALIDATION TO SERVICE 
+	private static void createComputer() throws SQLException {
+		Scanner scanner = ScannerHelper.getScanner();
+		scanner.nextLine();
+		ComputerValidator computerValidator = ComputerValidator.getValidator();
+		ComputerService computerService = ComputerService.getService();
+		
+		System.out.println("Enter name");
+		String name = scanner.nextLine();
+		computerValidator.checkName(name);
+
+		System.out.println("Enter introduced");
+		String introducedStr = scanner.nextLine();
+		Date introducedDate = computerValidator.getDate(introducedStr);
+
+		System.out.println("Enter discontinued");
+		String discontinuedStr = scanner.nextLine();
+		Date discontinuedDate = computerValidator.getDate(discontinuedStr);
+		computerValidator.checkDates(introducedDate, discontinuedDate);
+		
+		System.out.println("Enter company id");
+		String companyIdStr = scanner.nextLine();
+		Long companyId = computerValidator.checkCompanyId(companyIdStr);
+		
+		// Ajouter verif date
+		computerService.createComputer(name, introducedDate, discontinuedDate, companyId);
+		
+	}
+*/
 		
 	public static void startUI() throws SQLException, ClassNotFoundException {
 		System.out.println("Computer database application\n"+
@@ -175,6 +163,8 @@ public class UserInterface {
 		case 3:
 			printComputerByID();
 			break;
+		/*case 4:
+			createComputer();*/
 		}
 		
 	}

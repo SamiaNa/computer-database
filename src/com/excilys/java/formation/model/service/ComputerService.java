@@ -9,7 +9,7 @@ import com.excilys.java.formation.model.persistence.NoComputerInResultSetExcepti
 
 public class ComputerService {
 
-	public static ComputerService computerService;
+	private static ComputerService computerService;
 	
 	
 	

@@ -3,6 +3,7 @@ package com.excilys.java.formation.model.persistence;
 import java.util.List;
 
 import com.excilys.java.formation.entities.Company;
+import com.excilys.java.formation.entities.Computer;
 
 import java.util.ArrayList;
 import java.sql.*;
@@ -44,7 +45,27 @@ public class CompanyDAO {
 			connection.close();
 		}
 		return companies;
+	}
 	
+	public boolean checkCompanyById(long id) throws SQLException, ClassNotFoundException  {
+		Connection connection = MySQLConnection.getConnection();
+		PreparedStatement stmt = null;
+		try {
+			connection.setAutoCommit(false);
+			stmt = connection.prepareStatement("SELECT * FROM company WHERE id = ?");
+			stmt.setLong(1, id);
+			ResultSet res = stmt.executeQuery();
+			connection.commit();
+			return res.next();
+			} catch(SQLException se) {
+				MySQLConnection.printExceptionList(se);
+				connection.rollback();
+			}finally {
+				if (stmt != null) {
+					stmt.close();
+				}
+			}
+		return false;
 	}
 }
 
