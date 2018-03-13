@@ -1,14 +1,13 @@
 package com.excilys.java.formation.mapper;
 
-import java.sql.Timestamp;
-import java.util.Date;
+import java.sql.Date;
 
 public class Computer {
 	
 	private long id;
 	private String name;
-	private Timestamp introduced;
-	private Timestamp discontinued;
+	private Date introduced;
+	private Date discontinued;
 	private Long company_id;
 	
 	public Computer (long id, String name) {
@@ -16,7 +15,7 @@ public class Computer {
 		this.name = name;
 	}
 
-	public Computer (long id, String name, Timestamp introduced, Timestamp discontinued, Long company_id) {
+	public Computer (long id, String name, Date introduced, Date discontinued, Long company_id) {
 		this.id = id;
 		this.name = name;
 		this.introduced = introduced;
@@ -24,7 +23,7 @@ public class Computer {
 		this.company_id = company_id;
 	}
 	
-	public Computer (String name, Timestamp introduced, Timestamp discontinued, Long company_id) {
+	public Computer (String name, Date introduced, Date discontinued, Long company_id) {
 		this.id = -1;
 		this.name = name;
 		this.introduced = introduced;
@@ -48,19 +47,19 @@ public class Computer {
 		this.name = name;
 	}
 
-	public Timestamp getIntroduced() {
+	public Date getIntroduced() {
 		return introduced;
 	}
 
-	public void setIntroduced(Timestamp introduced) {
+	public void setIntroduced(Date introduced) {
 		this.introduced = introduced;
 	}
 
-	public Timestamp getDiscontinued() {
+	public Date getDiscontinued() {
 		return discontinued;
 	}
 
-	public void setDiscontinued(Timestamp discontinued) {
+	public void setDiscontinued(Date discontinued) {
 		this.discontinued = discontinued;
 	}
 

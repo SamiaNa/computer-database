@@ -31,7 +31,44 @@ public class ComputerDAO {
 			ResultSet res = stmt.executeQuery(query);
 			conn.commit();
 			while (res.next()) {
-				computers.add(new Computer (res.getLong(1), res.getString(2), res.getTimestamp(3), res.getTimestamp(4), res.getLong(5)));
+				computers.add(new Computer (res.getLong(1), res.getString(2), res.getDate(3), res.getDate(4), res.getLong(5)));
+			}
+					
+		}catch(SQLException se) {
+			
+			for (Throwable e : se) {
+				System.out.println("Problem : "+e);	
+			}
+			conn.rollback();
+			
+		}finally {
+			
+			if (stmt != null) {
+				stmt.close();
+			}
+			
+		}
+		return computers;
+
+	}
+	
+
+	public List<Computer> get(int offset, int size) throws SQLException {
+		PreparedStatement stmt = null;
+		List<Computer> computers = new ArrayList<>();
+		try {
+
+			System.out.println("ICI1");
+			conn.setAutoCommit(false);
+			String query = "SELECT * FROM computer LIMIT ?,? ";
+			stmt = conn.prepareStatement(query);
+			stmt.setInt(1, offset);
+			stmt.setInt(2, size);
+			System.out.println(stmt.toString());
+			ResultSet res = stmt.executeQuery();
+			conn.commit();
+			while (res.next()) {
+				computers.add(new Computer (res.getLong(1), res.getString(2), res.getDate(3), res.getDate(4), res.getLong(5)));
 			}
 					
 		}catch(SQLException se) {
@@ -71,7 +108,7 @@ public class ComputerDAO {
 			conn.commit();
 	
 			if (res.next()) {
-				c = new Computer (res.getLong(1), res.getString(2), res.getTimestamp(3), res.getTimestamp(4), res.getLong(5));
+				c = new Computer (res.getLong(1), res.getString(2), res.getDate(3), res.getDate(4), res.getLong(5));
 			}
 		} catch(SQLException se) {
 		
@@ -109,8 +146,9 @@ public class ComputerDAO {
 			String insertQuery = "INSERT INTO computer (name, company_id, introduced, discontinued) VALUES (?, ?, ?, ?)";
 			stmt = conn.prepareStatement(insertQuery);
 			stmt.setString(1, c.getName());
-			stmt.setTimestamp(3, c.getIntroduced());
-			stmt.setTimestamp(4, c.getDiscontinued());
+			System.out.println("Date : "+c.getIntroduced().toString());
+			stmt.setDate(3, java.sql.Date.valueOf(c.getIntroduced().toString()));
+			stmt.setDate(4, java.sql.Date.valueOf(c.getDiscontinued().toString()));
 			if (c.getCompany_id() == null) {
 				stmt.setNull(2, java.sql.Types.BIGINT);
 			}else {
@@ -208,15 +246,15 @@ public class ComputerDAO {
 		}
 	}
 	
-	public void updateIntroduced (long id, Timestamp t) throws SQLException {
+	public void updateIntroduced (long id, Date t) throws SQLException {
 		PreparedStatement stmt = null;
 		try {
 			
 			conn.setAutoCommit(false);
 			String query = "UPDATE computer SET introduced = ? WHERE id = ?";
 			stmt = conn.prepareStatement(query);
-			stmt.setTimestamp(1, t);
-			stmt.setLong(2,id);
+			stmt.setDate(1, java.sql.Date.valueOf(t.toString()));
+			stmt.setLong(2, id);
 			int res = stmt.executeUpdate();
 			conn.commit();
 
@@ -241,14 +279,14 @@ public class ComputerDAO {
 		
 		}
 	}
-	public void updateDiscontinued (long id, Timestamp t) throws SQLException {
+	public void updateDiscontinued (long id, Date t) throws SQLException {
 		PreparedStatement stmt = null;
 		try {
 			
 			conn.setAutoCommit(false);
 			String query = "UPDATE computer SET discontinued = ? WHERE id = ?";
 			stmt = conn.prepareStatement(query);
-			stmt.setTimestamp(1, t);
+			stmt.setDate(1, java.sql.Date.valueOf(t.toString()));
 			stmt.setLong(2,id);
 			int res = stmt.executeUpdate();
 			conn.commit();

@@ -3,6 +3,7 @@ package com.excilys.java.formation.model.service;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.sql.Date;
 import java.util.List;
 
 import com.excilys.java.formation.mapper.Computer;
@@ -11,9 +12,12 @@ import com.excilys.java.formation.model.persistence.ComputerDAO;
 public class ComputerService {
 
 	private ComputerDAO compDAO;
+	private ComputerPageService compPage;
+	
 	
 	public ComputerService(Connection conn) {
 		this.compDAO = new ComputerDAO(conn);
+		this.compPage = new ComputerPageService(10, conn);
 	}
 	
 	/**
@@ -25,6 +29,23 @@ public class ComputerService {
 		for (Computer c : computers) {
 			System.out.println(c);
 		}
+	}
+	
+	public void printPagedList() throws SQLException {
+		List <Computer> computers =  compPage.getPage();
+		for (Computer c : computers) {
+			System.out.println(c);
+		}
+	}
+	
+	public void printNextPage() throws SQLException {
+		List<Computer> computers =  compPage.getNextPage();
+		for (Computer c : computers) {
+			System.out.println(c);
+		}
+	}
+	public List<Computer> get(int offset, int size) throws SQLException {
+		return compDAO.get( offset,  size);
 	}
 	
 	/**
@@ -45,7 +66,7 @@ public class ComputerService {
 		return compDAO.getComputerDetails(id);
 	}
 	
-	public void createComputer(String name, Timestamp ti, Timestamp td, Long company_id) throws SQLException{
+	public void createComputer(String name, Date ti, Date td, Long company_id) throws SQLException{
 		if (ti != null && td != null && ti.after(td)){
 			System.out.println("Date of introduction must be anterior to date of discontinuation");
 		}else {
@@ -61,7 +82,7 @@ public class ComputerService {
 		compDAO.updateName(id, name);
 	}
 	
-	public void updateComputerIntroduced (long id, Timestamp ti, Timestamp td) throws SQLException {
+	public void updateComputerIntroduced (long id, Date ti, Date td) throws SQLException {
 		if (ti != null && td != null && ti.after(td)){
 			System.out.println("Date of introduction must be anterior to date of discontinuation");
 		}else {
@@ -69,7 +90,7 @@ public class ComputerService {
 		}
 	}
 	
-	public void updateComputerDiscontinued (long id, Timestamp ti, Timestamp td) throws SQLException {
+	public void updateComputerDiscontinued (long id, Date ti, Date td) throws SQLException {
 		if (ti != null && td != null && ti.after(td)){
 			System.out.println("Date of introduction must be anterior to date of discontinuation");
 		}else {

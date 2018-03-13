@@ -15,15 +15,13 @@ import com.excilys.java.formation.model.service.ComputerService;
 
 public class UserInterface {
 	
-	private static Timestamp nextTimestamp(Scanner sc) throws ParseException {
-	    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private static Date nextDate(Scanner sc) throws ParseException {
 		String time = sc.nextLine();
-		Timestamp ti;
+		Date ti;
 		if (time.toLowerCase().equals("null") || time.equals("")) {
 			 ti = null;
 		}else {
-			java.util.Date date = dateFormat.parse(time);
-	        ti = new Timestamp(date.getTime());
+			ti = Date.valueOf(time);
 		}
 	    return ti;
 	}
@@ -40,6 +38,9 @@ public class UserInterface {
 	}
 	
 	public static void main (String [] args) throws ClassNotFoundException, SQLException, IOException, ParseException{
+
+	
+		
 		System.out.println("Computer database application");
 		Connection conn = null;
 		try {
@@ -64,7 +65,15 @@ public class UserInterface {
 		CompanyService  companyS = new CompanyService(conn);
 		switch (featureChoice) {
 			case 1:
-				computerS.printListComputers();
+				while (true) {
+					computerS.printPagedList();
+					scanner.nextLine();
+					String s = scanner.nextLine();
+					if (s.equals("n")) {
+						computerS.printNextPage();
+					}
+					break;
+				}
 				break;
 			case 2:
 				companyS.printListCompanies();
@@ -77,33 +86,29 @@ public class UserInterface {
 		
 			case 4:
 				
-			    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				System.out.println("Enter name");
 				String name = scanner.next();
-				
 				
 				System.out.println("Enter introduced");
 				scanner.nextLine();
 				String time = scanner.nextLine();
-				Timestamp ti;
+				Date ti;
 				if (time.toLowerCase().equals("null") || time.equals("")) {
 					 ti = null;
 				}else {
-					java.util.Date date = dateFormat.parse(time);
-			        ti = new Timestamp(date.getTime());
+					ti = Date.valueOf(time);
 				}
 		        
 		        
 				System.out.println("Enter discontinued");
 				
 				time = scanner.nextLine();
-				Timestamp td;
+				Date td;
 				if (time.toLowerCase().equals("null") || time.equals("")) {
 					 td = null;
 					 System.out.println("ici");
 				}else {
-					java.util.Date date = dateFormat.parse(time);
-			        td = new Timestamp(date.getTime());
+					td = Date.valueOf(time);
 				}
 		   		        
 				System.out.println("Enter company id");
@@ -134,13 +139,13 @@ public class UserInterface {
 					
 					question = "Current date of introduction : "+c.getIntroduced()+". Do you want to update the date?";
 					if (validation(question, scanner, "date")) {
-						Timestamp t = nextTimestamp(scanner);
+						Date t = nextDate(scanner);
 						computerS.updateComputerIntroduced(id, t, c.getDiscontinued());
 					}
 					
 					question = "Current date of discontinuation: "+c.getDiscontinued()+". Do you want to update the date?";
 					if (validation(question, scanner, "date")) {
-						Timestamp t = nextTimestamp(scanner);
+						Date t = nextDate(scanner);
 						computerS.updateComputerDiscontinued(id, c.getIntroduced(), t);
 					}
 					
@@ -163,7 +168,7 @@ public class UserInterface {
 		}
 		conn.close();
 		scanner.close();
-
+	
 	}
 
 }
