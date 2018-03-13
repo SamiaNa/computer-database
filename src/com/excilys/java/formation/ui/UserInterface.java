@@ -1,11 +1,7 @@
 package com.excilys.java.formation.ui;
 
-import java.io.IOException;
 import java.sql.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Scanner;
-
 import com.excilys.java.formation.mapper.Computer;
 import com.excilys.java.formation.model.persistence.MySQLConnection;
 import com.excilys.java.formation.model.service.CompanyService;
@@ -15,7 +11,7 @@ import com.excilys.java.formation.model.service.ComputerService;
 
 public class UserInterface {
 	
-	private static Date nextDate(Scanner sc) throws ParseException {
+	private static Date nextDate(Scanner sc) {
 		String time = sc.nextLine();
 		Date ti;
 		if (time.toLowerCase().equals("null") || time.equals("")) {
@@ -26,8 +22,9 @@ public class UserInterface {
 	    return ti;
 	}
 	
-	private static boolean validation(String question, Scanner sc, String varName) {
-		System.out.println(question);
+	private static boolean validation(String attributeName, Object varObj, Scanner sc) {
+		String varName = varObj == null ? "null" : varObj.toString();
+		System.out.println("Current "+attributeName+" : "+varName+". Do you want do update ? (y/n)");
 		String validation = sc.next();
 		if (validation.toLowerCase().equals("y")) {
 			System.out.println("Enter new "+varName);
@@ -37,10 +34,99 @@ public class UserInterface {
 		return false;
 	}
 	
-	public static void main (String [] args) throws ClassNotFoundException, SQLException, IOException, ParseException{
-
+	private static void printComputerList(Scanner sc, ComputerService computerS) throws SQLException {
+		sc.nextLine();
+		while (true) {
+			computerS.printPagedList();
+			String s = sc.nextLine();
+			if (s.equals("n")) {
+				computerS.printNextPage();
+			}
+			if (s.equals("q")) {
+				break;
+			}
+			if (s.equals("p")) {
+				computerS.printPrevPage();
+			}
+		}
+	}
 	
+	
+	private static void createComputer(Scanner sc, ComputerService computerS) throws SQLException {
+		System.out.println("Enter name");
 		
+		sc.nextLine();
+		String name = sc.nextLine();
+		
+		while (name.equals("")) {
+			System.out.println("Name can't be an empty string");
+			name = sc.nextLine();
+		}
+		
+		System.out.println("Enter introduced");
+		String time = sc.nextLine();
+		Date ti;
+		if (time.toLowerCase().equals("null") || time.equals("")) {
+			 ti = null;
+		}else {
+			ti = Date.valueOf(time);
+		}
+        
+        
+		System.out.println("Enter discontinued");
+		
+		time = sc.nextLine();
+		Date td;
+		if (time.toLowerCase().equals("null") || time.equals("")) {
+			 td = null;
+		}else {
+			td = Date.valueOf(time);
+		}
+   		        
+		System.out.println("Enter company id");
+		String companyIdStr = sc.nextLine();
+		Long companyId;
+		if (companyIdStr.toLowerCase().equals("null") || companyIdStr.equals("")) {
+			companyId = null;
+		}else {
+			companyId = Long.parseLong(companyIdStr);
+		}
+		System.out.println(name+" "+ti+" "+td+" "+companyId);
+		computerS.createComputer(name, ti, td, companyId);
+		
+	}
+	
+	
+	private static void updateComputer(Scanner sc, ComputerService computerS) throws  SQLException {
+		System.out.println("Enter id of computer to update");
+		long id = sc.nextLong();
+		Computer c = computerS.getComputerDetails(id);
+		if (c == null) {
+			System.out.println("No computer with id : "+id);
+		}else {
+
+			if (validation("name", c.getName(), sc)) {
+				String newName = sc.nextLine();
+				computerS.updateComputerName(id, newName);
+			}
+			if (validation("date of introduction", c.getIntroduced(), sc)) {
+				Date d = nextDate(sc);
+				computerS.updateComputerIntroduced(id, d, c.getDiscontinued());
+			}
+			if (validation("date of discontinuation", c.getDiscontinued(), sc)) {
+				Date d = nextDate(sc);
+				computerS.updateComputerDiscontinued(id, c.getIntroduced(), d);
+			}
+			if (validation("company_id", c.getCompany_id(), sc)) {
+				Long newCompanyId = sc.nextLong();
+				computerS.updateComputerCompanyID(id, newCompanyId);
+			}
+			
+		}
+		
+	}
+	public static void main (String [] args) throws ClassNotFoundException, SQLException{
+
 		System.out.println("Computer database application");
 		Connection conn = null;
 		try {
@@ -65,19 +151,13 @@ public class UserInterface {
 		CompanyService  companyS = new CompanyService(conn);
 		switch (featureChoice) {
 			case 1:
-				while (true) {
-					computerS.printPagedList();
-					scanner.nextLine();
-					String s = scanner.nextLine();
-					if (s.equals("n")) {
-						computerS.printNextPage();
-					}
-					break;
-				}
+				printComputerList(scanner, computerS);
 				break;
+				
 			case 2:
 				companyS.printListCompanies();
 				break;
+				
 			case 3:
 				System.out.println("Enter id of computer");
 				int computerID = scanner.nextInt();
@@ -85,78 +165,11 @@ public class UserInterface {
 				break;
 		
 			case 4:
-				
-				System.out.println("Enter name");
-				String name = scanner.next();
-				
-				System.out.println("Enter introduced");
-				scanner.nextLine();
-				String time = scanner.nextLine();
-				Date ti;
-				if (time.toLowerCase().equals("null") || time.equals("")) {
-					 ti = null;
-				}else {
-					ti = Date.valueOf(time);
-				}
-		        
-		        
-				System.out.println("Enter discontinued");
-				
-				time = scanner.nextLine();
-				Date td;
-				if (time.toLowerCase().equals("null") || time.equals("")) {
-					 td = null;
-					 System.out.println("ici");
-				}else {
-					td = Date.valueOf(time);
-				}
-		   		        
-				System.out.println("Enter company id");
-				String companyIdStr = scanner.nextLine();
-				Long companyId;
-				if (companyIdStr.toLowerCase().equals("null") || companyIdStr.equals("")) {
-					companyId = null;
-				}else {
-					companyId = Long.parseLong(companyIdStr);
-				}
-				System.out.println(name+" "+ti+" "+td+" "+companyId);
-				computerS.createComputer(name, ti, td, companyId);
+				createComputer(scanner, computerS);
 				break;
 			
 			case 5:
-				System.out.println("Enter id of computer to update");
-				long id = scanner.nextLong();
-				Computer c = computerS.getComputerDetails(id);
-				if (c == null) {
-					System.out.println("No computer with id : "+id);
-				}else {
-		
-					String question = "Current name : "+c.getName()+". Do you want to update the name?";
-					if (validation(question, scanner, "name")) {
-						String newName = scanner.nextLine();
-						computerS.updateComputerName(id, newName);
-					}
-					
-					question = "Current date of introduction : "+c.getIntroduced()+". Do you want to update the date?";
-					if (validation(question, scanner, "date")) {
-						Date t = nextDate(scanner);
-						computerS.updateComputerIntroduced(id, t, c.getDiscontinued());
-					}
-					
-					question = "Current date of discontinuation: "+c.getDiscontinued()+". Do you want to update the date?";
-					if (validation(question, scanner, "date")) {
-						Date t = nextDate(scanner);
-						computerS.updateComputerDiscontinued(id, c.getIntroduced(), t);
-					}
-					
-					question = "Current company id : "+c.getCompany_id()+". Do you want to update the id?";
-					if (validation(question, scanner, "id")) {
-						Long newCompanyId = scanner.nextLong();
-						computerS.updateComputerCompanyID(id, newCompanyId);
-					}
-					
-				}
-				
+				updateComputer(scanner, computerS);
 				break;
 				
 			case 6:

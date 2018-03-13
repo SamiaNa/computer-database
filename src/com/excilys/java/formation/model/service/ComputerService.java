@@ -2,7 +2,6 @@ package com.excilys.java.formation.model.service;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.sql.Date;
 import java.util.List;
 
@@ -15,7 +14,7 @@ public class ComputerService {
 	private ComputerPageService compPage;
 	
 	
-	public ComputerService(Connection conn) {
+	public ComputerService(Connection conn) throws SQLException {
 		this.compDAO = new ComputerDAO(conn);
 		this.compPage = new ComputerPageService(10, conn);
 	}
@@ -40,6 +39,13 @@ public class ComputerService {
 	
 	public void printNextPage() throws SQLException {
 		List<Computer> computers =  compPage.getNextPage();
+		for (Computer c : computers) {
+			System.out.println(c);
+		}
+	}
+	
+	public void printPrevPage() throws SQLException {
+		List <Computer> computers =  compPage.getPrevPage();
 		for (Computer c : computers) {
 			System.out.println(c);
 		}
@@ -100,6 +106,10 @@ public class ComputerService {
 	
 	public void updateComputerCompanyID (long id, long companyId) throws SQLException {
 		compDAO.updateCompanyID (id, companyId);
+	}
+	
+	public int getNumberOfComputers() throws SQLException {
+		return compDAO.count();
 	}
 	
 }

@@ -25,12 +25,5 @@ public class CompanyService {
 		}
 	}
 	
-	/*public void printComputerDetails(int id) throws SQLException {
-		Computer c = compDAO.getComputerDetails(id);
-		if (c == null) {
-			System.out.println("No computer found with id : "+id);
-		}else {
-			System.out.println(c);
-		}
-	}*/
+
 }

@@ -11,29 +11,36 @@ public class ComputerPageService {
 
 	private int offset;
 	private int size;
-	private Connection conn;
 	private ComputerDAO compDAO;
+	int dbSize;
 	
-	public ComputerPageService(int size, Connection conn) {
+	
+	// En cas d'add ou de delete décalage ??
+	public ComputerPageService(int size, Connection conn) throws SQLException {
 		this.offset = 0;
 		this.size = size;
-		this.conn = conn;
 		this.compDAO = new ComputerDAO(conn);
+		dbSize = this.compDAO.count();
 	}
 	
 	public List<Computer> getPage () throws SQLException{
 		return compDAO.get(offset, size);
 	}
 	
-
 	
 	public List<Computer> getNextPage() throws SQLException{
 		offset += size;
+		if (offset + size > dbSize) {
+			offset = dbSize - size;
+		}
 		return getPage();
 	}
 	
 	public List<Computer> getPrevPage() throws SQLException{
 		offset -= size;
+		if (offset < 0) {
+			offset = 0;
+		}
 		return getPage();
 	}
 }

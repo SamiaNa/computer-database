@@ -57,14 +57,11 @@ public class ComputerDAO {
 		PreparedStatement stmt = null;
 		List<Computer> computers = new ArrayList<>();
 		try {
-
-			System.out.println("ICI1");
 			conn.setAutoCommit(false);
 			String query = "SELECT * FROM computer LIMIT ?,? ";
 			stmt = conn.prepareStatement(query);
 			stmt.setInt(1, offset);
 			stmt.setInt(2, size);
-			System.out.println(stmt.toString());
 			ResultSet res = stmt.executeQuery();
 			conn.commit();
 			while (res.next()) {
@@ -146,9 +143,17 @@ public class ComputerDAO {
 			String insertQuery = "INSERT INTO computer (name, company_id, introduced, discontinued) VALUES (?, ?, ?, ?)";
 			stmt = conn.prepareStatement(insertQuery);
 			stmt.setString(1, c.getName());
-			System.out.println("Date : "+c.getIntroduced().toString());
-			stmt.setDate(3, java.sql.Date.valueOf(c.getIntroduced().toString()));
-			stmt.setDate(4, java.sql.Date.valueOf(c.getDiscontinued().toString()));
+			if (c.getIntroduced() == null) {
+				stmt.setNull(3, java.sql.Types.DATE);
+			}else {
+				stmt.setDate(3, java.sql.Date.valueOf(c.getIntroduced().toString()));
+			}
+
+			if (c.getDiscontinued()== null) {
+				stmt.setNull(4, java.sql.Types.DATE);
+			}else {
+				stmt.setDate(4, java.sql.Date.valueOf(c.getDiscontinued().toString()));
+			}
 			if (c.getCompany_id() == null) {
 				stmt.setNull(2, java.sql.Types.BIGINT);
 			}else {
@@ -253,7 +258,11 @@ public class ComputerDAO {
 			conn.setAutoCommit(false);
 			String query = "UPDATE computer SET introduced = ? WHERE id = ?";
 			stmt = conn.prepareStatement(query);
-			stmt.setDate(1, java.sql.Date.valueOf(t.toString()));
+			if (t == null) {
+				stmt.setNull(1, java.sql.Types.DATE);
+			}else {
+				stmt.setDate(1, java.sql.Date.valueOf(t.toString()));
+			}
 			stmt.setLong(2, id);
 			int res = stmt.executeUpdate();
 			conn.commit();
@@ -286,7 +295,11 @@ public class ComputerDAO {
 			conn.setAutoCommit(false);
 			String query = "UPDATE computer SET discontinued = ? WHERE id = ?";
 			stmt = conn.prepareStatement(query);
-			stmt.setDate(1, java.sql.Date.valueOf(t.toString()));
+			if (t == null) {
+				stmt.setNull(1, java.sql.Types.DATE);
+			}else {
+				stmt.setDate(1, java.sql.Date.valueOf(t.toString()));
+			}
 			stmt.setLong(2,id);
 			int res = stmt.executeUpdate();
 			conn.commit();
@@ -354,6 +367,38 @@ public class ComputerDAO {
 			}
 		
 		}
+	}
+	
+	public int count() throws SQLException {
+		PreparedStatement stmt = null;
+		int count = - 1;
+		try {
+			
+			conn.setAutoCommit(false);
+			String selectQuery = "SELECT count(id) FROM computer";
+			stmt = conn.prepareStatement(selectQuery);
+			ResultSet rSet = stmt.executeQuery();
+			rSet.next();
+			count = rSet.getInt(1);
+			stmt.close();
+			conn.commit();
+			return count;
+			
+				
+		} catch(SQLException se) {
+		
+		for (Throwable e : se) {
+			System.out.println("Problem : "+e);	
+		}
+		conn.rollback();
+		
+		}finally {
+		
+			if (stmt != null) {
+				stmt.close();
+			}
+		}
+	return -1;
 	}
 	
 }
