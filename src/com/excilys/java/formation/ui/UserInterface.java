@@ -1,17 +1,15 @@
 package com.excilys.java.formation.ui;
 
-import java.sql.*;
+import java.sql.SQLException;
 import java.util.Scanner;
-import com.excilys.java.formation.mapper.Computer;
-import com.excilys.java.formation.model.persistence.MySQLConnection;
-import com.excilys.java.formation.model.service.CompanyService;
+
 import com.excilys.java.formation.model.service.ComputerService;
 
 
 
 public class UserInterface {
 	
-	private static Date nextDate(Scanner sc) {
+	/*private static Date nextDate(Scanner sc) {
 		String time = sc.nextLine();
 		Date ti;
 		if (time.toLowerCase().equals("null") || time.equals("")) {
@@ -30,28 +28,11 @@ public class UserInterface {
 			System.out.println("Enter new "+varName);
 			sc.nextLine();
 			return true;
-		}
+		}	
 		return false;
-	}
+	}*/
 	
-	private static void printComputerList(Scanner sc, ComputerService computerS) throws SQLException {
-		sc.nextLine();
-		while (true) {
-			computerS.printPagedList();
-			String s = sc.nextLine();
-			if (s.equals("n")) {
-				computerS.printNextPage();
-			}
-			if (s.equals("q")) {
-				break;
-			}
-			if (s.equals("p")) {
-				computerS.printPrevPage();
-			}
-		}
-	}
-	
-	
+/*
 	private static void createComputer(Scanner sc, ComputerService computerS) throws SQLException {
 		System.out.println("Enter name");
 		
@@ -125,27 +106,57 @@ public class UserInterface {
 		}
 		
 	}
-	public static void main (String [] args) throws ClassNotFoundException, SQLException{
+	
+	private static void printComputerList(Scanner sc) throws SQLException {
+		sc.nextLine();
+		ComputerService computerService= new ComputerService ();
+		while (true) {
+			computerService.printPagedList();
+			String s = sc.nextLine();
+			switch (s) {
+			case "n" : 
+				computerService.printNextPage();
+				break;
+			case "p":
+				computerService.printPrevPage();
+				break;
+			default:
+				break;
+			}
+		}
+	}*/
+	
+	private static void printComputerList() throws SQLException, ClassNotFoundException {
+		Scanner scanner = ScannerHelper.getScanner();
+		scanner.nextLine();
+		ComputerService computerService = ComputerService.getService();
+		computerService.printListComputers();
+	}
+	
 
-		System.out.println("Computer database application");
-		Connection conn = null;
-		try {
-			conn = MySQLConnection.getConnection();
-		} catch (ClassNotFoundException|SQLException e) {
-			System.out.println("Unable to initialize the connection to the database");
-			return;
+	
+	public static void startUI() throws SQLException, ClassNotFoundException {
+		System.out.println("Computer database application\n"+
+				"Select operation:\n"+ 
+				"1. List computers\n"+
+				"2. List companies\n"+
+				"3. Show computer details\n"+
+				"4. Create a computer\n"+
+				"5. Update a computer\n"+
+				"6. Delete a computer\n");
+		Scanner scanner = ScannerHelper.getScanner();
+		int featureChoice = scanner.nextInt();
+		switch(featureChoice) {
+		case 1:
+			printComputerList();
 		}
 		
-		System.out.println("Select operation:");
-		System.out.println("1. List computers");
-		System.out.println("2. List companies");
-		System.out.println("3. Show computer details");
-		System.out.println("4. Create a computer");
-		System.out.println("5. Update a computer");
-		System.out.println("6. Delete a computer");
+	}
+	public static void main (String [] args) throws ClassNotFoundException, SQLException{
+		startUI();
 	
-		Scanner scanner = new Scanner(System.in);
-		int featureChoice = scanner.nextInt();
+	
+/*		int featureChoice = scanner.nextInt();
 		
 		ComputerService computerS = new ComputerService(conn);
 		CompanyService  companyS = new CompanyService(conn);
@@ -179,8 +190,7 @@ public class UserInterface {
 			default:
 				break;
 		}
-		conn.close();
-		scanner.close();
+		*/
 	
 	}
 

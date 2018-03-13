@@ -10,34 +10,40 @@ import com.excilys.java.formation.model.persistence.ComputerDAO;
 
 public class ComputerService {
 
-	private ComputerDAO compDAO;
-	private ComputerPageService compPage;
+	public static ComputerService computerService;
 	
+	public ComputerService() throws SQLException {
+	}
 	
-	public ComputerService(Connection conn) throws SQLException {
-		this.compDAO = new ComputerDAO(conn);
-		this.compPage = new ComputerPageService(10, conn);
+	public static ComputerService getService() throws SQLException {
+		if (computerService == null) {
+			computerService = new ComputerService();
+		}
+		return computerService;
 	}
 	
 	/**
 	 * Prints the list of computers in the database to stdout
 	 * @throws SQLException
+	 * @throws ClassNotFoundException 
 	 */
-	public void printListComputers() throws SQLException {
-		List<Computer> computers = compDAO.get();
+	public void printListComputers() throws SQLException, ClassNotFoundException {
+		ComputerDAO computerDAO = ComputerDAO.getDAO();
+		List<Computer> computers = computerDAO.getAll();
 		for (Computer c : computers) {
 			System.out.println(c);
 		}
 	}
 	
+	/*
 	public void printPagedList() throws SQLException {
 		List <Computer> computers =  compPage.getPage();
 		for (Computer c : computers) {
 			System.out.println(c);
 		}
-	}
+	}*/
 	
-	public void printNextPage() throws SQLException {
+	/*public void printNextPage() throws SQLException {
 		List<Computer> computers =  compPage.getNextPage();
 		for (Computer c : computers) {
 			System.out.println(c);
@@ -49,7 +55,8 @@ public class ComputerService {
 		for (Computer c : computers) {
 			System.out.println(c);
 		}
-	}
+	}*/
+	/*
 	public List<Computer> get(int offset, int size) throws SQLException {
 		return compDAO.get( offset,  size);
 	}
@@ -59,6 +66,7 @@ public class ComputerService {
 	 * @param id
 	 * @throws SQLException
 	 */
+	/*
 	public void printComputerDetails(long id) throws SQLException {
 		Computer c = compDAO.getComputerDetails(id);
 		if (c == null) {
@@ -111,5 +119,5 @@ public class ComputerService {
 	public int getNumberOfComputers() throws SQLException {
 		return compDAO.count();
 	}
-	
+	*/
 }

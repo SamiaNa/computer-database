@@ -9,27 +9,33 @@ import java.sql.*;
 
 public class ComputerDAO {
 	
-	Connection conn;
+	private static ComputerDAO computerDAO;
+	public ComputerDAO() {
+	}
 	
-	public ComputerDAO(Connection conn) {
-		this.conn = conn;
+	public static ComputerDAO getDAO() {
+		if (computerDAO == null) {
+			computerDAO = new ComputerDAO();
+		}
+		return computerDAO;
 	}
 	
 	/**
 	 * Returns the list of all computers in the database
 	 * @return ArrayList of Computer
 	 * @throws SQLException
+	 * @throws ClassNotFoundException 
 	 */
-	public List<Computer> get() throws SQLException {
+	public List<Computer> getAll() throws SQLException, ClassNotFoundException {
 		Statement stmt = null;
+		Connection connection = MySQLConnection.getConnection();
 		List<Computer> computers = new ArrayList<>();
 		try {
-
-			conn.setAutoCommit(false);
+			connection.setAutoCommit(false);
 			String query = "SELECT * FROM computer";
-			stmt = conn.createStatement();
+			stmt = connection.createStatement();
 			ResultSet res = stmt.executeQuery(query);
-			conn.commit();
+			connection.commit();
 			while (res.next()) {
 				computers.add(new Computer (res.getLong(1), res.getString(2), res.getDate(3), res.getDate(4), res.getLong(5)));
 			}
@@ -39,20 +45,19 @@ public class ComputerDAO {
 			for (Throwable e : se) {
 				System.out.println("Problem : "+e);	
 			}
-			conn.rollback();
+			connection.rollback();
 			
 		}finally {
-			
 			if (stmt != null) {
 				stmt.close();
 			}
-			
+			connection.close();
 		}
 		return computers;
 
 	}
 	
-
+/*
 	public List<Computer> get(int offset, int size) throws SQLException {
 		PreparedStatement stmt = null;
 		List<Computer> computers = new ArrayList<>();
@@ -85,13 +90,13 @@ public class ComputerDAO {
 		return computers;
 
 	}
-	
+	*/
 	/**
 	 * 
 	 * @param id
 	 * @return
 	 * @throws SQLException
-	 */
+	 *//*
 	public Computer getComputerDetails(long id) throws SQLException  {
 		PreparedStatement stmt = null;
 		Computer c = null;
@@ -400,5 +405,7 @@ public class ComputerDAO {
 		}
 	return -1;
 	}
+	
+	*/
 	
 }

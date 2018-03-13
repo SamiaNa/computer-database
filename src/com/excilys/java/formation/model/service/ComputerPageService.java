@@ -8,7 +8,7 @@ import com.excilys.java.formation.mapper.Computer;
 import com.excilys.java.formation.model.persistence.ComputerDAO;
 
 public class ComputerPageService {
-
+/*
 	private int offset;
 	private int size;
 	private ComputerDAO compDAO;
@@ -42,5 +42,5 @@ public class ComputerPageService {
 			offset = 0;
 		}
 		return getPage();
-	}
+	}*/
 }
