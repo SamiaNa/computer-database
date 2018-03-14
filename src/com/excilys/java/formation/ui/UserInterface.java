@@ -9,7 +9,6 @@ import com.excilys.java.formation.entities.ComputerStringAttributes;
 import com.excilys.java.formation.model.persistence.NoComputerInResultSetException;
 import com.excilys.java.formation.model.service.CompanyService;
 import com.excilys.java.formation.model.service.ComputerService;
-import com.excilys.java.formation.model.service.ComputerValidator;
 import com.excilys.java.formation.model.service.ValidatorException;
 
 
@@ -18,30 +17,26 @@ public class UserInterface {
 	
 	
 
-	private static void printComputerList() throws SQLException, ClassNotFoundException {
-		Scanner scanner = ScannerHelper.getScanner();
+	private static void printComputerList(Scanner scanner, ComputerService computerService)
+				throws SQLException, ClassNotFoundException {
 		scanner.nextLine();
-		ComputerService computerService = ComputerService.getService();
 		for (Computer c : computerService.getListComputers()) {
 			System.out.println(c);
 		}
 	}
 	
-	private static void printCompaniesList() throws SQLException, ClassNotFoundException {
-		Scanner scanner = ScannerHelper.getScanner();
+	private static void printCompaniesList(Scanner scanner, CompanyService companyService) 
+			throws SQLException, ClassNotFoundException {
 		scanner.nextLine();
-		CompanyService companyService = CompanyService.getService();
 		for (Company c : companyService.getCompaniesList()) {
 			System.out.println(c);
 		}
 	}
 	
-	private static void printComputerByID() throws SQLException, ClassNotFoundException {
-		Scanner scanner = ScannerHelper.getScanner();
+	private static void printComputerByID(Scanner scanner, ComputerService computerService) throws SQLException, ClassNotFoundException {
 		scanner.nextLine();
 		System.out.println("Enter id of computer : ");
 		String computerId = scanner.nextLine();
-		ComputerService computerService = ComputerService.getService();
 		try {
 			System.out.println(computerService.getComputerById(computerId));
 		} catch (NoComputerInResultSetException | ValidatorException e) {
@@ -49,10 +44,8 @@ public class UserInterface {
 		}
 	}
 	
-	private static void createComputer() throws SQLException, ClassNotFoundException {
-		Scanner scanner = ScannerHelper.getScanner();
+	private static void createComputer(Scanner scanner, ComputerService computerService) throws SQLException, ClassNotFoundException {
 		scanner.nextLine();
-		ComputerService computerService = ComputerService.getService();
 		System.out.println("Enter name");
 		String name = scanner.nextLine();
 		System.out.println("Enter date introduced (YYYY-MM-DD or null)");
@@ -81,8 +74,8 @@ public class UserInterface {
 		return validation.toLowerCase().equals("y");
 	}
 	
-	private static void updateAttributes(Scanner scanner, String idStr) throws ClassNotFoundException, SQLException, NoComputerInResultSetException, ValidatorException {
-		ComputerService computerService = ComputerService.getService();
+	private static void updateAttributes(Scanner scanner, ComputerService computerService, String idStr) 
+			throws ClassNotFoundException, SQLException, NoComputerInResultSetException, ValidatorException {
 		ComputerStringAttributes computerStr = new ComputerStringAttributes(computerService.getComputerById(idStr));
 		if (updateAttribute("name", computerStr.getName(), scanner)) {
 			System.out.println("Enter new name");
@@ -107,25 +100,22 @@ public class UserInterface {
 		}
 	}
 	
-	private static void updateComputer() throws  SQLException, ClassNotFoundException {
-		Scanner scanner = ScannerHelper.getScanner();
+	private static void updateComputer(Scanner scanner, ComputerService computerService) throws  SQLException, ClassNotFoundException {
 		scanner.nextLine();
 		System.out.println("Enter id of computer to update");
 		String idStr = scanner.nextLine();
 		try {
-			updateAttributes(scanner, idStr);
+			updateAttributes(scanner, computerService, idStr);
 		}catch(NoComputerInResultSetException | ValidatorException e) {
 			System.out.println(e.getMessage());
 		}
 		
 	}
 	
-	private static void deleteComputer() throws SQLException, ClassNotFoundException {
-		Scanner scanner = ScannerHelper.getScanner();
+	private static void deleteComputer(Scanner scanner, ComputerService computerService) throws SQLException, ClassNotFoundException {
 		scanner.nextLine();
 		System.out.println("Enter id of computer : ");
 		String computerId = scanner.nextLine();
-		ComputerService computerService = ComputerService.getService();
 		try {
 			boolean deleted = computerService.deleteComputer(computerId);
 			if (deleted) {
@@ -136,11 +126,7 @@ public class UserInterface {
 		} catch ( ValidatorException e) {
 			System.out.println(e.getMessage());
 		}
-	
-		
-		
 	}
-
 		
 	public static void startUI() throws SQLException, ClassNotFoundException {
 		whileLoop :
@@ -155,25 +141,27 @@ public class UserInterface {
 					"6. Delete a computer\n"+
 					"7. Quit");
 			Scanner scanner = ScannerHelper.getScanner();
+			ComputerService computerService = ComputerService.getService();
 			int featureChoice = scanner.nextInt();
 			switch(featureChoice) {
 			case 1:
-				printComputerList();
+				printComputerList(scanner, computerService);
 				break;
 			case 2:
-				printCompaniesList();
+				CompanyService companyService = CompanyService.getService();
+				printCompaniesList(scanner, companyService);
 				break;
 			case 3:
-				printComputerByID();
+				printComputerByID(scanner, computerService);
 				break;
 			case 4:
-				createComputer();
+				createComputer(scanner, computerService);
 				break;
 			case 5:
-				updateComputer();
+				updateComputer(scanner, computerService);
 				break;
 			case 6:
-				deleteComputer();
+				deleteComputer(scanner, computerService);
 				break;
 			case 7:
 				System.out.println("Bye!");
