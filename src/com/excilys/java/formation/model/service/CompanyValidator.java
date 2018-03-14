@@ -1,5 +1,31 @@
 package com.excilys.java.formation.model.service;
 
-public class CompanyValidator {
+import java.sql.SQLException;
 
+import com.excilys.java.formation.model.persistence.CompanyDAO;
+
+public class CompanyValidator extends ComputerDatabaseValidator{
+	
+	private static CompanyValidator companyValidator;
+	
+	private CompanyValidator() {
+		
+	}
+	
+	public static CompanyValidator getValidator() {
+		if (companyValidator == null) {
+			companyValidator = new CompanyValidator();
+		}
+		return companyValidator;
+	}
+	
+	public  Long checkCompanyId (String strId) throws ClassNotFoundException, SQLException, ValidatorException {
+		if (strId == null || strId.toLowerCase().equals("null")) return null;
+		long id = getLongId(strId);
+		CompanyDAO companyDAO = CompanyDAO.getDAO();
+		if (!companyDAO.checkCompanyById(id)) {
+			throw new ValidatorException("No existing company with id "+id);
+		}
+		return id;
+	}
 }

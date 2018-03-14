@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import com.excilys.java.formation.entities.Computer;
+import com.excilys.java.formation.entities.ComputerStringAttributes;
 import com.excilys.java.formation.model.persistence.ComputerDAO;
 import com.excilys.java.formation.model.persistence.NoComputerInResultSetException;
 
@@ -68,13 +69,29 @@ public class ComputerService {
 					throws SQLException, ValidatorException, ClassNotFoundException{
 
 		ComputerValidator computerValidator = ComputerValidator.getValidator();
+		CompanyValidator companyValidator = CompanyValidator.getValidator();
 		ComputerDAO computerDAO = ComputerDAO.getDAO();
 		computerValidator.checkName(name);
 		Date introducedDate = computerValidator.getDate(introducedStr);
 		Date discontinuedDate = computerValidator.getDate(discontinuedStr);
 		computerValidator.checkDates(introducedDate, discontinuedDate);
-		Long companyId = computerValidator.checkCompanyId(compIdStr);
+		Long companyId = companyValidator.checkCompanyId(compIdStr);
 		return computerDAO.createComputer(new Computer(name, introducedDate, discontinuedDate, companyId));
+	}
+	
+	public boolean updateComputer (ComputerStringAttributes compStr) throws ClassNotFoundException, SQLException, ValidatorException {
+		ComputerValidator computerValidator = ComputerValidator.getValidator();
+		CompanyValidator companyValidator = CompanyValidator.getValidator();
+		Long compId = computerValidator.checkComputerId(compStr.getId());
+		Long companyId = companyValidator.checkCompanyId(compStr.getCompanyId());
+		computerValidator.checkName(compStr.getName());
+		Date introduced = computerValidator.getDate(compStr.getIntroduced());
+		Date discontinued = computerValidator.getDate(compStr.getDiscontinued());
+		computerValidator.checkDates(introduced, discontinued);
+		ComputerDAO computerDAO = ComputerDAO.getDAO();
+		System.out.println("NAME "+compStr.getName());
+		return computerDAO.update(new Computer(compId, compStr.getName(), introduced, discontinued, companyId));
+		
 	}
 
 	/*

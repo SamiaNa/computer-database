@@ -111,6 +111,60 @@ public class ComputerDAO {
 		}
 	}
 	
+	public boolean checkComputerById(long id) throws SQLException, ClassNotFoundException  {
+		Connection connection = MySQLConnection.getConnection();
+		PreparedStatement stmt = null;
+		try {
+			connection.setAutoCommit(false);
+			stmt = connection.prepareStatement("SELECT * FROM computer WHERE id = ?");
+			stmt.setLong(1, id);
+			ResultSet res = stmt.executeQuery();
+			connection.commit();
+			return res.next();
+			} catch(SQLException se) {
+				MySQLConnection.printExceptionList(se);
+				connection.rollback();
+			}finally {
+				if (stmt != null) {
+					stmt.close();
+				}
+			}
+		return false;
+	}
+	
+	
+	
+	public boolean update (Computer c) throws SQLException, ClassNotFoundException {
+		Connection connection = MySQLConnection.getConnection();
+		PreparedStatement stmt = null;
+		try {
+			connection.setAutoCommit(false);
+			stmt = connection.prepareStatement("UPDATE computer "+
+						"SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?");
+			stmt.setString(1, c.getName());
+			setDateOrNull(c.getIntroduced(), stmt, 2);
+			setDateOrNull(c.getDiscontinued(), stmt, 3);
+			setBigIntOrNull(c.getCompanyId(), stmt, 4);
+			stmt.setLong(5, c.getId());
+			int res = stmt.executeUpdate();
+			connection.commit();
+			return res == 1;
+		} catch(SQLException se) {
+		for (Throwable e : se) {
+			System.out.println("Problem : "+e);	
+		}
+		connection.rollback();
+		
+		}finally {
+		
+			if (stmt != null) {
+				stmt.close();
+			}
+		
+		}
+		return false;
+	}
+	
 /*
 	public List<Computer> get(int offset, int size) throws SQLException {
 		PreparedStatement stmt = null;

@@ -7,7 +7,7 @@ import com.excilys.java.formation.model.persistence.CompanyDAO;
 import com.excilys.java.formation.model.persistence.ComputerDAO;
 import com.excilys.java.formation.model.persistence.NoComputerInResultSetException;
 
-public class ComputerValidator {
+public class ComputerValidator extends ComputerDatabaseValidator{
 
 	private static ComputerValidator computerValidator;
 	
@@ -21,22 +21,9 @@ public class ComputerValidator {
 		return computerValidator;
 	}
 
-	public Long getLongId (String strId) throws ValidatorException {
-		try {
-			return Long.parseLong(strId);
-		}catch (NumberFormatException e){
-			if (strId.equals("") || strId.toLowerCase().equals("null")) {
-				return null;
-			}
-			throw new ValidatorException("Only numbers are accepted as id");
-		}
-	}
-	
-
-	
 	public void checkName (String name) throws ValidatorException {
-		if (name == "") {
-			throw new ValidatorException("Name can't be an empty string");
+		if (name == "" || name.toLowerCase().equals("null") ) {
+			throw new ValidatorException("Name can't be an empty string or 'null' String");
 		}
 	}
 	
@@ -54,20 +41,20 @@ public class ComputerValidator {
 		return date;
 	}
 	
-	public Long checkCompanyId (String strId) throws ClassNotFoundException, SQLException, ValidatorException {
-		if (strId == null || strId.toLowerCase().equals("null")) return null;
-		long id = getLongId(strId);
-		CompanyDAO companyDAO = CompanyDAO.getDAO();
-		if (!companyDAO.checkCompanyById(id)) {
-			throw new ValidatorException("No existing company with id "+id);
-		}
-		return id;
-		}
-	
 	
 	public void checkDates (Date dIntroduced, Date dDiscontinued) throws ValidatorException {
 		if (dIntroduced != null && dDiscontinued != null && dIntroduced.after(dDiscontinued)){
 			throw new ValidatorException ("Date of introduction must be anterior to date of discontinuation");
 		}
+	}
+	
+	public  Long checkComputerId (String strId) throws ClassNotFoundException, SQLException, ValidatorException {
+		if (strId == null || strId.toLowerCase().equals("null")) return null;
+		long id = getLongId(strId);
+		ComputerDAO computerDAO = ComputerDAO.getDAO();
+		if (!computerDAO.checkComputerById(id)) {
+			throw new ValidatorException("No existing company with id "+id);
+		}
+		return id;
 	}
 }
