@@ -48,4 +48,9 @@ public class CompanyService {
 		return CompanyDAO.getDAO().count();
 	}
 
+	public List<Company> getCompaniesByName(String name) throws ClassNotFoundException, SQLException{
+		CompanyDAO companyDAO = CompanyDAO.getDAO();
+		return companyDAO.getByName(name);
+		
+	}
 }

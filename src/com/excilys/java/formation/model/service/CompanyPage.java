@@ -1,7 +1,6 @@
 package com.excilys.java.formation.model.service;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.excilys.java.formation.entities.Company;
@@ -23,7 +22,6 @@ public class CompanyPage {
 		this.dbSize = companyService.count();
 		
 	}
-	
 	
 	public void nextPage() throws SQLException, ClassNotFoundException{
 		this.dbSize = companyService.count();

@@ -2,10 +2,8 @@ package com.excilys.java.formation.model.service;
 
 import java.sql.Date;
 import java.sql.SQLException;
-
-import com.excilys.java.formation.model.persistence.CompanyDAO;
+import org.slf4j.*;
 import com.excilys.java.formation.model.persistence.ComputerDAO;
-import com.excilys.java.formation.model.persistence.NoComputerInResultSetException;
 
 public class ComputerValidator extends ComputerDatabaseValidator{
 
@@ -21,12 +19,13 @@ public class ComputerValidator extends ComputerDatabaseValidator{
 		return computerValidator;
 	}
 
+
 	public void checkName (String name) throws ValidatorException {
 		if (name == "" || name.toLowerCase().equals("null") ) {
 			throw new ValidatorException("Name can't be an empty string or 'null' String");
 		}
 	}
-	
+
 	public Date getDate (String strDate) throws ValidatorException {
 		Date date;
 		if (strDate.toLowerCase().equals("null") || strDate.equals("")) {
@@ -35,6 +34,8 @@ public class ComputerValidator extends ComputerDatabaseValidator{
 			try {
 				date = Date.valueOf(strDate);
 			}catch(IllegalArgumentException e) {
+				Logger log = LoggerFactory.getLogger(getClass());
+				log.debug("Invalid date input _"+strDate+"_");
 				throw new ValidatorException("Date format must be YYYY-MM-DD");
 			}
 		}

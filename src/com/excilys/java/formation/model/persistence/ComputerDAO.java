@@ -47,8 +47,15 @@ public class ComputerDAO {
 		}
 		return computers;
 	}
-	
-
+		
+	/**
+	 * Returns a list of all computers between lines offset and offset + size
+	 * @param offset from which to start selecting lines
+	 * @param size the maximum number of lines to select
+	 * @return an ArrayList of computers
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public List<Computer> get(int offset, int size) throws ClassNotFoundException, SQLException{
 		Connection connection = MySQLConnection.getConnection();
 		ComputerMapper computerMapper = ComputerMapper.getMapper();
@@ -74,6 +81,15 @@ public class ComputerDAO {
 		return computers;
 	}
 	
+	/**
+	 * Returns the computer with the specified id in the database
+	 * @param id the primary key of the computer to find
+	 * @return a Computer object
+	 * @throws SQLException
+	 * @throws NoComputerInResultSetException if there is no computer with the corresponding id
+	 * @throws ClassNotFoundException
+	 */
+	
 	public Computer getComputerById(long id) throws SQLException, NoComputerInResultSetException, ClassNotFoundException  {
 		Connection connection = MySQLConnection.getConnection();
 		ComputerMapper computerMapper = ComputerMapper.getMapper();
@@ -97,7 +113,7 @@ public class ComputerDAO {
 			}
 		return c;
 	}
-	
+
 	private void setDateOrNull(Date d, PreparedStatement stmt, int position) throws SQLException {
 		if (d == null) {
 			stmt.setNull(position, java.sql.Types.DATE);

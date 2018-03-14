@@ -1,7 +1,6 @@
 package com.excilys.java.formation.model.persistence;
 
 import java.sql.*;
-
 public class MySQLConnection {
 
 	private static Connection conn = null;

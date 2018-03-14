@@ -2,13 +2,18 @@ package com.excilys.java.formation.entities;
 
 public class ComputerStringAttributes {
 
-		
+
+	/*
+	 * Used to carry all the attributes of a computer as strings, 
+	 * between the interface and the validator for the update operation
+	 */
 	private String id;
 	private String name;
 	private String introduced;
 	private String discontinued;
 	private String companyId;
 			
+
 	public ComputerStringAttributes (Computer c) {
 		this.id = String.valueOf(c.getId());
 		this.name = String.valueOf(c.getName());

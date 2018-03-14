@@ -19,7 +19,15 @@ public class CompanyValidator extends ComputerDatabaseValidator{
 		return companyValidator;
 	}
 	
-	public  Long checkCompanyId (String strId) throws ClassNotFoundException, SQLException, ValidatorException {
+	/**
+	 * Converts string argument to long and tests if a company with the corresponding id exists
+	 * @param strId the id of the company to check
+	 * @return the id (Long)
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 * @throws ValidatorException
+	 */
+	public Long checkCompanyId (String strId) throws ClassNotFoundException, SQLException, ValidatorException {
 		if (strId == null || strId.toLowerCase().equals("null")) return null;
 		long id = getLongId(strId);
 		CompanyDAO companyDAO = CompanyDAO.getDAO();

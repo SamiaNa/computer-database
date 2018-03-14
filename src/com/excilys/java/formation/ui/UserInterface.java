@@ -2,8 +2,8 @@ package com.excilys.java.formation.ui;
 
 import java.sql.SQLException;
 import java.util.Scanner;
+
 import com.excilys.java.formation.entities.Company;
-import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.entities.ComputerStringAttributes;
 import com.excilys.java.formation.model.persistence.NoComputerInResultSetException;
 import com.excilys.java.formation.model.service.CompanyPage;
@@ -16,22 +16,6 @@ import com.excilys.java.formation.model.service.ValidatorException;
 public class UserInterface {
 	
 
-	/**
-	 * Prints the detailled list of computers
-	 * @param scanner
-	 * @param computerService
-	 * @throws SQLException
-	 * @throws ClassNotFoundException
-	 */
-	
-	// REMOVE NEXT LINE ???
-	private static void printComputerList(Scanner scanner, ComputerService computerService)
-				throws SQLException, ClassNotFoundException {
-		scanner.nextLine();
-		for (Computer c : computerService.getComputersList()) {
-			System.out.println(c);
-		}
-	}
 	
 	private static void printPagedComputerList(Scanner scanner)
 			throws SQLException, ClassNotFoundException {
@@ -52,19 +36,14 @@ public class UserInterface {
 		}
 	}
 	
-	/**
-	 * Prints the detailled list of companies
-	 * @param scanner
-	 * @param companyService
-	 * @throws SQLException
-	 * @throws ClassNotFoundException
-	 */
-	private static void printCompaniesList(Scanner scanner, CompanyService companyService) 
-			throws SQLException, ClassNotFoundException {
+	private static void findCompanyByName(Scanner scanner) throws ClassNotFoundException, SQLException {
+		CompanyService companyService = CompanyService.getService();
+		System.out.println("Enter name :");
 		scanner.nextLine();
-		for (Company c : companyService.getCompaniesList()) {
+		for (Company c : companyService.getCompaniesByName(scanner.nextLine())) {
 			System.out.println(c);
 		}
+		
 	}
 	
 	private static void printPagedCompaniesList(Scanner scanner)
@@ -190,7 +169,7 @@ public class UserInterface {
 			}else {
 				System.out.println("No computer found with id "+computerId);
 			}
-		} catch ( ValidatorException e) {
+		} catch (ValidatorException e) {
 			System.out.println(e.getMessage());
 		}
 	}
@@ -202,7 +181,7 @@ public class UserInterface {
 					"Select operation:\n"+ 
 					"1. List computers\n"+
 					"2. List companies\n"+
-					"3. Show computer details\n"+
+					"3. Show computer details (by id)\n"+
 					"4. Create a computer\n"+
 					"5. Update a computer\n"+
 					"6. Delete a computer\n"+
@@ -213,11 +192,8 @@ public class UserInterface {
 			switch(featureChoice) {
 			case 1:
 				printPagedComputerList(scanner);
-				//printComputerList(scanner, computerService);
 				break;
 			case 2:
-				//CompanyService companyService = CompanyService.getService();
-				//printCompaniesList(scanner, companyService);
 				printPagedCompaniesList(scanner);
 				break;
 			case 3:
