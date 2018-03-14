@@ -34,5 +34,10 @@ public class CompanyService {
 		}
 	}
 	
+	public List<Company> getCompaniesList() throws SQLException, ClassNotFoundException {
+		CompanyDAO companyDAO = CompanyDAO.getDAO();
+		return companyDAO.getAll();
+	}
+	
 
 }

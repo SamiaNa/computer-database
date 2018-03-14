@@ -1,5 +1,6 @@
 package com.excilys.java.formation.model.service;
 
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -33,6 +34,11 @@ public class ComputerService {
 		}
 	}
 	
+	public List<Computer> getListComputers() throws SQLException, ClassNotFoundException {
+		ComputerDAO computerDAO = ComputerDAO.getDAO();
+		return computerDAO.getAll();
+	}
+	
 	public void printComputerById(String strId) throws SQLException, ClassNotFoundException{
 		ComputerValidator computerValidator = ComputerValidator.getValidator();
 		ComputerDAO computerDAO = ComputerDAO.getDAO();
@@ -48,7 +54,29 @@ public class ComputerService {
 			System.out.println(ce.getMessage());
 		}
 	}
+
+	public Computer getComputerById(String strId) throws SQLException, ClassNotFoundException, 
+											NoComputerInResultSetException, ValidatorException{
+		ComputerValidator computerValidator = ComputerValidator.getValidator();
+		ComputerDAO computerDAO = ComputerDAO.getDAO();
+		Long id;
+		id = computerValidator.getLongId(strId);
+		return computerDAO.getComputerById(id);
+	}
 	
+	public boolean createComputer(String name, String introducedStr, String discontinuedStr, String compIdStr)
+					throws SQLException, ValidatorException, ClassNotFoundException{
+
+		ComputerValidator computerValidator = ComputerValidator.getValidator();
+		ComputerDAO computerDAO = ComputerDAO.getDAO();
+		computerValidator.checkName(name);
+		Date introducedDate = computerValidator.getDate(introducedStr);
+		Date discontinuedDate = computerValidator.getDate(discontinuedStr);
+		computerValidator.checkDates(introducedDate, discontinuedDate);
+		Long companyId = computerValidator.checkCompanyId(compIdStr);
+		return computerDAO.createComputer(new Computer(name, introducedDate, discontinuedDate, companyId));
+	}
+
 	/*
 	public void printPagedList() throws SQLException {
 		List <Computer> computers =  compPage.getPage();
@@ -94,13 +122,7 @@ public class ComputerService {
 		return compDAO.getComputerDetails(id);
 	}
 	
-	public void createComputer(String name, Date ti, Date td, Long company_id) throws SQLException{
-		if (ti != null && td != null && ti.after(td)){
-			System.out.println("Date of introduction must be anterior to date of discontinuation");
-		}else {
-			compDAO.createComputer(new Computer(name, ti, td, company_id));
-		}
-	}
+	
 	
 	public void deleteComputer(long id) throws SQLException {
 		compDAO.delete(id);

@@ -71,6 +71,46 @@ public class ComputerDAO {
 			}
 		return c;
 	}
+	
+	private void setDateOrNull(Date d, PreparedStatement stmt, int position) throws SQLException {
+		if (d == null) {
+			stmt.setNull(position, java.sql.Types.DATE);
+		}else {
+			stmt.setDate(position, d);
+		}
+	}
+	
+	private void setBigIntOrNull(Long l, PreparedStatement stmt, int position) throws SQLException {
+		if (l == null) {
+			stmt.setNull(position, java.sql.Types.BIGINT);
+		}else {
+			stmt.setLong(position, l);
+		}
+	}
+	
+	public boolean createComputer(Computer c) throws SQLException, ClassNotFoundException {
+		Connection connection = MySQLConnection.getConnection();
+		PreparedStatement stmt = null;
+		try {
+			stmt = connection.prepareStatement("INSERT INTO computer "+
+					"(name, company_id, introduced, discontinued) VALUES (?, ?, ?, ?)");
+			stmt.setString(1, c.getName());
+			setBigIntOrNull(c.getCompanyId(), stmt, 2);
+			setDateOrNull(c.getIntroduced(), stmt, 3);
+			setDateOrNull(c.getDiscontinued(), stmt, 4);
+			int res = stmt.executeUpdate();
+			connection.commit();
+			return res == 1;		
+		} catch(SQLException se) {
+			connection.rollback();
+			throw se;
+		}finally {
+			if (stmt != null) {
+				stmt.close();
+			}
+		}
+	}
+	
 /*
 	public List<Computer> get(int offset, int size) throws SQLException {
 		PreparedStatement stmt = null;

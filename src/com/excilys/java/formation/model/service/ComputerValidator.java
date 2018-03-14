@@ -21,13 +21,18 @@ public class ComputerValidator {
 		return computerValidator;
 	}
 
-	public  long getLongId (String strId) throws ValidatorException {
+	public Long getLongId (String strId) throws ValidatorException {
 		try {
 			return Long.parseLong(strId);
 		}catch (NumberFormatException e){
+			if (strId.equals("") || strId.toLowerCase().equals("null")) {
+				return null;
+			}
 			throw new ValidatorException("Only numbers are accepted as id");
 		}
 	}
+	
+
 	
 	public void checkName (String name) throws ValidatorException {
 		if (name == "") {
@@ -35,12 +40,16 @@ public class ComputerValidator {
 		}
 	}
 	
-	public Date getDate (String strDate) {
+	public Date getDate (String strDate) throws ValidatorException {
 		Date date;
 		if (strDate.toLowerCase().equals("null") || strDate.equals("")) {
 			 date = null;
 		}else {
-			date = Date.valueOf(strDate);
+			try {
+				date = Date.valueOf(strDate);
+			}catch(IllegalArgumentException e) {
+				throw new ValidatorException("Date format must be YYYY-MM-DD");
+			}
 		}
 		return date;
 	}
@@ -55,10 +64,10 @@ public class ComputerValidator {
 		return id;
 		}
 	
-	/*
-	public void checkDates (Date dIntroduced, Date dDiscontinued) {
-		if (dIntroduced != null && dDiscontinued != null && dIntroduced.after(dDiscontinued)) {
-			throw
+	
+	public void checkDates (Date dIntroduced, Date dDiscontinued) throws ValidatorException {
+		if (dIntroduced != null && dDiscontinued != null && dIntroduced.after(dDiscontinued)){
+			throw new ValidatorException ("Date of introduction must be anterior to date of discontinuation");
 		}
-	}*/
+	}
 }

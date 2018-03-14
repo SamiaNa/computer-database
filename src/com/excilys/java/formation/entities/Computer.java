@@ -8,27 +8,27 @@ public class Computer {
 	private String name;
 	private Date introduced;
 	private Date discontinued;
-	private Long company_id;
+	private Long companyId;
 	
 	public Computer (long id, String name) {
 		this.id = id;
 		this.name = name;
 	}
 
-	public Computer (long id, String name, Date introduced, Date discontinued, Long company_id) {
+	public Computer (long id, String name, Date introduced, Date discontinued, Long companyId) {
 		this.id = id;
 		this.name = name;
 		this.introduced = introduced;
 		this.discontinued = discontinued;
-		this.company_id = company_id;
+		this.companyId = companyId;
 	}
 	
-	public Computer (String name, Date introduced, Date discontinued, Long company_id) {
+	public Computer (String name, Date introduced, Date discontinued, Long companyId) {
 		this.id = -1;
 		this.name = name;
 		this.introduced = introduced;
 		this.discontinued = discontinued;
-		this.company_id = company_id;
+		this.companyId = companyId;
 	}
 
 	public long getId() {
@@ -63,18 +63,18 @@ public class Computer {
 		this.discontinued = discontinued;
 	}
 
-	public Long getCompany_id() {
-		return this.company_id;
+	public Long getCompanyId() {
+		return this.companyId;
 	}
 
-	public void setCompany_id(Long company_id) {
-		this.company_id = company_id;
+	public void setCompanyId(Long companyId) {
+		this.companyId = companyId;
 	}
 	
 	@Override
 	public String toString() {
 		return "Computer :  ID = "+this.id+" \nNAME = "+ this.name+", INTRODUCED = "+this.introduced+
-				", DISCONTINUED =  "+this.discontinued+", COMPANY ID = "+this.company_id;
+				", DISCONTINUED =  "+this.discontinued+", COMPANY ID = "+this.companyId;
 	}
 
 }

@@ -1,12 +1,14 @@
 package com.excilys.java.formation.ui;
 
-import java.sql.Date;
 import java.sql.SQLException;
 import java.util.Scanner;
 
+import com.excilys.java.formation.entities.Company;
+import com.excilys.java.formation.entities.Computer;
+import com.excilys.java.formation.model.persistence.NoComputerInResultSetException;
 import com.excilys.java.formation.model.service.CompanyService;
 import com.excilys.java.formation.model.service.ComputerService;
-import com.excilys.java.formation.model.service.ComputerValidator;
+import com.excilys.java.formation.model.service.ValidatorException;
 
 
 
@@ -92,16 +94,19 @@ public class UserInterface {
 		Scanner scanner = ScannerHelper.getScanner();
 		scanner.nextLine();
 		ComputerService computerService = ComputerService.getService();
-		computerService.printListComputers();
+		for (Computer c : computerService.getListComputers()) {
+			System.out.println(c);
+		}
 	}
 	
 	private static void printCompaniesList() throws SQLException, ClassNotFoundException {
 		Scanner scanner = ScannerHelper.getScanner();
 		scanner.nextLine();
 		CompanyService companyService = CompanyService.getService();
-		companyService.printCompaniesList();
+		for (Company c : companyService.getCompaniesList()) {
+			System.out.println(c);
+		}
 	}
-	
 	
 	private static void printComputerByID() throws SQLException, ClassNotFoundException {
 		Scanner scanner = ScannerHelper.getScanner();
@@ -109,62 +114,69 @@ public class UserInterface {
 		System.out.println("Enter id of computer : ");
 		String computerId = scanner.nextLine();
 		ComputerService computerService = ComputerService.getService();
-		computerService.printComputerById(computerId);
+		try {
+			System.out.println(computerService.getComputerById(computerId));
+		} catch (NoComputerInResultSetException | ValidatorException e) {
+			System.out.println(e.getMessage());
+		}
 	}
 	
-	/* MOVE VALIDATION TO SERVICE 
-	private static void createComputer() throws SQLException {
+	private static void createComputer() throws SQLException, ClassNotFoundException {
 		Scanner scanner = ScannerHelper.getScanner();
 		scanner.nextLine();
-		ComputerValidator computerValidator = ComputerValidator.getValidator();
 		ComputerService computerService = ComputerService.getService();
-		
 		System.out.println("Enter name");
 		String name = scanner.nextLine();
-		computerValidator.checkName(name);
-
-		System.out.println("Enter introduced");
+		System.out.println("Enter introduced (YYYY-MM-DD)");
 		String introducedStr = scanner.nextLine();
-		Date introducedDate = computerValidator.getDate(introducedStr);
-
 		System.out.println("Enter discontinued");
 		String discontinuedStr = scanner.nextLine();
-		Date discontinuedDate = computerValidator.getDate(discontinuedStr);
-		computerValidator.checkDates(introducedDate, discontinuedDate);
-		
 		System.out.println("Enter company id");
 		String companyIdStr = scanner.nextLine();
-		Long companyId = computerValidator.checkCompanyId(companyIdStr);
-		
-		// Ajouter verif date
-		computerService.createComputer(name, introducedDate, discontinuedDate, companyId);
-		
+		try {
+		boolean created = computerService.createComputer(name, introducedStr, discontinuedStr, companyIdStr);
+		if (created) {
+			System.out.println("Successful creation");
+		}else {
+			System.out.println("Creation failed");
+		}
+		}catch(ValidatorException e) {
+			System.out.println(e.getMessage());
+		}
 	}
-*/
+
 		
 	public static void startUI() throws SQLException, ClassNotFoundException {
-		System.out.println("Computer database application\n"+
-				"Select operation:\n"+ 
-				"1. List computers\n"+
-				"2. List companies\n"+
-				"3. Show computer details\n"+
-				"4. Create a computer\n"+
-				"5. Update a computer\n"+
-				"6. Delete a computer\n");
-		Scanner scanner = ScannerHelper.getScanner();
-		int featureChoice = scanner.nextInt();
-		switch(featureChoice) {
-		case 1:
-			printComputerList();
-			break;
-		case 2:
-			printCompaniesList();
-			break;
-		case 3:
-			printComputerByID();
-			break;
-		/*case 4:
-			createComputer();*/
+		whileLoop :
+			while (true) {
+			System.out.println("Computer database application\n"+
+					"Select operation:\n"+ 
+					"1. List computers\n"+
+					"2. List companies\n"+
+					"3. Show computer details\n"+
+					"4. Create a computer\n"+
+					"5. Update a computer\n"+
+					"6. Delete a computer\n"+
+					"7. Quit");
+			Scanner scanner = ScannerHelper.getScanner();
+			int featureChoice = scanner.nextInt();
+			switch(featureChoice) {
+			case 1:
+				printComputerList();
+				break;
+			case 2:
+				printCompaniesList();
+				break;
+			case 3:
+				printComputerByID();
+				break;
+			case 4:
+				createComputer();
+				break;
+			case 7:
+				break whileLoop;
+			}
+			System.out.println("");
 		}
 		
 	}
