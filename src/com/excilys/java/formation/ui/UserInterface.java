@@ -73,17 +73,6 @@ public class UserInterface {
 		}
 	}
 	
-	private static void updateAttribute(String attributeName, String compAttribute) {
-		Scanner scanner = ScannerHelper.getScanner();
-		String varName = compAttribute == null ? "null" : compAttribute.toString();
-		System.out.println("Current "+attributeName+" : "+varName+". Do you want do update ? (y/n)");
-		String validation = scanner.next();
-		scanner.nextLine();
-		if (validation.toLowerCase().equals("y")) {
-			System.out.println("Enter new "+attributeName);
-			compAttribute = scanner.nextLine();
-		}	
-	}
 	
 	private static boolean updateAttribute(String attributeName, String varValue, Scanner scanner) {
 		System.out.println("Current "+attributeName+" : "+varValue+". Do you want do update ? (y/n)");
@@ -92,23 +81,8 @@ public class UserInterface {
 		return validation.toLowerCase().equals("y");
 	}
 	
-	private static void updateName(String attributeName, ComputerStringAttributes compStr) {
-		Scanner scanner = ScannerHelper.getScanner();
-		if (updateAttribute(attributeName, compStr.getName(), scanner)) {
-			System.out.println("Enter new "+attributeName);
-			compStr.setName(scanner.nextLine());
-		}	
-	}
-	
-
-	
-	private static void updateComputer() throws  SQLException, ClassNotFoundException {
-		Scanner scanner = ScannerHelper.getScanner();
-		scanner.nextLine();
+	private static void updateAttributes(Scanner scanner, String idStr) throws ClassNotFoundException, SQLException, NoComputerInResultSetException, ValidatorException {
 		ComputerService computerService = ComputerService.getService();
-		System.out.println("Enter id of computer to update");
-		String idStr = scanner.nextLine();
-		try {
 		ComputerStringAttributes computerStr = new ComputerStringAttributes(computerService.getComputerById(idStr));
 		if (updateAttribute("name", computerStr.getName(), scanner)) {
 			System.out.println("Enter new name");
@@ -131,9 +105,39 @@ public class UserInterface {
 		}else {
 			System.out.println("Error : update not taken into account");
 		}
+	}
+	
+	private static void updateComputer() throws  SQLException, ClassNotFoundException {
+		Scanner scanner = ScannerHelper.getScanner();
+		scanner.nextLine();
+		System.out.println("Enter id of computer to update");
+		String idStr = scanner.nextLine();
+		try {
+			updateAttributes(scanner, idStr);
 		}catch(NoComputerInResultSetException | ValidatorException e) {
 			System.out.println(e.getMessage());
 		}
+		
+	}
+	
+	private static void deleteComputer() throws SQLException, ClassNotFoundException {
+		Scanner scanner = ScannerHelper.getScanner();
+		scanner.nextLine();
+		System.out.println("Enter id of computer : ");
+		String computerId = scanner.nextLine();
+		ComputerService computerService = ComputerService.getService();
+		try {
+			boolean deleted = computerService.deleteComputer(computerId);
+			if (deleted) {
+				System.out.println("Successful deletion");
+			}else {
+				System.out.println("No computer found with id "+computerId);
+			}
+		} catch ( ValidatorException e) {
+			System.out.println(e.getMessage());
+		}
+	
+		
 		
 	}
 
@@ -168,6 +172,9 @@ public class UserInterface {
 			case 5:
 				updateComputer();
 				break;
+			case 6:
+				deleteComputer();
+				break;
 			case 7:
 				System.out.println("Bye!");
 				break whileLoop;
@@ -179,29 +186,7 @@ public class UserInterface {
 	public static void main (String [] args) throws ClassNotFoundException, SQLException{
 		startUI();
 		ScannerHelper.getScanner().close();
-	
-	
-			/*	
-			case 3:
-				
-		
-			case 4:
-				createComputer(scanner, computerS);
-				break;
-			
-			case 5:
-				updateComputer(scanner, computerS);
-				break;
-				
-			case 6:
-				System.out.println("Enter id of computer to delete");
-				Long computerId = scanner.nextLong();
-				computerS.deleteComputer(computerId);
-			default:
-				break;
-		}
-		*/
-	
+
 	}
 
 }

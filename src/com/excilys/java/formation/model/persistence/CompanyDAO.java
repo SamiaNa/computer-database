@@ -61,6 +61,7 @@ public class CompanyDAO {
 				MySQLConnection.printExceptionList(se);
 				connection.rollback();
 			}finally {
+				connection.close();
 				if (stmt != null) {
 					stmt.close();
 				}

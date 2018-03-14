@@ -65,6 +65,7 @@ public class ComputerDAO {
 				MySQLConnection.printExceptionList(se);
 				connection.rollback();
 			}finally {
+				connection.close();
 				if (stmt != null) {
 					stmt.close();
 				}
@@ -105,6 +106,7 @@ public class ComputerDAO {
 			connection.rollback();
 			throw se;
 		}finally {
+			connection.close();
 			if (stmt != null) {
 				stmt.close();
 			}
@@ -125,6 +127,7 @@ public class ComputerDAO {
 				MySQLConnection.printExceptionList(se);
 				connection.rollback();
 			}finally {
+				connection.close();
 				if (stmt != null) {
 					stmt.close();
 				}
@@ -156,7 +159,35 @@ public class ComputerDAO {
 		connection.rollback();
 		
 		}finally {
+			connection.close();
+			if (stmt != null) {
+				stmt.close();
+			}
 		
+		}
+		return false;
+	}
+	
+	public boolean delete(long id) throws SQLException, ClassNotFoundException {
+		Connection connection = MySQLConnection.getConnection();
+		PreparedStatement stmt = null;
+		try {
+			connection.setAutoCommit(false);
+			String query = "DELETE FROM computer WHERE id = ?";
+			stmt = connection.prepareStatement(query);
+			stmt.setLong(1,id);
+			int res = stmt.executeUpdate();
+			connection.commit();
+			return res == 1;
+		} catch(SQLException se) {
+		
+		for (Throwable e : se) {
+			System.out.println("Problem : "+e);	
+		}
+		connection.rollback();
+		
+		}finally {
+			connection.close();
 			if (stmt != null) {
 				stmt.close();
 			}

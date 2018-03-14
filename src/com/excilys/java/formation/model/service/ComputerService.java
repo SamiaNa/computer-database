@@ -94,6 +94,14 @@ public class ComputerService {
 		
 	}
 
+	public boolean deleteComputer(String strId) throws ClassNotFoundException, SQLException, ValidatorException {
+		ComputerValidator computerValidator = ComputerValidator.getValidator();
+		ComputerDAO computerDAO = ComputerDAO.getDAO();
+		Long id;
+		id = computerValidator.getLongId(strId);
+		return computerDAO.delete(id);
+	}
+	
 	/*
 	public void printPagedList() throws SQLException {
 		List <Computer> computers =  compPage.getPage();

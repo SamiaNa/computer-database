@@ -10,7 +10,7 @@ public class ComputerStringAttributes {
 	private String companyId;
 			
 	public ComputerStringAttributes (Computer c) {
-		this.id = c.getId() == null ? "null" : String.valueOf(c.getId());
+		this.id = String.valueOf(c.getId());
 		this.name = String.valueOf(c.getName());
 		this.introduced = c.getIntroduced() == null ? "null" : String.valueOf(c.getIntroduced());
 		this.discontinued = c.getDiscontinued() == null ? "null" : String.valueOf(c.getDiscontinued());
