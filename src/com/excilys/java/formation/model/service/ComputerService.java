@@ -13,8 +13,6 @@ public class ComputerService {
 
 	private static ComputerService computerService;
 	
-	
-	
 	public static ComputerService getService() throws SQLException {
 		if (computerService == null) {
 			computerService = new ComputerService();
@@ -22,40 +20,17 @@ public class ComputerService {
 		return computerService;
 	}
 	
-	/**
-	 * Prints the list of computers in the database to stdout
-	 * @throws SQLException
-	 * @throws ClassNotFoundException 
-	 */
-	public void printListComputers() throws SQLException, ClassNotFoundException {
-		ComputerDAO computerDAO = ComputerDAO.getDAO();
-		List<Computer> computers = computerDAO.getAll();
-		for (Computer c : computers) {
-			System.out.println(c);
-		}
-	}
-	
-	public List<Computer> getListComputers() throws SQLException, ClassNotFoundException {
+
+	public List<Computer> getComputersList() throws SQLException, ClassNotFoundException {
 		ComputerDAO computerDAO = ComputerDAO.getDAO();
 		return computerDAO.getAll();
 	}
 	
-	public void printComputerById(String strId) throws SQLException, ClassNotFoundException{
-		ComputerValidator computerValidator = ComputerValidator.getValidator();
+	public List<Computer> getComputersList(int offset, int size) throws ClassNotFoundException, SQLException {
 		ComputerDAO computerDAO = ComputerDAO.getDAO();
-		Long id;
-		Computer c;
-		try {
-			id = computerValidator.getLongId(strId);
-			c = computerDAO.getComputerById(id);
-			System.out.println(c);
-		} catch (ValidatorException ve) {
-			System.out.println(ve.getMessage());
-		} catch (NoComputerInResultSetException ce) {
-			System.out.println(ce.getMessage());
-		}
+		return computerDAO.get(offset, size);
 	}
-
+	
 	public Computer getComputerById(String strId) throws SQLException, ClassNotFoundException, 
 											NoComputerInResultSetException, ValidatorException{
 		ComputerValidator computerValidator = ComputerValidator.getValidator();
@@ -89,7 +64,6 @@ public class ComputerService {
 		Date discontinued = computerValidator.getDate(compStr.getDiscontinued());
 		computerValidator.checkDates(introduced, discontinued);
 		ComputerDAO computerDAO = ComputerDAO.getDAO();
-		System.out.println("NAME "+compStr.getName());
 		return computerDAO.update(new Computer(compId, compStr.getName(), introduced, discontinued, companyId));
 		
 	}
@@ -102,83 +76,8 @@ public class ComputerService {
 		return computerDAO.delete(id);
 	}
 	
-	/*
-	public void printPagedList() throws SQLException {
-		List <Computer> computers =  compPage.getPage();
-		for (Computer c : computers) {
-			System.out.println(c);
-		}
-	}*/
-	/*
-	public void printNextPage() throws SQLException {
-		List<Computer> computers =  compPage.getNextPage();
-		for (Computer c : computers) {
-			System.out.println(c);
-		}
+	public int count () throws ClassNotFoundException, SQLException {
+		return ComputerDAO.getDAO().count();
 	}
 	
-	public void printPrevPage() throws SQLException {
-		List <Computer> computers =  compPage.getPrevPage();
-		for (Computer c : computers) {
-			System.out.println(c);
-		}
-	}*/
-	/*
-	public List<Computer> get(int offset, int size) throws SQLException {
-		return compDAO.get( offset,  size);
-	}
-	
-	/**
-	 * Prints computer details or message if no existing computer with id
-	 * @param id
-	 * @throws SQLException
-	 */
-	/*
-	public void printComputerDetails(long id) throws SQLException {
-		Computer c = compDAO.getComputerDetails(id);
-		if (c == null) {
-			System.out.println("No computer found with id "+id);
-		}else {
-			System.out.println(c);
-		}
-	}
-	
-	public Computer getComputerDetails(long id) throws SQLException{
-		return compDAO.getComputerDetails(id);
-	}
-	
-	
-	
-	public void deleteComputer(long id) throws SQLException {
-		compDAO.delete(id);
-	}
-	
-	public void updateComputerName (long id, String name) throws SQLException {
-		compDAO.updateName(id, name);
-	}
-	
-	public void updateComputerIntroduced (long id, Date ti, Date td) throws SQLException {
-		if (ti != null && td != null && ti.after(td)){
-			System.out.println("Date of introduction must be anterior to date of discontinuation");
-		}else {
-			compDAO.updateIntroduced(id, ti);
-		}
-	}
-	
-	public void updateComputerDiscontinued (long id, Date ti, Date td) throws SQLException {
-		if (ti != null && td != null && ti.after(td)){
-			System.out.println("Date of introduction must be anterior to date of discontinuation");
-		}else {
-		compDAO.updateDiscontinued(id, td);
-		}
-	}
-	
-	public void updateComputerCompanyID (long id, long companyId) throws SQLException {
-		compDAO.updateCompanyID (id, companyId);
-	}
-	
-	public int getNumberOfComputers() throws SQLException {
-		return compDAO.count();
-	}
-	*/
 }

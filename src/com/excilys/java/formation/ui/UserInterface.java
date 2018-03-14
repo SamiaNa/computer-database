@@ -2,29 +2,63 @@ package com.excilys.java.formation.ui;
 
 import java.sql.SQLException;
 import java.util.Scanner;
-
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.entities.ComputerStringAttributes;
 import com.excilys.java.formation.model.persistence.NoComputerInResultSetException;
+import com.excilys.java.formation.model.service.CompanyPage;
 import com.excilys.java.formation.model.service.CompanyService;
+import com.excilys.java.formation.model.service.ComputerPage;
 import com.excilys.java.formation.model.service.ComputerService;
 import com.excilys.java.formation.model.service.ValidatorException;
 
 
-
 public class UserInterface {
 	
-	
 
+	/**
+	 * Prints the detailled list of computers
+	 * @param scanner
+	 * @param computerService
+	 * @throws SQLException
+	 * @throws ClassNotFoundException
+	 */
+	
+	// REMOVE NEXT LINE ???
 	private static void printComputerList(Scanner scanner, ComputerService computerService)
 				throws SQLException, ClassNotFoundException {
 		scanner.nextLine();
-		for (Computer c : computerService.getListComputers()) {
+		for (Computer c : computerService.getComputersList()) {
 			System.out.println(c);
 		}
 	}
 	
+	private static void printPagedComputerList(Scanner scanner)
+			throws SQLException, ClassNotFoundException {
+		ComputerPage compPage = new ComputerPage(10);
+		while (true) {
+			compPage.printPage();
+			System.out.println("p : previous page, n : next page, q : quit");
+			switch (scanner.nextLine().toLowerCase()) {
+			case "p":
+				compPage.prevPage();
+				break;
+			case "n":
+				compPage.nextPage();
+				break;
+			case "q":
+				return;
+			}
+		}
+	}
+	
+	/**
+	 * Prints the detailled list of companies
+	 * @param scanner
+	 * @param companyService
+	 * @throws SQLException
+	 * @throws ClassNotFoundException
+	 */
 	private static void printCompaniesList(Scanner scanner, CompanyService companyService) 
 			throws SQLException, ClassNotFoundException {
 		scanner.nextLine();
@@ -33,6 +67,32 @@ public class UserInterface {
 		}
 	}
 	
+	private static void printPagedCompaniesList(Scanner scanner)
+			throws SQLException, ClassNotFoundException {
+		CompanyPage compPage = new CompanyPage(10);
+		while (true) {
+			compPage.printPage();
+			System.out.println("p : previous page, n : next page, q : quit");
+			switch (scanner.nextLine().toLowerCase()) {
+			case "p":
+				compPage.prevPage();
+				break;
+			case "n":
+				compPage.nextPage();
+				break;
+			case "q":
+				return;
+			}
+		}
+	}
+	
+	/**
+	 * Prints the details of a computer
+	 * @param scanner
+	 * @param computerService
+	 * @throws SQLException
+	 * @throws ClassNotFoundException
+	 */
 	private static void printComputerByID(Scanner scanner, ComputerService computerService) throws SQLException, ClassNotFoundException {
 		scanner.nextLine();
 		System.out.println("Enter id of computer : ");
@@ -44,6 +104,13 @@ public class UserInterface {
 		}
 	}
 	
+	/**
+	 * Creates a computer
+	 * @param scanner
+	 * @param computerService
+	 * @throws SQLException
+	 * @throws ClassNotFoundException
+	 */
 	private static void createComputer(Scanner scanner, ComputerService computerService) throws SQLException, ClassNotFoundException {
 		scanner.nextLine();
 		System.out.println("Enter name");
@@ -81,7 +148,7 @@ public class UserInterface {
 			System.out.println("Enter new name");
 			computerStr.setName(scanner.nextLine());
 		}	
-		if (updateAttribute("name", computerStr.getIntroduced(), scanner)) {
+		if (updateAttribute("date of introduction", computerStr.getIntroduced(), scanner)) {
 			System.out.println("Enter new date of introduction");
 			computerStr.setIntroduced(scanner.nextLine());
 		}
@@ -145,11 +212,13 @@ public class UserInterface {
 			int featureChoice = scanner.nextInt();
 			switch(featureChoice) {
 			case 1:
-				printComputerList(scanner, computerService);
+				printPagedComputerList(scanner);
+				//printComputerList(scanner, computerService);
 				break;
 			case 2:
-				CompanyService companyService = CompanyService.getService();
-				printCompaniesList(scanner, companyService);
+				//CompanyService companyService = CompanyService.getService();
+				//printCompaniesList(scanner, companyService);
+				printPagedCompaniesList(scanner);
 				break;
 			case 3:
 				printComputerByID(scanner, computerService);
