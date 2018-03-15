@@ -1,25 +1,14 @@
 package com.excilys.java.formation.validator;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.sql.SQLException;
 import org.slf4j.*;
 
 import com.excilys.java.formation.persistence.ComputerDAO;
 
-public class ComputerValidator extends ComputerDatabaseValidator{
+public enum ComputerValidator{
 
-	private static ComputerValidator computerValidator;
-	
-	private ComputerValidator() {
-		
-	}
-	public static ComputerValidator getValidator() {
-		if (computerValidator == null) {
-			computerValidator = new ComputerValidator();
-		}
-		return computerValidator;
-	}
-
+	INSTANCE;
 
 	public void checkName (String name) throws ValidatorException {
 		if (name == "" || name.toLowerCase().equals("null") ) {
@@ -27,13 +16,13 @@ public class ComputerValidator extends ComputerDatabaseValidator{
 		}
 	}
 
-	public Date getDate (String strDate) throws ValidatorException {
-		Date date;
+	public LocalDate getDate (String strDate) throws ValidatorException {
+		LocalDate date;
 		if (strDate.toLowerCase().equals("null") || strDate.equals("")) {
 			 date = null;
 		}else {
 			try {
-				date = Date.valueOf(strDate);
+				date = LocalDate.parse(strDate);
 			}catch(IllegalArgumentException e) {
 				Logger log = LoggerFactory.getLogger(getClass());
 				log.debug("Invalid date input _"+strDate+"_");
@@ -43,15 +32,15 @@ public class ComputerValidator extends ComputerDatabaseValidator{
 		return date;
 	}
 	
-	public void checkDates (Date dIntroduced, Date dDiscontinued) throws ValidatorException {
-		if (dIntroduced != null && dDiscontinued != null && dIntroduced.after(dDiscontinued)){
+	public void checkDates (LocalDate dIntroduced, LocalDate dDiscontinued) throws ValidatorException {
+		if (dIntroduced != null && dDiscontinued != null && dIntroduced.isAfter(dDiscontinued)){
 			throw new ValidatorException ("Date of introduction must be anterior to date of discontinuation");
 		}
 	}
 	
 	public  Long checkComputerId (String strId) throws ClassNotFoundException, SQLException, ValidatorException {
-		long id = getLongPrimId(strId);
-		ComputerDAO computerDAO = ComputerDAO.getDAO();
+		long id = Validator.getLongPrimId(strId);
+		ComputerDAO computerDAO = ComputerDAO.INSTANCE;
 		if (!computerDAO.checkComputerById(id)) {
 			throw new ValidatorException("No existing company with id "+id);
 		}

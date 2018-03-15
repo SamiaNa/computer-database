@@ -8,20 +8,10 @@ import java.util.List;
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.persistence.NoComputerInResultSetException;
 
-public class CompanyMapper {
+public enum CompanyMapper {
 
-	private static CompanyMapper companyMapper;
-	
-	private CompanyMapper() {
-		
-	}
-	
-	public static CompanyMapper getMapper() {
-		if (companyMapper == null) {
-			companyMapper = new CompanyMapper();
-		}
-		return companyMapper;
-	}
+	INSTANCE;
+
 	
 	/**
 	 * Creates an ArrayList of companies from a ResultSet

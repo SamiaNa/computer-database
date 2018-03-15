@@ -19,7 +19,7 @@ public class ComputerStringAttributes {
 		this.name = String.valueOf(c.getName());
 		this.introduced = c.getIntroduced() == null ? "null" : String.valueOf(c.getIntroduced());
 		this.discontinued = c.getDiscontinued() == null ? "null" : String.valueOf(c.getDiscontinued());
-		this.companyId = c.getCompanyId() == null ? "null" : String.valueOf(c.getCompanyId());
+		this.companyId = c.getCompany() == null ? "null" : String.valueOf(c.getCompany().getId());
 	}
 
 	public String getId() {

@@ -8,7 +8,6 @@ import com.excilys.java.formation.service.CompanyService;
 
 
 public class CompanyPage extends Page{
-	
 
 	List<Company> companies;
 	CompanyService companyService;
@@ -16,7 +15,7 @@ public class CompanyPage extends Page{
 	public CompanyPage(int size) throws SQLException, ClassNotFoundException {
 		this.offset = 0;
 		this.size = size;
-		this.companyService = CompanyService.getService();
+		this.companyService = CompanyService.INSTANCE;
 		this.companies = companyService.getCompaniesList(offset, size);
 		this.dbSize = companyService.count();
 		

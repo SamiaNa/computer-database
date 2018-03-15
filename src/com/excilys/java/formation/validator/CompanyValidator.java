@@ -4,20 +4,9 @@ import java.sql.SQLException;
 
 import com.excilys.java.formation.persistence.CompanyDAO;
 
-public class CompanyValidator extends ComputerDatabaseValidator{
+public enum CompanyValidator {
 	
-	private static CompanyValidator companyValidator;
-	
-	private CompanyValidator() {	
-	}
-	
-	public static CompanyValidator getValidator() {
-		if (companyValidator == null) {
-			companyValidator = new CompanyValidator();
-		}
-		return companyValidator;
-	}
-	
+	INSTANCE;
 	
 	/**
 	 * Converts string argument to Long
@@ -45,8 +34,8 @@ public class CompanyValidator extends ComputerDatabaseValidator{
 	 * @throws ValidatorException
 	 */
 	public Long checkCompanyId (String strId) throws ClassNotFoundException, SQLException, ValidatorException {
-		long id = getLongPrimId(strId);
-		CompanyDAO companyDAO = CompanyDAO.getDAO();
+		long id = Validator.getLongPrimId(strId);
+		CompanyDAO companyDAO = CompanyDAO.INSTANCE;
 		if (!companyDAO.checkCompanyById(id)) {
 			throw new ValidatorException("No existing company with id "+id);
 		}
@@ -58,7 +47,7 @@ public class CompanyValidator extends ComputerDatabaseValidator{
 		Long id = getLongId(strId);
 		if (id == null)
 			return id;
-		CompanyDAO companyDAO = CompanyDAO.getDAO();
+		CompanyDAO companyDAO = CompanyDAO.INSTANCE;
 		if (!companyDAO.checkCompanyById(id)) {
 			throw new ValidatorException("No existing company with id "+id);
 		}

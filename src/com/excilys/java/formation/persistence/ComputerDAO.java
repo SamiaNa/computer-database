@@ -2,23 +2,27 @@ package com.excilys.java.formation.persistence;
 
 import java.util.List;
 
+import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.mapper.ComputerMapper;
 
 import java.util.ArrayList;
 import java.sql.*;
+import java.time.LocalDate;
 
-public class ComputerDAO {
+public enum ComputerDAO {
 	
-	private static ComputerDAO computerDAO;
+	INSTANCE;
 	
+	private static String SELECT_ALL_JOIN = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id;";
+	private static String SELECT_LIMIT = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id LIMIT ?,?;";
+	private static String SELECT_BY_ID_JOIN = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id = ? ;";
+	private static String INSERT = "INSERT INTO computer (name, company_id, introduced, discontinued) VALUES (?, ?, ?, ?);";
+	private static String SELECT_BY_ID = "SELECT * FROM computer WHERE id = ?;";
+	private static String UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?;";
+	private static String DELETE = "DELETE FROM computer WHERE id = ?;";
+	private static String COUNT = "SELECT COUNT(id) FROM computer";
 	
-	public static ComputerDAO getDAO() {
-		if (computerDAO == null) {
-			computerDAO = new ComputerDAO();
-		}
-		return computerDAO;
-	}
 	
 	/**
 	 * Returns the list of all computers in the database
@@ -27,19 +31,18 @@ public class ComputerDAO {
 	 * @throws ClassNotFoundException 
 	 */
 	public List<Computer> getAll() throws ClassNotFoundException, SQLException{
-		Connection connection = MySQLConnection.getConnection();
-		ComputerMapper computerMapper = ComputerMapper.getMapper();
-		Statement stmt = null;
+		Connection connection = ConnectionManager.getConnection();
+		ComputerMapper computerMapper = ComputerMapper.INSTANCE;
+		PreparedStatement stmt = null;
 		List<Computer> computers = new ArrayList<>();
 		try {
 			connection.setAutoCommit(false);
-			stmt = connection.createStatement();
-			ResultSet res = stmt.executeQuery("SELECT * FROM computer");
+			stmt = connection.prepareStatement(SELECT_ALL_JOIN);
+			ResultSet res = stmt.executeQuery();
 			computers = computerMapper.createComputerListFromResultSet(res);
 			connection.commit();			
 		}catch(SQLException se) {		
-			MySQLConnection.printExceptionList(se);
-			connection.rollback();		
+			ConnectionManager.printExceptionList(se);	
 		}finally {
 			if (stmt != null) {
 				stmt.close();
@@ -58,21 +61,20 @@ public class ComputerDAO {
 	 * @throws SQLException
 	 */
 	public List<Computer> get(int offset, int size) throws ClassNotFoundException, SQLException{
-		Connection connection = MySQLConnection.getConnection();
-		ComputerMapper computerMapper = ComputerMapper.getMapper();
+		Connection connection = ConnectionManager.getConnection();
+		ComputerMapper computerMapper = ComputerMapper.INSTANCE;
 		PreparedStatement stmt = null;
 		List<Computer> computers = new ArrayList<>();
 		try {
 			connection.setAutoCommit(false);
-			stmt = connection.prepareStatement("SELECT * FROM computer LIMIT ?,?");
+			stmt = connection.prepareStatement(SELECT_LIMIT);
 			stmt.setInt(1, offset);
 			stmt.setInt(2, size);
 			ResultSet res = stmt.executeQuery();
 			computers = computerMapper.createComputerListFromResultSet(res);
 			connection.commit();			
 		}catch(SQLException se) {		
-			MySQLConnection.printExceptionList(se);
-			connection.rollback();		
+			ConnectionManager.printExceptionList(se);
 		}finally {
 			if (stmt != null) {
 				stmt.close();
@@ -92,20 +94,19 @@ public class ComputerDAO {
 	 */
 	
 	public Computer getComputerById(long id) throws SQLException, NoComputerInResultSetException, ClassNotFoundException  {
-		Connection connection = MySQLConnection.getConnection();
-		ComputerMapper computerMapper = ComputerMapper.getMapper();
+		Connection connection = ConnectionManager.getConnection();
+		ComputerMapper computerMapper = ComputerMapper.INSTANCE;
 		PreparedStatement stmt = null;
 		Computer c = null;
 		try {
 			connection.setAutoCommit(false);
-			stmt = connection.prepareStatement("SELECT * FROM computer WHERE id = ?");
+			stmt = connection.prepareStatement(SELECT_BY_ID_JOIN);
 			stmt.setLong(1, id);
 			ResultSet res = stmt.executeQuery();
 			connection.commit();
 			c = computerMapper.createComputerFromResultSet(res, id);
 			} catch(SQLException se) {
-				MySQLConnection.printExceptionList(se);
-				connection.rollback();
+				ConnectionManager.printExceptionList(se);
 			}finally {
 				connection.close();
 				if (stmt != null) {
@@ -115,32 +116,31 @@ public class ComputerDAO {
 		return c;
 	}
 
-	private void setDateOrNull(Date d, PreparedStatement stmt, int position) throws SQLException {
+	private void setDateOrNull(LocalDate d, PreparedStatement stmt, int position) throws SQLException {
 		if (d == null) {
 			stmt.setNull(position, java.sql.Types.DATE);
 		}else {
-			stmt.setDate(position, d);
+			stmt.setDate(position, Date.valueOf(d));
 		}
 	}
 	
-	private void setBigIntOrNull(Long l, PreparedStatement stmt, int position) throws SQLException {
-		if (l == null) {
+	
+	private void setCompanyIdOrNull(Company c, PreparedStatement stmt, int position) throws SQLException {
+		if (c == null) {
 			stmt.setNull(position, java.sql.Types.BIGINT);
 		}else {
-			stmt.setLong(position, l);
+			stmt.setLong(position, c.getId());
 		}
 	}
 	
 	public Long createComputer(Computer c) throws SQLException, ClassNotFoundException {
-		Connection connection = MySQLConnection.getConnection();
+		Connection connection = ConnectionManager.getConnection();
 		PreparedStatement stmt = null;
 		try {
 			connection.setAutoCommit(false);
-			stmt = connection.prepareStatement("INSERT INTO computer "+
-					"(name, company_id, introduced, discontinued) VALUES (?, ?, ?, ?)",
-					Statement.RETURN_GENERATED_KEYS);
+			stmt = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
 			stmt.setString(1, c.getName());
-			setBigIntOrNull(c.getCompanyId(), stmt, 2);
+			setCompanyIdOrNull(c.getCompany(), stmt, 2);
 			setDateOrNull(c.getIntroduced(), stmt, 3);
 			setDateOrNull(c.getDiscontinued(), stmt, 4);
 			stmt.executeUpdate();
@@ -150,7 +150,6 @@ public class ComputerDAO {
 			connection.commit();
 			return id;		
 		} catch(SQLException se) {
-			connection.rollback();
 			throw se;
 		}finally {
 			connection.close();
@@ -161,18 +160,17 @@ public class ComputerDAO {
 	}
 	
 	public boolean checkComputerById(long id) throws SQLException, ClassNotFoundException  {
-		Connection connection = MySQLConnection.getConnection();
+		Connection connection = ConnectionManager.getConnection();
 		PreparedStatement stmt = null;
 		try {
 			connection.setAutoCommit(false);
-			stmt = connection.prepareStatement("SELECT * FROM computer WHERE id = ?");
+			stmt = connection.prepareStatement(SELECT_BY_ID);
 			stmt.setLong(1, id);
 			ResultSet res = stmt.executeQuery();
 			connection.commit();
 			return res.next();
 			} catch(SQLException se) {
-				MySQLConnection.printExceptionList(se);
-				connection.rollback();
+				ConnectionManager.printExceptionList(se);
 			}finally {
 				connection.close();
 				if (stmt != null) {
@@ -185,16 +183,15 @@ public class ComputerDAO {
 	
 	
 	public boolean update (Computer c) throws SQLException, ClassNotFoundException {
-		Connection connection = MySQLConnection.getConnection();
+		Connection connection = ConnectionManager.getConnection();
 		PreparedStatement stmt = null;
 		try {
 			connection.setAutoCommit(false);
-			stmt = connection.prepareStatement("UPDATE computer "+
-						"SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?");
+			stmt = connection.prepareStatement(UPDATE);
 			stmt.setString(1, c.getName());
 			setDateOrNull(c.getIntroduced(), stmt, 2);
 			setDateOrNull(c.getDiscontinued(), stmt, 3);
-			setBigIntOrNull(c.getCompanyId(), stmt, 4);
+			setCompanyIdOrNull(c.getCompany(), stmt, 4);
 			stmt.setLong(5, c.getId());
 			int res = stmt.executeUpdate();
 			connection.commit();
@@ -216,13 +213,12 @@ public class ComputerDAO {
 	}
 	
 	public boolean delete(long id) throws SQLException, ClassNotFoundException {
-		Connection connection = MySQLConnection.getConnection();
+		Connection connection = ConnectionManager.getConnection();
 		
 		PreparedStatement stmt = null;
 		try {
 			connection.setAutoCommit(false);
-			String query = "DELETE FROM computer WHERE id = ?";
-			stmt = connection.prepareStatement(query);
+			stmt = connection.prepareStatement(DELETE);
 			stmt.setLong(1,id);
 			int res = stmt.executeUpdate();
 			connection.commit();
@@ -232,7 +228,6 @@ public class ComputerDAO {
 		for (Throwable e : se) {
 			System.out.println("Problem : "+e);	
 		}
-		connection.rollback();
 		
 		}finally {
 			connection.close();
@@ -246,12 +241,11 @@ public class ComputerDAO {
 	
 	public int count() throws SQLException, ClassNotFoundException {
 		PreparedStatement stmt = null;
-		Connection connection = MySQLConnection.getConnection();
+		Connection connection = ConnectionManager.getConnection();
 		int count = - 1;
 		try {
 			connection.setAutoCommit(false);
-			String selectQuery = "SELECT count(id) FROM computer";
-			stmt = connection.prepareStatement(selectQuery);
+			stmt = connection.prepareStatement(COUNT);
 			ResultSet rSet = stmt.executeQuery();
 			rSet.next();
 			count = rSet.getInt(1);
@@ -263,7 +257,6 @@ public class ComputerDAO {
 		for (Throwable e : se) {
 			System.out.println("Problem : "+e);	
 		}
-		connection.rollback();
 		
 		}finally {
 		

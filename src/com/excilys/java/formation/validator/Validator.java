@@ -1,8 +1,8 @@
 package com.excilys.java.formation.validator;
 
-public abstract class ComputerDatabaseValidator {
+public abstract class Validator {
 
-	public long getLongPrimId (String strId) throws ValidatorException {
+	public static long getLongPrimId (String strId) throws ValidatorException {
 		try {
 			return Long.parseLong(strId);
 		}catch (NumberFormatException e){

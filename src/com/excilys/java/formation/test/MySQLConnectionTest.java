@@ -7,16 +7,16 @@ import java.sql.SQLException;
 
 import org.junit.jupiter.api.Test;
 
-import com.excilys.java.formation.persistence.MySQLConnection;
+import com.excilys.java.formation.persistence.ConnectionManager;
 
 
 class MySQLConnectionTest {
 
 	@Test
 	void test() throws ClassNotFoundException, SQLException {
-		Connection c = MySQLConnection.getConnection();
+		Connection c = ConnectionManager.getConnection();
 		assertTrue(c.isValid(100));
-		Connection c1 = MySQLConnection.getConnection();
+		Connection c1 = ConnectionManager.getConnection();
 		assertTrue(c == c1);
 		c.close();
 		assertTrue(c.isClosed());

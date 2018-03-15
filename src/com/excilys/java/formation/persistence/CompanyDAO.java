@@ -9,21 +9,10 @@ import com.excilys.java.formation.mapper.CompanyMapper;
 import java.util.ArrayList;
 import java.sql.*;
 
-public class CompanyDAO {
+public enum CompanyDAO {
 	
-	private static CompanyDAO companyDAO;
+	INSTANCE;
 	
-	private CompanyDAO() {
-		
-	}
-	
-	public static CompanyDAO getDAO () {
-		if (companyDAO == null) {
-			companyDAO = new CompanyDAO();
-		}
-		return companyDAO;
-	}
-
 
 	/**
 	 * Creates a list of Companies object from the database
@@ -32,8 +21,8 @@ public class CompanyDAO {
 	 * @throws ClassNotFoundException
 	 */
 	public List<Company> getAll() throws SQLException, ClassNotFoundException{
-		Connection connection = MySQLConnection.getConnection();
-		CompanyMapper companyMapper = CompanyMapper.getMapper();
+		Connection connection = ConnectionManager.getConnection();
+		CompanyMapper companyMapper = CompanyMapper.INSTANCE;
 		Statement stmt = null;
 		List<Company> companies = new ArrayList<>();
 		try {
@@ -43,7 +32,7 @@ public class CompanyDAO {
 			connection.commit();
 			companies = companyMapper.createCompanyListFromResultSet(res);
 		}catch(SQLException se) {		
-			MySQLConnection.printExceptionList(se);
+			ConnectionManager.printExceptionList(se);
 			connection.rollback();		
 		}finally {
 			if (stmt != null) {
@@ -63,8 +52,8 @@ public class CompanyDAO {
 	 * @throws ClassNotFoundException
 	 */
 	public List<Company> get(int offset, int size) throws SQLException, ClassNotFoundException{
-		Connection connection = MySQLConnection.getConnection();
-		CompanyMapper companyMapper = CompanyMapper.getMapper();
+		Connection connection = ConnectionManager.getConnection();
+		CompanyMapper companyMapper = CompanyMapper.INSTANCE;
 		PreparedStatement stmt = null;
 		List<Company> companies = new ArrayList<>();
 		try {
@@ -76,7 +65,7 @@ public class CompanyDAO {
 			connection.commit();
 			companies = companyMapper.createCompanyListFromResultSet(res);
 		}catch(SQLException se) {		
-			MySQLConnection.printExceptionList(se);
+			ConnectionManager.printExceptionList(se);
 			connection.rollback();		
 		}finally {
 			if (stmt != null) {
@@ -96,8 +85,8 @@ public class CompanyDAO {
 	 * @throws ClassNotFoundException
 	 */
 	public List<Company> getByName(String name) throws SQLException, ClassNotFoundException{
-		Connection connection = MySQLConnection.getConnection();
-		CompanyMapper companyMapper = CompanyMapper.getMapper();
+		Connection connection = ConnectionManager.getConnection();
+		CompanyMapper companyMapper = CompanyMapper.INSTANCE;
 		PreparedStatement stmt = null;
 		List<Company> companies = new ArrayList<>();
 		try {
@@ -108,7 +97,7 @@ public class CompanyDAO {
 			connection.commit();
 			companies = companyMapper.createCompanyListFromResultSet(res);
 		}catch(SQLException se) {		
-			MySQLConnection.printExceptionList(se);
+			ConnectionManager.printExceptionList(se);
 			connection.rollback();		
 		}finally {
 			if (stmt != null) {
@@ -127,7 +116,7 @@ public class CompanyDAO {
 	 * @throws ClassNotFoundException
 	 */
 	public boolean checkCompanyById(long id) throws SQLException, ClassNotFoundException  {
-		Connection connection = MySQLConnection.getConnection();
+		Connection connection = ConnectionManager.getConnection();
 		PreparedStatement stmt = null;
 		try {
 			connection.setAutoCommit(false);
@@ -137,7 +126,7 @@ public class CompanyDAO {
 			connection.commit();
 			return res.next();
 			} catch(SQLException se) {
-				MySQLConnection.printExceptionList(se);
+				ConnectionManager.printExceptionList(se);
 				connection.rollback();
 			}finally {
 				connection.close();
@@ -155,7 +144,7 @@ public class CompanyDAO {
 	 * @throws SQLException
 	 */
 	public int count() throws ClassNotFoundException, SQLException {
-		Connection connection = MySQLConnection.getConnection();
+		Connection connection = ConnectionManager.getConnection();
 		PreparedStatement stmt = null;
 		try {
 			connection.setAutoCommit(false);
@@ -165,7 +154,7 @@ public class CompanyDAO {
 			res.next();
 			return res.getInt(1);
 			} catch(SQLException se) {
-				MySQLConnection.printExceptionList(se);
+				ConnectionManager.printExceptionList(se);
 				connection.rollback();
 			}finally {
 				connection.close();

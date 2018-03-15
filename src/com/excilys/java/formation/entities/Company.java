@@ -5,6 +5,10 @@ public class Company {
 	private Long id;
 	private String name;
 	
+	public Company() {
+		
+	}
+	
 	public long getId() {
 		return id;
 	}
@@ -28,6 +32,11 @@ public class Company {
 
 	@Override
 	public String toString() {
-		return "Id="+this.id+", name="+ this.name;
+		StringBuilder str = new StringBuilder();
+		str.append("Id=")
+		.append(this.id)
+		.append(", name=")
+		.append(this.name);
+		return str.toString();
 	}
 }

@@ -47,7 +47,7 @@ public class UserInterface {
 	
 	
 	private static void findCompanyByName(Scanner scanner) throws ClassNotFoundException, SQLException {
-		CompanyService companyService = CompanyService.getService();
+		CompanyService companyService = CompanyService.INSTANCE;
 		System.out.println("Enter name :");
 		scanner.nextLine();
 		List <Company> companies = companyService.getCompaniesByName(scanner.nextLine());
@@ -185,7 +185,7 @@ public class UserInterface {
 					"7. Find company by name\n"+
 					"8. Quit");
 			
-			ComputerService computerService = ComputerService.getService();
+			ComputerService computerService = ComputerService.INSTANCE;
 			int featureChoice = scanner.nextInt();
 			switch(featureChoice) {
 			case 1:

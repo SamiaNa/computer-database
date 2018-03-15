@@ -15,7 +15,7 @@ public class ComputerPage extends Page {
 	public ComputerPage(int size) throws SQLException, ClassNotFoundException {
 		this.offset = 0;
 		this.size = size;
-		this.computerService = ComputerService.getService();
+		this.computerService = ComputerService.INSTANCE;
 		this.computers = computerService.getComputersList(offset, size);
 		this.dbSize = computerService.count();
 	}

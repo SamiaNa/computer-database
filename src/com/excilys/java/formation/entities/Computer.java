@@ -1,34 +1,34 @@
 package com.excilys.java.formation.entities;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 public class Computer {
 	
 	private long id;
 	private String name;
-	private Date introduced;
-	private Date discontinued;
-	private Long companyId;
+	private LocalDate introduced;
+	private LocalDate discontinued;
+	private Company company;
 	
 	public Computer (long id, String name) {
 		this.id = id;
 		this.name = name;
 	}
 
-	public Computer (long id, String name, Date introduced, Date discontinued, Long companyId) {
+	public Computer (long id, String name, LocalDate introduced, LocalDate discontinued, Company company) {
 		this.id = id;
 		this.name = name;
 		this.introduced = introduced;
 		this.discontinued = discontinued;
-		this.companyId = companyId;
+		this.company = company;
 	}
 	
-	public Computer (String name, Date introduced, Date discontinued, Long companyId) {
+	public Computer (String name, LocalDate introduced, LocalDate discontinued, Company company) {
 		this.id = -1;
 		this.name = name;
 		this.introduced = introduced;
 		this.discontinued = discontinued;
-		this.companyId = companyId;
+		this.company = company;
 	}
 
 	public long getId() {
@@ -47,34 +47,39 @@ public class Computer {
 		this.name = name;
 	}
 
-	public Date getIntroduced() {
+	public LocalDate getIntroduced() {
 		return introduced;
 	}
 
-	public void setIntroduced(Date introduced) {
+	public void setIntroduced(LocalDate introduced) {
 		this.introduced = introduced;
 	}
 
-	public Date getDiscontinued() {
+	public LocalDate getDiscontinued() {
 		return discontinued;
 	}
 
-	public void setDiscontinued(Date discontinued) {
+	public void setDiscontinued(LocalDate discontinued) {
 		this.discontinued = discontinued;
 	}
 
-	public Long getCompanyId() {
-		return this.companyId;
+	public Company getCompany() {
+		return this.company;
 	}
 
-	public void setCompanyId(Long companyId) {
-		this.companyId = companyId;
+	public void setCompanyId(Company company) {
+		this.company = company;
 	}
 	
 	@Override
 	public String toString() {
-		return "Id="+this.id+" name="+ this.name+", introduced="+this.introduced+
-				", discontinued="+this.discontinued+", company id="+this.companyId;
+		StringBuilder str = new StringBuilder();
+		str.append("Id=").append(this.id)
+		.append(", name=").append(this.name)
+		.append(", introduced=").append(this.introduced)
+		.append(", discontinued=").append(this.discontinued)
+		.append(", company id=").append(this.company);
+		return str.toString();
 	}
 
 }

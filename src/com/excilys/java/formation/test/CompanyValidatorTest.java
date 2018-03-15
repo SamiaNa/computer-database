@@ -16,7 +16,7 @@ public class CompanyValidatorTest {
 
 	@Test
 	void testGetLongId() throws ValidatorException {
-		CompanyValidator validator = CompanyValidator.getValidator();
+		CompanyValidator validator = CompanyValidator.INSTANCE;
 		assertNull(validator.getLongId(""));
 		assertNull(validator.getLongId("Null"));
 		assertNull(validator.getLongId("null"));
@@ -31,7 +31,7 @@ public class CompanyValidatorTest {
 
 	@Test 
 	void testCheckCompanyId() throws ValidatorException {
-		CompanyValidator validator = CompanyValidator.getValidator();
+		CompanyValidator validator = CompanyValidator.INSTANCE;
 		Executable checkId = () -> {validator.checkCompanyId("");};
 		assertThrows(ValidatorException.class, checkId);
 		checkId = () -> {validator.checkCompanyId("-2");};
@@ -40,7 +40,7 @@ public class CompanyValidatorTest {
 	
 	@Test
 	void testCheckCompanyIdOrNull() throws ValidatorException, ClassNotFoundException, SQLException {
-		CompanyValidator validator = CompanyValidator.getValidator();
+		CompanyValidator validator = CompanyValidator.INSTANCE;
 		Executable checkId = () -> {validator.checkCompanyId("");};
 		assertThrows(ValidatorException.class, checkId);
 		checkId = () -> {validator.checkCompanyId("-2");};
