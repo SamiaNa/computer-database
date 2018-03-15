@@ -1,10 +1,10 @@
-package com.excilys.java.formation.model.service;
+package com.excilys.java.formation.service;
 
 import java.sql.SQLException;
 import java.util.List;
 
 import com.excilys.java.formation.entities.Company;
-import com.excilys.java.formation.model.persistence.CompanyDAO;
+import com.excilys.java.formation.persistence.CompanyDAO;
 
 public class CompanyService {
 	

@@ -1,5 +1,4 @@
-package com.excilys.java.formation.model.service;
-
+package com.excilys.java.formation.validator;
 
 public abstract class ComputerDatabaseValidator {
 

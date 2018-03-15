@@ -1,4 +1,4 @@
-package com.excilys.java.formation.model.service;
+package com.excilys.java.formation.service;
 
 import java.sql.Date;
 import java.sql.SQLException;
@@ -6,8 +6,11 @@ import java.util.List;
 
 import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.entities.ComputerStringAttributes;
-import com.excilys.java.formation.model.persistence.ComputerDAO;
-import com.excilys.java.formation.model.persistence.NoComputerInResultSetException;
+import com.excilys.java.formation.persistence.ComputerDAO;
+import com.excilys.java.formation.persistence.NoComputerInResultSetException;
+import com.excilys.java.formation.validator.CompanyValidator;
+import com.excilys.java.formation.validator.ComputerValidator;
+import com.excilys.java.formation.validator.ValidatorException;
 
 public class ComputerService {
 

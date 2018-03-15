@@ -9,8 +9,8 @@ import java.sql.SQLException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
-import com.excilys.java.formation.model.service.CompanyValidator;
-import com.excilys.java.formation.model.service.ValidatorException;
+import com.excilys.java.formation.validator.CompanyValidator;
+import com.excilys.java.formation.validator.ValidatorException;
 
 public class CompanyValidatorTest {
 

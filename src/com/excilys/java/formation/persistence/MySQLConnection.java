@@ -1,4 +1,4 @@
-package com.excilys.java.formation.model.persistence;
+package com.excilys.java.formation.persistence;
 
 import java.sql.*;
 public class MySQLConnection {
@@ -23,6 +23,18 @@ public class MySQLConnection {
 		}
 		return conn;
 	}
+	
+	/* Test ?? */
+	
+	synchronized public static Connection getTestConnection() throws ClassNotFoundException, SQLException {
+		if (conn == null || conn.isClosed()) {
+			Class.forName("com.mysql.jdbc.Driver");
+			String url = "jdbc:mysql://localhost:3306/computer-database-db?useSSL=false";
+			conn = DriverManager.getConnection(url, "admincdb", "qwerty1234");
+		}
+		return conn;
+	}
+	
 	
 	/**
 	 * Closes mysql connection to computer-database-db if not already closed

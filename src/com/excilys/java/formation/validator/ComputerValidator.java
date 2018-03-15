@@ -1,9 +1,10 @@
-package com.excilys.java.formation.model.service;
+package com.excilys.java.formation.validator;
 
 import java.sql.Date;
 import java.sql.SQLException;
 import org.slf4j.*;
-import com.excilys.java.formation.model.persistence.ComputerDAO;
+
+import com.excilys.java.formation.persistence.ComputerDAO;
 
 public class ComputerValidator extends ComputerDatabaseValidator{
 

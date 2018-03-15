@@ -6,13 +6,13 @@ import java.util.Scanner;
 
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.entities.ComputerStringAttributes;
-import com.excilys.java.formation.model.persistence.NoComputerInResultSetException;
-import com.excilys.java.formation.model.service.CompanyPage;
-import com.excilys.java.formation.model.service.CompanyService;
-import com.excilys.java.formation.model.service.ComputerPage;
-import com.excilys.java.formation.model.service.ComputerService;
-import com.excilys.java.formation.model.service.Page;
-import com.excilys.java.formation.model.service.ValidatorException;
+import com.excilys.java.formation.page.CompanyPage;
+import com.excilys.java.formation.page.ComputerPage;
+import com.excilys.java.formation.page.Page;
+import com.excilys.java.formation.persistence.NoComputerInResultSetException;
+import com.excilys.java.formation.service.CompanyService;
+import com.excilys.java.formation.service.ComputerService;
+import com.excilys.java.formation.validator.ValidatorException;
 
 
 public class UserInterface {

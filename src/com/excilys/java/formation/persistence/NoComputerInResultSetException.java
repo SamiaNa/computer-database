@@ -1,4 +1,4 @@
-package com.excilys.java.formation.model.persistence;
+package com.excilys.java.formation.persistence;
 
 public class NoComputerInResultSetException extends Exception{
 

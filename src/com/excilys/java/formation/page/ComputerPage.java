@@ -1,9 +1,10 @@
-package com.excilys.java.formation.model.service;
+package com.excilys.java.formation.page;
 
 import java.sql.SQLException;
 import java.util.List;
 
 import com.excilys.java.formation.entities.Computer;
+import com.excilys.java.formation.service.ComputerService;
 
 public class ComputerPage extends Page {
 	

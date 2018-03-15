@@ -1,4 +1,4 @@
-package com.excilys.java.formation.model.persistence;
+package com.excilys.java.formation.mapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 import com.excilys.java.formation.entities.Computer;
+import com.excilys.java.formation.persistence.NoComputerInResultSetException;
 
 public class ComputerMapper {
 	

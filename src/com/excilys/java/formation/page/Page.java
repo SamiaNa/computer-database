@@ -1,4 +1,4 @@
-package com.excilys.java.formation.model.service;
+package com.excilys.java.formation.page;
 
 import java.sql.SQLException;
 

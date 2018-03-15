@@ -1,8 +1,8 @@
-package com.excilys.java.formation.model.service;
+package com.excilys.java.formation.validator;
 
 import java.sql.SQLException;
 
-import com.excilys.java.formation.model.persistence.CompanyDAO;
+import com.excilys.java.formation.persistence.CompanyDAO;
 
 public class CompanyValidator extends ComputerDatabaseValidator{
 	

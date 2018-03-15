@@ -8,8 +8,9 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
-import com.excilys.java.formation.model.service.ComputerValidator;
-import com.excilys.java.formation.model.service.ValidatorException;
+
+import com.excilys.java.formation.validator.ComputerValidator;
+import com.excilys.java.formation.validator.ValidatorException;
 
 class ComputerValidatorTest {
 

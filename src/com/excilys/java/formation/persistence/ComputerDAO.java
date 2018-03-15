@@ -1,8 +1,9 @@
-package com.excilys.java.formation.model.persistence;
+package com.excilys.java.formation.persistence;
 
 import java.util.List;
 
 import com.excilys.java.formation.entities.Computer;
+import com.excilys.java.formation.mapper.ComputerMapper;
 
 import java.util.ArrayList;
 import java.sql.*;
