@@ -29,14 +29,11 @@ public abstract class Page {
 	
 	public void offsetGetPage(int pageNumber, int dbSize) throws SQLException, ClassNotFoundException{
 		if (pageNumber <= 0) {
-			System.out.println("ICI0");
 			offset = 0;
 		}
 		else if ((pageNumber - 1) * size <= dbSize) {
-			System.out.println("ICI1");
 			offset = ((pageNumber - 1) * size);
 		}else {
-			System.out.println("ICI2");
 			offset = dbSize - size;
 		}
 	}
