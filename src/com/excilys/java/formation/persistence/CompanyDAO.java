@@ -1,25 +1,11 @@
 package com.excilys.java.formation.persistence;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import com.excilys.java.formation.entities.Company;
-import com.excilys.java.formation.entities.Computer;
-import com.excilys.java.formation.mapper.CompanyMapper;
 
-import java.util.ArrayList;
-import java.sql.*;
-
-public enum CompanyDAO {
-	
-
-	INSTANCE;
-	
-	private final String SELECT = "SELECT * FROM company;";
-	private final String SELECT_LIMIT = "SELECT * FROM company LIMIT ?,?;";
-	private final String SELECT_BY_NAME = "SELECT * FROM company WHERE name LIKE ?;";
-	private final String SELECT_BY_ID = "SELECT * FROM company WHERE id = ?;";
-	private final String COUNT = "SELECT COUNT(id) FROM company;";
-
+public interface CompanyDAO {
 
 	/**
 	 * Creates a list of Companies object from the database
@@ -27,29 +13,8 @@ public enum CompanyDAO {
 	 * @throws SQLException
 	 * @throws ClassNotFoundException
 	 */
-	public List<Company> getAll() throws SQLException, ClassNotFoundException{
-		Connection connection = ConnectionManager.getConnection();
-		CompanyMapper companyMapper = CompanyMapper.INSTANCE;
-		Statement stmt = null;
-		List<Company> companies = new ArrayList<>();
-		try {
-			connection.setAutoCommit(false);
-			stmt = connection.createStatement();
-			ResultSet res = stmt.executeQuery(SELECT);
-			connection.commit();
-			companies = companyMapper.createCompanyListFromResultSet(res);
-		}catch(SQLException se) {		
-			ConnectionManager.printExceptionList(se);
-			connection.rollback();		
-		}finally {
-			if (stmt != null) {
-				stmt.close();
-			}
-			connection.close();
-		}
-		return companies;
-	}
-	
+	List<Company> getAll() throws SQLException, ClassNotFoundException;
+
 	/**
 	 * Returns a list of all the companies between lines offset and offset + size
 	 * @param offset 
@@ -58,31 +23,8 @@ public enum CompanyDAO {
 	 * @throws SQLException
 	 * @throws ClassNotFoundException
 	 */
-	public List<Company> get(int offset, int size) throws SQLException, ClassNotFoundException{
-		Connection connection = ConnectionManager.getConnection();
-		CompanyMapper companyMapper = CompanyMapper.INSTANCE;
-		PreparedStatement stmt = null;
-		List<Company> companies = new ArrayList<>();
-		try {
-			connection.setAutoCommit(false);
-			stmt = connection.prepareStatement(SELECT_LIMIT);
-			stmt.setInt(1, offset);
-			stmt.setInt(2, size);
-			ResultSet res = stmt.executeQuery();
-			connection.commit();
-			companies = companyMapper.createCompanyListFromResultSet(res);
-		}catch(SQLException se) {		
-			ConnectionManager.printExceptionList(se);
-			connection.rollback();		
-		}finally {
-			if (stmt != null) {
-				stmt.close();
-			}
-			connection.close();
-		}
-		return companies;
-	}
-	
+	List<Company> get(int offset, int size) throws SQLException, ClassNotFoundException;
+
 	/**
 	 * Returns a list of all the companies between lines offset and offset + size
 	 * @param offset 
@@ -91,30 +33,8 @@ public enum CompanyDAO {
 	 * @throws SQLException
 	 * @throws ClassNotFoundException
 	 */
-	public List<Company> getByName(String name) throws SQLException, ClassNotFoundException{
-		Connection connection = ConnectionManager.getConnection();
-		CompanyMapper companyMapper = CompanyMapper.INSTANCE;
-		PreparedStatement stmt = null;
-		List<Company> companies = new ArrayList<>();
-		try {
-			connection.setAutoCommit(false);
-			stmt = connection.prepareStatement(SELECT_BY_NAME);
-			stmt.setString(1, "%"+name+"%");
-			ResultSet res = stmt.executeQuery();
-			connection.commit();
-			companies = companyMapper.createCompanyListFromResultSet(res);
-		}catch(SQLException se) {		
-			ConnectionManager.printExceptionList(se);
-			connection.rollback();		
-		}finally {
-			if (stmt != null) {
-				stmt.close();
-			}
-			connection.close();
-		}
-		return companies;
-	}
-	
+	List<Company> getByName(String name) throws SQLException, ClassNotFoundException;
+
 	/**
 	 * Check if a company with the specified id exists
 	 * @param id of the company to check
@@ -122,54 +42,14 @@ public enum CompanyDAO {
 	 * @throws SQLException
 	 * @throws ClassNotFoundException
 	 */
-	public boolean checkCompanyById(long id) throws SQLException, ClassNotFoundException  {
-		Connection connection = ConnectionManager.getConnection();
-		PreparedStatement stmt = null;
-		try {
-			connection.setAutoCommit(false);
-			stmt = connection.prepareStatement(SELECT_BY_ID);
-			stmt.setLong(1, id);
-			ResultSet res = stmt.executeQuery();
-			connection.commit();
-			return res.next();
-			} catch(SQLException se) {
-				ConnectionManager.printExceptionList(se);
-				connection.rollback();
-			}finally {
-				connection.close();
-				if (stmt != null) {
-					stmt.close();
-				}
-			}
-		return false;
-	}
-	
+	boolean checkCompanyById(long id) throws SQLException, ClassNotFoundException;
+
 	/**
 	 * Returns the number of companies in the database
 	 * @return number of lines in table company
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public int count() throws ClassNotFoundException, SQLException {
-		Connection connection = ConnectionManager.getConnection();
-		PreparedStatement stmt = null;
-		try {
-			connection.setAutoCommit(false);
-			stmt = connection.prepareStatement(COUNT);
-			ResultSet res = stmt.executeQuery();
-			connection.commit();
-			res.next();
-			return res.getInt(1);
-			} catch(SQLException se) {
-				ConnectionManager.printExceptionList(se);
-				connection.rollback();
-			}finally {
-				connection.close();
-				if (stmt != null) {
-					stmt.close();
-				}
-			}
-		return -1;
-	}
-}
+	int count() throws ClassNotFoundException, SQLException;
 
+}

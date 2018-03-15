@@ -1,12 +1,12 @@
 package com.excilys.java.formation.persistence;
 
 import java.sql.*;
+import java.util.ResourceBundle;
 public enum ConnectionManager {
 
 	INSTANCE;
 	private static Connection conn = null;
-	
-	
+	private static final String RESOURCE_PATH = "com.excilys.java.formation.persistence.connection";
 	
 	/**
 	 *  Creates or return a connection to mysql database
@@ -17,9 +17,13 @@ public enum ConnectionManager {
 	
 	synchronized public static Connection getConnection() throws ClassNotFoundException, SQLException {
 		if (conn == null || conn.isClosed()) {
-			Class.forName("com.mysql.jdbc.Driver");
-			String url = "jdbc:mysql://localhost:3306/computer-database-db?useSSL=false";
-			conn = DriverManager.getConnection(url, "admincdb", "qwerty1234");
+			ResourceBundle resources = ResourceBundle.getBundle(RESOURCE_PATH);
+			String url = resources.getString("url");
+			String user = resources.getString("user");
+			String pass = resources.getString("pass");
+			String driver = resources.getString("driver");
+			Class.forName(driver);
+			conn = DriverManager.getConnection(url, user, pass);
 		}
 		return conn;
 	}
