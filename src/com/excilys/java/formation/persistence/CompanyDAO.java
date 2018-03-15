@@ -11,12 +11,19 @@ import java.sql.*;
 
 public enum CompanyDAO {
 	
+
 	INSTANCE;
 	
+	private final String SELECT = "SELECT * FROM company;";
+	private final String SELECT_LIMIT = "SELECT * FROM company LIMIT ?,?;";
+	private final String SELECT_BY_NAME = "SELECT * FROM company WHERE name LIKE ?;";
+	private final String SELECT_BY_ID = "SELECT * FROM company WHERE id = ?;";
+	private final String COUNT = "SELECT COUNT(id) FROM company;";
+
 
 	/**
 	 * Creates a list of Companies object from the database
-	 * @return an ArrayList of all the companies in the databse
+	 * @return an ArrayList of all the companies in the database
 	 * @throws SQLException
 	 * @throws ClassNotFoundException
 	 */
@@ -28,7 +35,7 @@ public enum CompanyDAO {
 		try {
 			connection.setAutoCommit(false);
 			stmt = connection.createStatement();
-			ResultSet res = stmt.executeQuery("SELECT * FROM company");
+			ResultSet res = stmt.executeQuery(SELECT);
 			connection.commit();
 			companies = companyMapper.createCompanyListFromResultSet(res);
 		}catch(SQLException se) {		
@@ -58,7 +65,7 @@ public enum CompanyDAO {
 		List<Company> companies = new ArrayList<>();
 		try {
 			connection.setAutoCommit(false);
-			stmt = connection.prepareStatement("SELECT * FROM company LIMIT ?,?");
+			stmt = connection.prepareStatement(SELECT_LIMIT);
 			stmt.setInt(1, offset);
 			stmt.setInt(2, size);
 			ResultSet res = stmt.executeQuery();
@@ -91,7 +98,7 @@ public enum CompanyDAO {
 		List<Company> companies = new ArrayList<>();
 		try {
 			connection.setAutoCommit(false);
-			stmt = connection.prepareStatement("SELECT * FROM company WHERE name LIKE ?");
+			stmt = connection.prepareStatement(SELECT_BY_NAME);
 			stmt.setString(1, "%"+name+"%");
 			ResultSet res = stmt.executeQuery();
 			connection.commit();
@@ -120,7 +127,7 @@ public enum CompanyDAO {
 		PreparedStatement stmt = null;
 		try {
 			connection.setAutoCommit(false);
-			stmt = connection.prepareStatement("SELECT * FROM company WHERE id = ?");
+			stmt = connection.prepareStatement(SELECT_BY_ID);
 			stmt.setLong(1, id);
 			ResultSet res = stmt.executeQuery();
 			connection.commit();
@@ -148,7 +155,7 @@ public enum CompanyDAO {
 		PreparedStatement stmt = null;
 		try {
 			connection.setAutoCommit(false);
-			stmt = connection.prepareStatement("SELECT COUNT(id) FROM company");
+			stmt = connection.prepareStatement(COUNT);
 			ResultSet res = stmt.executeQuery();
 			connection.commit();
 			res.next();

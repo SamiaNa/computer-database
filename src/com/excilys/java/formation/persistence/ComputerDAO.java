@@ -259,7 +259,7 @@ public enum ComputerDAO {
 		}
 		
 		}finally {
-		
+			connection.close();
 			if (stmt != null) {
 				stmt.close();
 			}
