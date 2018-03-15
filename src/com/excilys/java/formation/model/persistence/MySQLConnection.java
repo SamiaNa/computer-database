@@ -14,6 +14,7 @@ public class MySQLConnection {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
+	
 	synchronized public static Connection getConnection() throws ClassNotFoundException, SQLException {
 		if (conn == null || conn.isClosed()) {
 			Class.forName("com.mysql.jdbc.Driver");
