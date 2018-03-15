@@ -138,7 +138,6 @@ public class ComputerDAO {
 			stmt = connection.prepareStatement("INSERT INTO computer "+
 					"(name, company_id, introduced, discontinued) VALUES (?, ?, ?, ?)",
 					Statement.RETURN_GENERATED_KEYS);
-			System.out.println(c.getName()+" "+c.getCompanyId()+" "+c.getIntroduced()+" "+c.getDiscontinued());
 			stmt.setString(1, c.getName());
 			setBigIntOrNull(c.getCompanyId(), stmt, 2);
 			setDateOrNull(c.getIntroduced(), stmt, 3);
