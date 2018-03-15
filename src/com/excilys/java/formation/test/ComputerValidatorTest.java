@@ -1,16 +1,13 @@
 package com.excilys.java.formation.test;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import java.sql.Date;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
-
+import java.sql.SQLException;
+import java.text.ParseException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
-
 import com.excilys.java.formation.model.service.ComputerValidator;
 import com.excilys.java.formation.model.service.ValidatorException;
 
@@ -34,21 +31,13 @@ class ComputerValidatorTest {
 	}
 	
 	@Test
-	void testGetDate() throws ValidatorException {
+	void testGetDate() throws ValidatorException, ParseException {
 		ComputerValidator validator = ComputerValidator.getValidator();
-		assertEquals(validator.getDate(""), null);
-		assertEquals(validator.getDate("Null"), null);
-		assertEquals(validator.getDate("NULL"), null);
-		assertEquals(validator.getDate("null"), null);
-		
-		
-		/*Calendar cal = new GregorianCalendar();
-		cal.set(Calendar.YEAR, 2000);
-		cal.set(Calendar.MONTH, 10);
-		cal.set(Calendar.DAY_OF_MONTH, 20);
-		//System.out.println(Calendar.get(Calendar.ZONE_OFFSET) + Calendar.get(Calendar.DST_OFFSET)) / (60 * 1000));
-		assertEquals(validator.getDate("2000-10-20"), new Date(cal.getTimeInMillis()));
-		System.out.println(cal.getTimeInMillis()+" "+Date.valueOf("2000-10-20").getTime());*/
+		assertNull(validator.getDate(""));
+		assertNull(validator.getDate("Null"));
+		assertNull(validator.getDate("NULL"));
+		assertNull(validator.getDate("null"));
+	
 		Executable getDate = () -> {validator.getDate("2001");};
 		assertThrows(ValidatorException.class, getDate);
 	
@@ -66,9 +55,51 @@ class ComputerValidatorTest {
 	    
 	    getDate = () -> {validator.getDate("1900-10-60");};
 	    assertThrows(ValidatorException.class, getDate);
-
-	   
+	}
+	
+	@Test
+	void testCheckDates () throws ValidatorException {
+		ComputerValidator validator = ComputerValidator.getValidator();
+		Date d1 = null;
+		Date d2 = null;
+		validator.checkDates(d1, d2);
+		d1 = Date.valueOf("2010-12-30");
+		validator.checkDates(d1, d2);
+		validator.checkDates(d2, d1);
+		d2 = Date.valueOf("2015-01-13");
+		validator.checkDates(d1, d2);
+		Date d3 = Date.valueOf("2015-02-12");
+		Date d4 = Date.valueOf("2012-12-25");
+		Executable checkDate = () -> {validator.checkDates(d3, d4);};
+		assertThrows(ValidatorException.class, checkDate);
+	}
+	
+	@Test 
+	void getLongPrimId() throws ValidatorException {
+		ComputerValidator validator = ComputerValidator.getValidator();
+		assertEquals(validator.getLongPrimId("1"), 1L);
+		assertEquals(validator.getLongPrimId("200"), 200L);
+		Executable getId = () -> {validator.getLongPrimId("");};
+		assertThrows(ValidatorException.class, getId);
+		getId = () -> {validator.getLongPrimId("null");};
+		assertThrows(ValidatorException.class, getId);
+		getId = () -> {validator.getLongPrimId("abc");};
+		assertThrows(ValidatorException.class, getId);
+		getId = () -> {validator.getLongPrimId("10.1");};
+		assertThrows(ValidatorException.class, getId);
 		
 	}
+	
+	@Test
+	void testCheckComputerId() throws ValidatorException, ClassNotFoundException, SQLException {
+		ComputerValidator validator = ComputerValidator.getValidator();
+		Executable checkId = () -> {validator.checkComputerId("");};
+		assertThrows(ValidatorException.class, checkId);
+		checkId = () -> {validator.checkComputerId("10a");};
+		assertThrows(ValidatorException.class, checkId);
+		checkId = () -> {validator.checkComputerId("0.1");};
+		assertThrows(ValidatorException.class, checkId);
+	}
+	
 
 }

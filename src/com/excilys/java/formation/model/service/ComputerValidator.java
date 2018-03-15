@@ -42,7 +42,6 @@ public class ComputerValidator extends ComputerDatabaseValidator{
 		return date;
 	}
 	
-	
 	public void checkDates (Date dIntroduced, Date dDiscontinued) throws ValidatorException {
 		if (dIntroduced != null && dDiscontinued != null && dIntroduced.after(dDiscontinued)){
 			throw new ValidatorException ("Date of introduction must be anterior to date of discontinuation");
@@ -50,12 +49,12 @@ public class ComputerValidator extends ComputerDatabaseValidator{
 	}
 	
 	public  Long checkComputerId (String strId) throws ClassNotFoundException, SQLException, ValidatorException {
-		if (strId == null || strId.toLowerCase().equals("null")) return null;
-		long id = getLongId(strId);
+		long id = getLongPrimId(strId);
 		ComputerDAO computerDAO = ComputerDAO.getDAO();
 		if (!computerDAO.checkComputerById(id)) {
 			throw new ValidatorException("No existing company with id "+id);
 		}
 		return id;
 	}
+
 }

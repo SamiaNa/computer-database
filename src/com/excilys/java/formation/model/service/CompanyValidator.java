@@ -8,8 +8,7 @@ public class CompanyValidator extends ComputerDatabaseValidator{
 	
 	private static CompanyValidator companyValidator;
 	
-	private CompanyValidator() {
-		
+	private CompanyValidator() {	
 	}
 	
 	public static CompanyValidator getValidator() {
@@ -19,6 +18,24 @@ public class CompanyValidator extends ComputerDatabaseValidator{
 		return companyValidator;
 	}
 	
+	
+	/**
+	 * Converts string argument to Long
+	 * @param strId the id to convert
+	 * @return long
+	 * @throws ValidatorException if the string is not a number, not empty or not "null"
+	 */
+	public  Long getLongId (String strId) throws ValidatorException {
+		try {
+			return Long.parseLong(strId);
+		}catch (NumberFormatException e){
+			if (strId.equals("") || strId.toLowerCase().equals("null")) {
+				return null;
+			}
+			throw new ValidatorException("Only numbers are accepted as id");
+		}
+	}
+
 	/**
 	 * Converts string argument to long and tests if a company with the corresponding id exists
 	 * @param strId the id of the company to check
@@ -28,8 +45,19 @@ public class CompanyValidator extends ComputerDatabaseValidator{
 	 * @throws ValidatorException
 	 */
 	public Long checkCompanyId (String strId) throws ClassNotFoundException, SQLException, ValidatorException {
-		if (strId == null || strId.toLowerCase().equals("null")) return null;
-		long id = getLongId(strId);
+		long id = getLongPrimId(strId);
+		CompanyDAO companyDAO = CompanyDAO.getDAO();
+		if (!companyDAO.checkCompanyById(id)) {
+			throw new ValidatorException("No existing company with id "+id);
+		}
+		return id;
+	}
+	
+
+	public Long checkCompanyIdOrNull (String strId) throws ClassNotFoundException, SQLException, ValidatorException {
+		Long id = getLongId(strId);
+		if (id == null)
+			return id;
 		CompanyDAO companyDAO = CompanyDAO.getDAO();
 		if (!companyDAO.checkCompanyById(id)) {
 			throw new ValidatorException("No existing company with id "+id);

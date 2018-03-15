@@ -6,11 +6,9 @@ import java.util.List;
 import com.excilys.java.formation.entities.Company;
 
 
-public class CompanyPage {
+public class CompanyPage extends Page{
 	
-	private int offset;
-	private int size;
-	private int dbSize;
+
 	List<Company> companies;
 	CompanyService companyService;
 	
@@ -23,21 +21,19 @@ public class CompanyPage {
 		
 	}
 	
+	public void updateList() throws SQLException, ClassNotFoundException{
+		this.companies = companyService.getCompaniesList(offset, size);
+	}
+	
 	public void nextPage() throws SQLException, ClassNotFoundException{
 		this.dbSize = companyService.count();
-		if (offset + size <= dbSize) {
-			offset += size;
-		}
-		this.companies = companyService.getCompaniesList(offset, size);
+		super.offsetNextPage(dbSize);
+		updateList();
 		
 	}
 	
 	public void prevPage() throws SQLException, ClassNotFoundException{
-		this.dbSize = companyService.count();
-		offset -= size;
-		if (offset < 0) {
-			offset = 0;
-		}
+		super.offsetPrevPage();
 		this.companies = companyService.getCompaniesList(offset, size);
 	}
 	
@@ -54,4 +50,11 @@ public class CompanyPage {
 			System.out.println(c);
 		}
 	}
+
+	public void getPage(int pageNumber) throws SQLException, ClassNotFoundException {
+		this.dbSize = companyService.count();
+		super.offsetGetPage(pageNumber, dbSize);
+		this.companies = companyService.getCompaniesList(offset, size);
+	}
+
 }

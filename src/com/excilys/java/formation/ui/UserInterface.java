@@ -1,6 +1,7 @@
 package com.excilys.java.formation.ui;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Scanner;
 
 import com.excilys.java.formation.entities.Company;
@@ -10,60 +11,56 @@ import com.excilys.java.formation.model.service.CompanyPage;
 import com.excilys.java.formation.model.service.CompanyService;
 import com.excilys.java.formation.model.service.ComputerPage;
 import com.excilys.java.formation.model.service.ComputerService;
+import com.excilys.java.formation.model.service.Page;
 import com.excilys.java.formation.model.service.ValidatorException;
 
 
 public class UserInterface {
 	
 
+	private static final int PAGE_SIZE = 10;
 	
-	private static void printPagedComputerList(Scanner scanner)
-			throws SQLException, ClassNotFoundException {
-		ComputerPage compPage = new ComputerPage(10);
+	private static void printPagedList(Scanner scanner, Page page) throws ClassNotFoundException, SQLException {
+		scanner.nextLine();
 		while (true) {
-			compPage.printPage();
-			System.out.println("p : previous page, n : next page, q : quit");
+			page.printPage();
+			System.out.println("p : previous page, n : next page, q : quit, g : goto page");
 			switch (scanner.nextLine().toLowerCase()) {
 			case "p":
-				compPage.prevPage();
+				page.prevPage();
 				break;
 			case "n":
-				compPage.nextPage();
+				page.nextPage();
+				break;
+			case "g":
+				System.out.println("Enter page number");
+				int number = scanner.nextInt();
+				scanner.nextLine();
+				page.getPage(number);
 				break;
 			case "q":
 				return;
 			}
 		}
+
 	}
+	
 	
 	private static void findCompanyByName(Scanner scanner) throws ClassNotFoundException, SQLException {
 		CompanyService companyService = CompanyService.getService();
 		System.out.println("Enter name :");
 		scanner.nextLine();
-		for (Company c : companyService.getCompaniesByName(scanner.nextLine())) {
-			System.out.println(c);
-		}
-		
-	}
-	
-	private static void printPagedCompaniesList(Scanner scanner)
-			throws SQLException, ClassNotFoundException {
-		CompanyPage compPage = new CompanyPage(10);
-		while (true) {
-			compPage.printPage();
-			System.out.println("p : previous page, n : next page, q : quit");
-			switch (scanner.nextLine().toLowerCase()) {
-			case "p":
-				compPage.prevPage();
-				break;
-			case "n":
-				compPage.nextPage();
-				break;
-			case "q":
-				return;
+		List <Company> companies = companyService.getCompaniesByName(scanner.nextLine());
+		if (companies.size() == 0)
+			System.out.println("No companies found");
+		else {
+			for (Company c : companies) {
+				System.out.println(c);
 			}
 		}
 	}
+	
+	
 	
 	/**
 	 * Prints the details of a computer
@@ -101,9 +98,9 @@ public class UserInterface {
 		System.out.println("Enter company id (or null)");
 		String companyIdStr = scanner.nextLine();
 		try {
-		boolean created = computerService.createComputer(name, introducedStr, discontinuedStr, companyIdStr);
-		if (created) {
-			System.out.println("Successful creation");
+		long newId = computerService.createComputer(name, introducedStr, discontinuedStr, companyIdStr);
+		if (newId != -1) {
+			System.out.println("Successful creation with id "+newId);
 		}else {
 			System.out.println("Creation failed");
 		}
@@ -174,7 +171,7 @@ public class UserInterface {
 		}
 	}
 		
-	public static void startUI() throws SQLException, ClassNotFoundException {
+	public static void startUI(Scanner scanner) throws SQLException, ClassNotFoundException {
 		whileLoop :
 			while (true) {
 			System.out.println("Computer database application\n"+
@@ -185,16 +182,17 @@ public class UserInterface {
 					"4. Create a computer\n"+
 					"5. Update a computer\n"+
 					"6. Delete a computer\n"+
-					"7. Quit");
-			Scanner scanner = ScannerHelper.getScanner();
+					"7. Find company by name\n"+
+					"8. Quit");
+			
 			ComputerService computerService = ComputerService.getService();
 			int featureChoice = scanner.nextInt();
 			switch(featureChoice) {
 			case 1:
-				printPagedComputerList(scanner);
+				printPagedList(scanner, new ComputerPage(PAGE_SIZE));
 				break;
 			case 2:
-				printPagedCompaniesList(scanner);
+				printPagedList(scanner, new CompanyPage(PAGE_SIZE));
 				break;
 			case 3:
 				printComputerByID(scanner, computerService);
@@ -209,6 +207,9 @@ public class UserInterface {
 				deleteComputer(scanner, computerService);
 				break;
 			case 7:
+				findCompanyByName(scanner);
+				break;
+			case 8:
 				System.out.println("Bye!");
 				break whileLoop;
 			}
@@ -217,8 +218,9 @@ public class UserInterface {
 		
 	}
 	public static void main (String [] args) throws ClassNotFoundException, SQLException{
-		startUI();
-		ScannerHelper.getScanner().close();
+		Scanner scanner = new Scanner (System.in);
+		startUI(scanner);
+		scanner.close();
 
 	}
 

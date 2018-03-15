@@ -28,6 +28,6 @@ public class Company {
 
 	@Override
 	public String toString() {
-		return "Company "+this.id+" : \nname :"+ this.name;
+		return "Id="+this.id+", name="+ this.name;
 	}
 }

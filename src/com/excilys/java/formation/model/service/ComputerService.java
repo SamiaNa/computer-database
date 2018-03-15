@@ -36,11 +36,11 @@ public class ComputerService {
 		ComputerValidator computerValidator = ComputerValidator.getValidator();
 		ComputerDAO computerDAO = ComputerDAO.getDAO();
 		Long id;
-		id = computerValidator.getLongId(strId);
+		id = computerValidator.getLongPrimId(strId);
 		return computerDAO.getComputerById(id);
 	}
 	
-	public boolean createComputer(String name, String introducedStr, String discontinuedStr, String compIdStr)
+	public Long createComputer(String name, String introducedStr, String discontinuedStr, String compIdStr)
 					throws SQLException, ValidatorException, ClassNotFoundException{
 
 		ComputerValidator computerValidator = ComputerValidator.getValidator();
@@ -50,7 +50,7 @@ public class ComputerService {
 		Date introducedDate = computerValidator.getDate(introducedStr);
 		Date discontinuedDate = computerValidator.getDate(discontinuedStr);
 		computerValidator.checkDates(introducedDate, discontinuedDate);
-		Long companyId = companyValidator.checkCompanyId(compIdStr);
+		Long companyId = companyValidator.checkCompanyIdOrNull(compIdStr);
 		return computerDAO.createComputer(new Computer(name, introducedDate, discontinuedDate, companyId));
 	}
 	
@@ -58,7 +58,7 @@ public class ComputerService {
 		ComputerValidator computerValidator = ComputerValidator.getValidator();
 		CompanyValidator companyValidator = CompanyValidator.getValidator();
 		Long compId = computerValidator.checkComputerId(compStr.getId());
-		Long companyId = companyValidator.checkCompanyId(compStr.getCompanyId());
+		Long companyId = companyValidator.checkCompanyIdOrNull(compStr.getCompanyId());
 		computerValidator.checkName(compStr.getName());
 		Date introduced = computerValidator.getDate(compStr.getIntroduced());
 		Date discontinued = computerValidator.getDate(compStr.getDiscontinued());
@@ -72,7 +72,7 @@ public class ComputerService {
 		ComputerValidator computerValidator = ComputerValidator.getValidator();
 		ComputerDAO computerDAO = ComputerDAO.getDAO();
 		Long id;
-		id = computerValidator.getLongId(strId);
+		id = computerValidator.getLongPrimId(strId);
 		return computerDAO.delete(id);
 	}
 	

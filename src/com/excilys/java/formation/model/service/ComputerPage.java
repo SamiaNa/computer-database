@@ -5,13 +5,11 @@ import java.util.List;
 
 import com.excilys.java.formation.entities.Computer;
 
-public class ComputerPage {
+public class ComputerPage extends Page {
 	
-	private int offset;
-	private int size;
-	private int dbSize;
-	List<Computer> computers;
-	ComputerService computerService;
+	
+	private List<Computer> computers;
+	private ComputerService computerService;
 	
 	public ComputerPage(int size) throws SQLException, ClassNotFoundException {
 		this.offset = 0;
@@ -21,23 +19,25 @@ public class ComputerPage {
 		this.dbSize = computerService.count();
 	}
 	
+	public void updateList() throws ClassNotFoundException, SQLException {
+		this.computers = computerService.getComputersList(offset, size);
+	}
 	
 	public void nextPage() throws SQLException, ClassNotFoundException{
-		this.dbSize = computerService.count();
-		if (offset + size <= dbSize) {
-			offset += size;
-		}
-		this.computers = computerService.getComputersList(offset, size);
-		
+		dbSize = computerService.count();
+		super.offsetNextPage(dbSize);
+		updateList();
 	}
 	
 	public void prevPage() throws SQLException, ClassNotFoundException{
+		super.offsetPrevPage();
+		updateList();
+	}
+	
+	public void getPage(int pageNumber) throws SQLException, ClassNotFoundException{
 		this.dbSize = computerService.count();
-		offset -= size;
-		if (offset < 0) {
-			offset = 0;
-		}
-		this.computers = computerService.getComputersList(offset, size);
+		super.offsetGetPage(pageNumber, dbSize);
+		updateList();
 	}
 	
 	public int getOffset() {

@@ -73,8 +73,8 @@ public class Computer {
 	
 	@Override
 	public String toString() {
-		return "Computer :  ID = "+this.id+" \nNAME = "+ this.name+", INTRODUCED = "+this.introduced+
-				", DISCONTINUED =  "+this.discontinued+", COMPANY ID = "+this.companyId;
+		return "Id="+this.id+" name="+ this.name+", introduced="+this.introduced+
+				", discontinued="+this.discontinued+", company id="+this.companyId;
 	}
 
 }

@@ -130,19 +130,25 @@ public class ComputerDAO {
 		}
 	}
 	
-	public boolean createComputer(Computer c) throws SQLException, ClassNotFoundException {
+	public Long createComputer(Computer c) throws SQLException, ClassNotFoundException {
 		Connection connection = MySQLConnection.getConnection();
 		PreparedStatement stmt = null;
 		try {
+			connection.setAutoCommit(false);
 			stmt = connection.prepareStatement("INSERT INTO computer "+
-					"(name, company_id, introduced, discontinued) VALUES (?, ?, ?, ?)");
+					"(name, company_id, introduced, discontinued) VALUES (?, ?, ?, ?)",
+					Statement.RETURN_GENERATED_KEYS);
+			System.out.println(c.getName()+" "+c.getCompanyId()+" "+c.getIntroduced()+" "+c.getDiscontinued());
 			stmt.setString(1, c.getName());
 			setBigIntOrNull(c.getCompanyId(), stmt, 2);
 			setDateOrNull(c.getIntroduced(), stmt, 3);
 			setDateOrNull(c.getDiscontinued(), stmt, 4);
-			int res = stmt.executeUpdate();
+			stmt.executeUpdate();
+			ResultSet res = stmt.getGeneratedKeys();
+			res.next();
+			long id = res.getLong(1);
 			connection.commit();
-			return res == 1;		
+			return id;		
 		} catch(SQLException se) {
 			connection.rollback();
 			throw se;
@@ -211,6 +217,7 @@ public class ComputerDAO {
 	
 	public boolean delete(long id) throws SQLException, ClassNotFoundException {
 		Connection connection = MySQLConnection.getConnection();
+		
 		PreparedStatement stmt = null;
 		try {
 			connection.setAutoCommit(false);
