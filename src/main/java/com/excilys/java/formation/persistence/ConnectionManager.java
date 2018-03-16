@@ -6,7 +6,7 @@ public enum ConnectionManager {
 
 	INSTANCE;
 	private static Connection conn = null;
-	private static final String RESOURCE_PATH = "com.excilys.java.formation.persistence.connection";
+	private static final String RESOURCE_PATH = "connection";
 	
 	/**
 	 *  Creates or return a connection to mysql database
@@ -15,14 +15,12 @@ public enum ConnectionManager {
 	 * @throws SQLException
 	 */
 	
-	synchronized public static Connection getConnection() throws ClassNotFoundException, SQLException {
+	synchronized public static Connection open() throws ClassNotFoundException, SQLException {
 		if (conn == null || conn.isClosed()) {
 			ResourceBundle resources = ResourceBundle.getBundle(RESOURCE_PATH);
 			String url = resources.getString("url");
 			String user = resources.getString("user");
 			String pass = resources.getString("pass");
-			String driver = resources.getString("driver");
-			Class.forName(driver);
 			conn = DriverManager.getConnection(url, user, pass);
 		}
 		return conn;

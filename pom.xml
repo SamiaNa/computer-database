@@ -20,7 +20,7 @@
         <mojo.version>1.2.1</mojo.version>
 
         <!-- test -->
-        <junit.version>4.12</junit.version>
+        <junit.version>5.0.0</junit.version>
         <mockito.version>1.9.5</mockito.version>
 
         <!-- compile -->
@@ -68,8 +68,8 @@
     <dependencies>
         <!-- tests -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
@@ -104,4 +104,20 @@
             <version>${myqsl-jdbc.version}</version>
         </dependency>
     </dependencies>
+    
+      <reporting>
+   		 <plugins>
+   		   <plugin>
+     		   	<groupId>org.apache.maven.plugins</groupId>
+     			<artifactId>maven-checkstyle-plugin</artifactId>
+       			<version>3.0.0</version>
+        		<configuration>
+		          <configLocation>checkstyle.xml</configLocation>
+		          <suppressionsLocation>suppressions.xml</suppressionsLocation>
+		          <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
+		        </configuration>
+      		</plugin>
+    	</plugins>
+ 	 </reporting>
+
 </project>

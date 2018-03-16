@@ -28,7 +28,7 @@ public enum ComputerMapper {
 						res.getString(2),
 						toLocalDateOrNull(res.getDate(3)), 
 						toLocalDateOrNull(res.getDate(4)),
-						new Company(res.getLong(6), res.getString(7))));
+						new Company(res.getLong(5), res.getString(6))));
 		}
 		return computers;
 	}
@@ -39,7 +39,7 @@ public enum ComputerMapper {
 						res.getString(2), 
 						toLocalDateOrNull(res.getDate(3)), 
 						toLocalDateOrNull(res.getDate(4)), null);
-			Company company = new Company(res.getLong(6), res.getString(7));
+			Company company = new Company(res.getLong(5), res.getString(6));
 			if (res.wasNull()) company = null;
 			c.setCompany(company);
 			return c;
