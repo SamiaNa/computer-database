@@ -16,12 +16,12 @@ public class ComputerPage extends Page {
 		this.offset = 0;
 		this.size = size;
 		this.computerService = ComputerService.INSTANCE;
-		this.computers = computerService.getComputersList(offset, size);
+		this.computers = computerService.getComputerList(offset, size);
 		this.dbSize = computerService.count();
 	}
 	
 	public void updateList() throws ClassNotFoundException, SQLException {
-		this.computers = computerService.getComputersList(offset, size);
+		this.computers = computerService.getComputerList(offset, size);
 	}
 	
 	public void nextPage() throws SQLException, ClassNotFoundException{

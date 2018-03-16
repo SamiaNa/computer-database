@@ -3,6 +3,7 @@ package com.excilys.java.formation.validator;
 import java.sql.SQLException;
 
 import com.excilys.java.formation.persistence.CompanyDAO;
+import com.excilys.java.formation.persistence.CompanyDAOImpl;
 
 public enum CompanyValidator {
 	
@@ -35,7 +36,7 @@ public enum CompanyValidator {
 	 */
 	public Long checkCompanyId (String strId) throws ClassNotFoundException, SQLException, ValidatorException {
 		long id = Validator.getLongPrimId(strId);
-		CompanyDAO companyDAO = CompanyDAO.INSTANCE;
+		CompanyDAO companyDAO = CompanyDAOImpl.INSTANCE;
 		if (!companyDAO.checkCompanyById(id)) {
 			throw new ValidatorException("No existing company with id "+id);
 		}
@@ -47,7 +48,7 @@ public enum CompanyValidator {
 		Long id = getLongId(strId);
 		if (id == null)
 			return id;
-		CompanyDAO companyDAO = CompanyDAO.INSTANCE;
+		CompanyDAO companyDAO = CompanyDAOImpl.INSTANCE;
 		if (!companyDAO.checkCompanyById(id)) {
 			throw new ValidatorException("No existing company with id "+id);
 		}

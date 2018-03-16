@@ -67,7 +67,7 @@ public class Computer {
 		return this.company;
 	}
 
-	public void setCompanyId(Company company) {
+	public void setCompany(Company company) {
 		this.company = company;
 	}
 	
