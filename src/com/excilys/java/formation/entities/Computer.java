@@ -1,6 +1,11 @@
 package com.excilys.java.formation.entities;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
+
+import com.excilys.java.formation.validator.CompanyValidator;
+import com.excilys.java.formation.validator.ComputerValidator;
+import com.excilys.java.formation.validator.ValidatorException;
 
 public class Computer {
 	
@@ -29,6 +34,14 @@ public class Computer {
 		this.introduced = introduced;
 		this.discontinued = discontinued;
 		this.company = company;
+	}
+	
+	public Computer (ComputerStringBuilder builder) {
+		this.id = builder.id;
+		this.name = builder.name;
+		this.introduced = builder.introduced;
+		this.discontinued = builder.discontinued;
+		this.company = builder.company;
 	}
 
 	public long getId() {
@@ -82,4 +95,59 @@ public class Computer {
 		return str.toString();
 	}
 
+
+
+public static class ComputerStringBuilder {
+	
+	private long id;
+	private String name;
+	private LocalDate introduced;
+	private LocalDate discontinued;
+	private Company company;
+	
+	public ComputerStringBuilder() {
+		
+	}
+	
+	public ComputerStringBuilder setName(String name) throws ValidatorException {
+		ComputerValidator.INSTANCE.checkName(name);
+		this.name = name;
+		return this;
+	}
+	
+	public ComputerStringBuilder setId(String strId) throws ClassNotFoundException, SQLException, ValidatorException {
+		this.id = ComputerValidator.INSTANCE.checkComputerId(strId);
+		return this;
+	}
+	
+	public ComputerStringBuilder setCompany(String strId) throws ClassNotFoundException, SQLException, ValidatorException {
+		Company company = new Company();
+		company.setId(CompanyValidator.INSTANCE.checkCompanyIdOrNull(strId));
+		this.company = company;
+		return this;
+	}
+	
+	public ComputerStringBuilder setIntroduced(String introducedStr) throws ValidatorException {
+		introduced = ComputerValidator.INSTANCE.getDate(introducedStr);
+		return this;
+	}
+	
+	public ComputerStringBuilder setDiscontinued(String discontinuedStr) throws ValidatorException {
+		discontinued = ComputerValidator.INSTANCE.getDate(discontinuedStr);
+		return this;
+	}
+	
+	public Computer build() {
+		return new Computer (this);
+	}
+	
+	public Computer build(ComputerStringAttributes compStr) throws ClassNotFoundException, ValidatorException, SQLException {
+		this.setName(compStr.getName())
+			.setCompany(compStr.getCompanyId())
+			.setId(compStr.getId())
+			.setIntroduced(compStr.getIntroduced())
+			.setDiscontinued(compStr.getDiscontinued());
+		return new Computer(this);
+	}
+}
 }

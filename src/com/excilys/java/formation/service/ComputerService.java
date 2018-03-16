@@ -6,6 +6,7 @@ import java.util.List;
 import com.excilys.java.formation.persistence.*;
 import com.excilys.java.formation.validator.*;
 import com.excilys.java.formation.entities.*;
+import com.excilys.java.formation.entities.Computer.ComputerStringBuilder;
 
 public enum ComputerService {
 
