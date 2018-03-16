@@ -4,7 +4,7 @@
 build/
 bin
 target/
-src/com/excilys/java/formation/persistence/connection.properties
+src/main/java/com/excilys/java/formation/persistence/connection.properties
 
 *~
 *.class
