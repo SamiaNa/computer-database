@@ -1,6 +1,5 @@
 package com.excilys.java.formation.service;
 
-import java.time.LocalDate;
 import java.sql.SQLException;
 import java.util.List;
 import com.excilys.java.formation.persistence.*;
@@ -27,36 +26,17 @@ public enum ComputerService {
 		return ComputerDAOImpl.INSTANCE.getComputerById(id);
 	}
 	
-	public Long createComputer(String name, String introducedStr, String discontinuedStr, String compIdStr)
-					throws SQLException, ValidatorException, ClassNotFoundException{
-
-		ComputerValidator.INSTANCE.checkName(name);
-		LocalDate introducedDate = ComputerValidator.INSTANCE.getDate(introducedStr);
-		LocalDate discontinuedDate = ComputerValidator.INSTANCE.getDate(discontinuedStr);
-		ComputerValidator.INSTANCE.checkDates(introducedDate, discontinuedDate);
-		Long companyId = CompanyValidator.INSTANCE.checkCompanyIdOrNull(compIdStr);
-		Company company = new Company();
-		company.setId(companyId);
-		return ComputerDAOImpl.INSTANCE.createComputer(new Computer(name, introducedDate, discontinuedDate, company));
+	
+	public Computer createComputer(Computer computer) throws ValidatorException, ClassNotFoundException, SQLException {
+		ComputerValidator.INSTANCE.checkDates(computer);
+		computer.setId(ComputerDAOImpl.INSTANCE.createComputer(computer));
+		return computer;		
 	}
 	
-	public boolean updateComputer (ComputerStringAttributes compStr) throws ClassNotFoundException, SQLException, ValidatorException {
+	public boolean updateComputer(ComputerStringAttributes compStr) throws ClassNotFoundException, SQLException, ValidatorException {
 		StringToComputerBuilder computerBuilder = new StringToComputerBuilder();
 		computerBuilder.build(compStr);
 		return ComputerDAOImpl.INSTANCE.update(computerBuilder.build(compStr));
-		
-		/*Long compId = computerValidator.checkComputerId(compStr.getId());
-		Long companyId = companyValidator.checkCompanyIdOrNull(compStr.getCompanyId());
-		computerValidator.checkName(compStr.getName());
-		LocalDate introduced = computerValidator.getDate(compStr.getIntroduced());
-		LocalDate discontinued = computerValidator.getDate(compStr.getDiscontinued());
-		computerValidator.checkDates(introduced, discontinued);
-		ComputerDAO computerDAO = ComputerDAOImpl.INSTANCE;
-		Company company = new Company();
-		company.setId(companyId);*/
-		
-		//return computerDAO.update(new Computer(compId, compStr.getName(), introduced, discontinued, company));
-		
 	}
 
 	public boolean deleteComputer(String strId) throws ClassNotFoundException, SQLException, ValidatorException {

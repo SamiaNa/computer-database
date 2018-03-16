@@ -2,7 +2,6 @@ package com.excilys.java.formation.entities;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
-
 import com.excilys.java.formation.validator.CompanyValidator;
 import com.excilys.java.formation.validator.ComputerValidator;
 import com.excilys.java.formation.validator.ValidatorException;
@@ -121,7 +120,7 @@ public static class StringToComputerBuilder {
 	}
 	
 	public StringToComputerBuilder setCompany(String strId) throws ClassNotFoundException, SQLException, ValidatorException {
-		if (!strId.equals("null")) {
+		if (!(strId.equals("null") || strId.equals(""))) {
 			Company comp = new Company();
 			comp.setId(CompanyValidator.INSTANCE.checkCompanyIdOrNull(strId));
 			this.company = comp;
