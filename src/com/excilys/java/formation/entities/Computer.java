@@ -121,9 +121,11 @@ public static class ComputerStringBuilder {
 	}
 	
 	public ComputerStringBuilder setCompany(String strId) throws ClassNotFoundException, SQLException, ValidatorException {
-		Company company = new Company();
-		company.setId(CompanyValidator.INSTANCE.checkCompanyIdOrNull(strId));
-		this.company = company;
+		if (!strId.equals("null")) {
+			Company comp = new Company();
+			comp.setId(CompanyValidator.INSTANCE.checkCompanyIdOrNull(strId));
+			this.company = comp;
+		}
 		return this;
 	}
 	

@@ -35,11 +35,15 @@ public enum ComputerMapper {
 	
 	public Computer createComputerFromResultSet(ResultSet res, long id) throws SQLException, NoComputerInResultSetException {
 		if (res.next()) {
-			return new Computer (res.getLong(1),
+			Computer c = new Computer (res.getLong(1),
 						res.getString(2), 
 						toLocalDateOrNull(res.getDate(3)), 
-						toLocalDateOrNull(res.getDate(4)),
-						new Company(res.getLong(6), res.getString(7)));}
+						toLocalDateOrNull(res.getDate(4)), null);
+			Company company = new Company(res.getLong(6), res.getString(7));
+			if (res.wasNull()) company = null;
+			c.setCompany(company);
+			return c;
+		}
 		else {
 			throw new NoComputerInResultSetException ("No computer found with id : "+id);
 		}

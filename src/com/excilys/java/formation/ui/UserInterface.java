@@ -134,7 +134,7 @@ public class UserInterface {
 		}
 		if (updateAttribute("company id", computerStr.getCompanyId(), scanner)) {
 			System.out.println("Enter company id");
-			computerStr.setDiscontinued(scanner.nextLine());
+			computerStr.setCompanyId(scanner.nextLine());
 		}
 		if (computerService.updateComputer(computerStr)) {
 			System.out.println("Successful update");

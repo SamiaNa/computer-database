@@ -2,18 +2,17 @@ package com.excilys.java.formation.entities;
 
 public class Company {
 
-	private Long id;
+	private long id;
 	private String name;
 	
 	public Company() {
 		
 	}
-	
 	public long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
