@@ -3,7 +3,6 @@ package com.excilys.java.formation.ui;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
-
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.entities.ComputerStringAttributes;
 import com.excilys.java.formation.page.CompanyPage;
@@ -14,11 +13,10 @@ import com.excilys.java.formation.service.CompanyService;
 import com.excilys.java.formation.service.ComputerService;
 import com.excilys.java.formation.validator.ValidatorException;
 
-
 public class UserInterface {
-	
 
 	private static final int PAGE_SIZE = 10;
+	
 	
 	private static void printPagedList(Scanner scanner, Page page) throws ClassNotFoundException, SQLException {
 		scanner.nextLine();
@@ -172,7 +170,6 @@ public class UserInterface {
 	}
 		
 	public static void startUI(Scanner scanner) throws SQLException, ClassNotFoundException {
-		whileLoop :
 			while (true) {
 			System.out.println("Computer database application\n"+
 					"Select operation:\n"+ 
@@ -187,33 +184,34 @@ public class UserInterface {
 			
 			ComputerService computerService = ComputerService.INSTANCE;
 			int featureChoice = scanner.nextInt();
-			switch(featureChoice) {
-			case 1:
+			switch(CLIActionEnum.getAction(featureChoice)) {
+			case LIST_COMPUTERS:
 				printPagedList(scanner, new ComputerPage(PAGE_SIZE));
 				break;
-			case 2:
+			case LIST_COMPANIES:
 				printPagedList(scanner, new CompanyPage(PAGE_SIZE));
 				break;
-			case 3:
+			case COMPUTER_DETAILS:
 				printComputerByID(scanner, computerService);
 				break;
-			case 4:
+			case CREATE_COMPUTER:
 				createComputer(scanner, computerService);
 				break;
-			case 5:
+			case UPDATE_COMPUTER:
 				updateComputer(scanner, computerService);
 				break;
-			case 6:
+			case DELETE_COMPUTER:
 				deleteComputer(scanner, computerService);
 				break;
-			case 7:
+			case COMPANY_BY_NAME:
 				findCompanyByName(scanner);
 				break;
-			case 8:
+			case EXIT:
 				System.out.println("Bye!");
-				break whileLoop;
+				return;
 			}
 			System.out.println("");
+			scanner.nextLine();
 		}
 		
 	}
