@@ -184,7 +184,7 @@ public class UserInterface {
 			
 			ComputerService computerService = ComputerService.INSTANCE;
 			int featureChoice = scanner.nextInt();
-			switch(CLIActionEnum.getAction(featureChoice)) {
+			switch(CLIActionEnum.values()[featureChoice-1]) {
 			case LIST_COMPUTERS:
 				printPagedList(scanner, new ComputerPage(PAGE_SIZE));
 				break;
