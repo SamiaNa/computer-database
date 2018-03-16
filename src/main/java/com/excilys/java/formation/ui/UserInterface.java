@@ -4,6 +4,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
 import com.excilys.java.formation.entities.Company;
+import com.excilys.java.formation.entities.Computer;
+import com.excilys.java.formation.entities.Computer.StringToComputerBuilder;
 import com.excilys.java.formation.entities.ComputerStringAttributes;
 import com.excilys.java.formation.page.CompanyPage;
 import com.excilys.java.formation.page.ComputerPage;
@@ -96,12 +98,13 @@ public class UserInterface {
 		System.out.println("Enter company id (or null)");
 		String companyIdStr = scanner.nextLine();
 		try {
-		long newId = computerService.createComputer(name, introducedStr, discontinuedStr, companyIdStr);
-		if (newId != -1) {
-			System.out.println("Successful creation with id "+newId);
-		}else {
-			System.out.println("Creation failed");
-		}
+			StringToComputerBuilder builder = new StringToComputerBuilder();
+			builder.setName(name)
+				.setIntroduced(introducedStr)
+				.setDiscontinued(discontinuedStr)
+				.setCompany(companyIdStr);
+			Computer c = computerService.createComputer(builder.build());
+			System.out.println("Successful creation with id "+c.getId());
 		}catch(ValidatorException e) {
 			System.out.println(e.getMessage());
 		}
