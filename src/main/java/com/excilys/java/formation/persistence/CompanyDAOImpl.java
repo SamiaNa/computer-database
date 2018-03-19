@@ -1,140 +1,111 @@
 package com.excilys.java.formation.persistence;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.mapper.CompanyMapper;
-import java.util.ArrayList;
-import java.sql.*;
 
 public enum CompanyDAOImpl implements CompanyDAO {
-	
+
 	INSTANCE;
-	
+
 	private final String SELECT = "SELECT id, name FROM company;";
 	private final String SELECT_LIMIT = "SELECT id, name FROM company LIMIT ?,?;";
 	private final String SELECT_BY_NAME = "SELECT id, name FROM company WHERE name LIKE ?;";
 	private final String SELECT_BY_ID = "SELECT id, name FROM company WHERE id = ?;";
 	private final String COUNT = "SELECT COUNT(id) FROM company;";
 
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	/* (non-Javadoc)
-	 * @see com.excilys.java.formation.persistence.CompanyDAO#getAll()
-	 */
 	@Override
 	public List<Company> getAll() throws SQLException, ClassNotFoundException{
-		Connection connection = ConnectionManager.open();
 		CompanyMapper companyMapper = CompanyMapper.INSTANCE;
-		Statement stmt = null;
 		List<Company> companies = new ArrayList<>();
-		try {
-			stmt = connection.createStatement();
-			ResultSet res = stmt.executeQuery(SELECT);
+		try (Connection connection = ConnectionManager.open();
+				PreparedStatement stmt = connection.prepareStatement(SELECT);){
+			ResultSet res = stmt.executeQuery();
 			companies = companyMapper.createCompanyListFromResultSet(res);
-		}catch(SQLException se) {		
-			ConnectionManager.printExceptionList(se);
-		}finally {
-			if (stmt != null) {
-				stmt.close();
+		}catch(SQLException se) {
+			for (Throwable e : se) {
+				logger.error(e.toString());
 			}
-			connection.close();
 		}
 		return companies;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.excilys.java.formation.persistence.CompanyDAO#get(int, int)
-	 */
+
 	@Override
 	public List<Company> get(int offset, int size) throws SQLException, ClassNotFoundException{
-		Connection connection = ConnectionManager.open();
 		CompanyMapper companyMapper = CompanyMapper.INSTANCE;
-		PreparedStatement stmt = null;
 		List<Company> companies = new ArrayList<>();
-		try {
-			stmt = connection.prepareStatement(SELECT_LIMIT);
+		try (Connection connection = ConnectionManager.open();
+				PreparedStatement stmt = connection.prepareStatement(SELECT_LIMIT);){
 			stmt.setInt(1, offset);
 			stmt.setInt(2, size);
 			ResultSet res = stmt.executeQuery();
 			companies = companyMapper.createCompanyListFromResultSet(res);
-		}catch(SQLException se) {		
-			ConnectionManager.printExceptionList(se);
-		}finally {
-			if (stmt != null) {
-				stmt.close();
+		}catch(SQLException se) {
+			for (Throwable e : se) {
+				logger.error(e.toString());
 			}
-			connection.close();
 		}
 		return companies;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.excilys.java.formation.persistence.CompanyDAO#getByName(java.lang.String)
-	 */
+
+
 	@Override
 	public List<Company> getByName(String name) throws SQLException, ClassNotFoundException{
-		Connection connection = ConnectionManager.open();
 		CompanyMapper companyMapper = CompanyMapper.INSTANCE;
-		PreparedStatement stmt = null;
 		List<Company> companies = new ArrayList<>();
-		try {
-			stmt = connection.prepareStatement(SELECT_BY_NAME);
+		try (Connection connection = ConnectionManager.open();
+				PreparedStatement stmt = connection.prepareStatement(SELECT_BY_NAME);){
 			stmt.setString(1, "%"+name+"%");
 			ResultSet res = stmt.executeQuery();
 			companies = companyMapper.createCompanyListFromResultSet(res);
-		}catch(SQLException se) {		
-			ConnectionManager.printExceptionList(se);
-		}finally {
-			if (stmt != null) {
-				stmt.close();
+		}catch(SQLException se) {
+			for (Throwable e : se) {
+				logger.error(e.toString());
 			}
-			connection.close();
 		}
 		return companies;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.excilys.java.formation.persistence.CompanyDAO#checkCompanyById(long)
-	 */
+
+
 	@Override
 	public boolean checkCompanyById(long id) throws SQLException, ClassNotFoundException  {
-		Connection connection = ConnectionManager.open();
-		PreparedStatement stmt = null;
-		try {
-			stmt = connection.prepareStatement(SELECT_BY_ID);
+		try (Connection connection = ConnectionManager.open();
+				PreparedStatement stmt = connection.prepareStatement(SELECT_BY_ID);){
 			stmt.setLong(1, id);
 			ResultSet res = stmt.executeQuery();
 			return res.next();
-			} catch(SQLException se) {
-				ConnectionManager.printExceptionList(se);
-			}finally {
-				connection.close();
-				if (stmt != null) {
-					stmt.close();
-				}
+		} catch(SQLException se) {
+			for (Throwable e : se) {
+				logger.error(e.toString());
 			}
+		}
 		return false;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.excilys.java.formation.persistence.CompanyDAO#count()
-	 */
+
+
 	@Override
 	public int count() throws ClassNotFoundException, SQLException {
-		Connection connection = ConnectionManager.open();
-		PreparedStatement stmt = null;
-		try {
-			stmt = connection.prepareStatement(COUNT);
+		try (Connection connection = ConnectionManager.open();
+				PreparedStatement stmt = connection.prepareStatement(COUNT);){
 			ResultSet res = stmt.executeQuery();
 			res.next();
 			return res.getInt(1);
-			} catch(SQLException se) {
-				ConnectionManager.printExceptionList(se);
-			}finally {
-				connection.close();
-				if (stmt != null) {
-					stmt.close();
-				}
+		} catch(SQLException se) {
+			for (Throwable e : se) {
+				logger.error(e.toString());
 			}
+		}
 		return -1;
 	}
 }

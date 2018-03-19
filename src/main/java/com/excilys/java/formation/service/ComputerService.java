@@ -2,10 +2,11 @@ package com.excilys.java.formation.service;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
+
 import com.excilys.java.formation.persistence.*;
 import com.excilys.java.formation.validator.*;
 import com.excilys.java.formation.entities.*;
-import com.excilys.java.formation.entities.Computer.StringToComputerBuilder;
 
 
 public enum ComputerService {
@@ -20,10 +21,8 @@ public enum ComputerService {
 		return ComputerDAOImpl.INSTANCE.get(offset, size);
 	}
 	
-	public Computer getComputerById(String strId) throws SQLException, ClassNotFoundException, 
-											NoComputerInResultSetException, ValidatorException{
-		Long id = Validator.getLongPrimId(strId);
-		return ComputerDAOImpl.INSTANCE.getComputerById(id);
+	public Optional<Computer> getComputerById(Long computerId) throws SQLException, ClassNotFoundException, ValidatorException{
+		return ComputerDAOImpl.INSTANCE.getComputerById(computerId);
 	}
 	
 	
@@ -33,17 +32,12 @@ public enum ComputerService {
 		return computer;		
 	}
 	
-	public boolean updateComputer(ComputerStringAttributes compStr) throws ClassNotFoundException, SQLException, ValidatorException {
-		StringToComputerBuilder computerBuilder = new StringToComputerBuilder();
-		computerBuilder.build(compStr);
-		return ComputerDAOImpl.INSTANCE.update(computerBuilder.build(compStr));
+	public boolean updateComputer(Computer computer) throws ClassNotFoundException, SQLException, ValidatorException {
+		return ComputerDAOImpl.INSTANCE.update(computer);
 	}
 
-	public boolean deleteComputer(String strId) throws ClassNotFoundException, SQLException, ValidatorException {
-		ComputerDAO computerDAO = ComputerDAOImpl.INSTANCE;
-		Long id;
-		id = Validator.getLongPrimId(strId);
-		return computerDAO.delete(id);
+	public boolean deleteComputer(Long computerId) throws ClassNotFoundException, SQLException, ValidatorException {
+		return ComputerDAOImpl.INSTANCE.delete(computerId);
 	}
 	
 	public int count () throws ClassNotFoundException, SQLException {

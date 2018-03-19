@@ -2,6 +2,7 @@ package com.excilys.java.formation.persistence;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 import com.excilys.java.formation.entities.Computer;
 
@@ -34,7 +35,7 @@ public interface ComputerDAO {
 	 * @throws ClassNotFoundException
 	 */
 
-	Computer getComputerById(long id) throws SQLException, NoComputerInResultSetException, ClassNotFoundException;
+	Optional<Computer> getComputerById(long id) throws SQLException, NoComputerInResultSetException, ClassNotFoundException;
 
 	Long createComputer(Computer c) throws SQLException, ClassNotFoundException;
 

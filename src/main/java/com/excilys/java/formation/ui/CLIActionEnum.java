@@ -2,6 +2,7 @@ package com.excilys.java.formation.ui;
 
 
 public enum CLIActionEnum {	
+	DEFAULT,
 	LIST_COMPUTERS,
 	LIST_COMPANIES,
 	COMPUTER_DETAILS,

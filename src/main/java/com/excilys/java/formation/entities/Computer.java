@@ -2,40 +2,41 @@ package com.excilys.java.formation.entities;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+
 import com.excilys.java.formation.validator.CompanyValidator;
 import com.excilys.java.formation.validator.ComputerValidator;
 import com.excilys.java.formation.validator.ValidatorException;
 
 public class Computer {
-	
+
 	private long id;
 	private String name;
 	private LocalDate introduced;
 	private LocalDate discontinued;
 	private Company company;
-	
-	public Computer (long id, String name) {
+
+	public Computer(long id, String name) {
 		this.id = id;
 		this.name = name;
 	}
 
-	public Computer (long id, String name, LocalDate introduced, LocalDate discontinued, Company company) {
+	public Computer(long id, String name, LocalDate introduced, LocalDate discontinued, Company company) {
 		this.id = id;
 		this.name = name;
 		this.introduced = introduced;
 		this.discontinued = discontinued;
 		this.company = company;
 	}
-	
-	public Computer (String name, LocalDate introduced, LocalDate discontinued, Company company) {
+
+	public Computer(String name, LocalDate introduced, LocalDate discontinued, Company company) {
 		this.id = -1;
 		this.name = name;
 		this.introduced = introduced;
 		this.discontinued = discontinued;
 		this.company = company;
 	}
-	
-	public Computer (StringToComputerBuilder builder) {
+
+	public Computer(StringToComputerBuilder builder) {
 		this.id = builder.id;
 		this.name = builder.name;
 		this.introduced = builder.introduced;
@@ -82,7 +83,7 @@ public class Computer {
 	public void setCompany(Company company) {
 		this.company = company;
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder str = new StringBuilder();
@@ -90,65 +91,67 @@ public class Computer {
 		.append(", name=").append(this.name)
 		.append(", introduced=").append(this.introduced)
 		.append(", discontinued=").append(this.discontinued)
-		.append(", company id=").append(this.company);
+		.append(", company= ").append(this.company);
 		return str.toString();
 	}
 
 
 
-public static class StringToComputerBuilder {
-	
-	private long id;
-	private String name;
-	private LocalDate introduced;
-	private LocalDate discontinued;
-	private Company company;
-	
-	public StringToComputerBuilder() {
-		
-	}
-	
-	public StringToComputerBuilder setName(String name) throws ValidatorException {
-		ComputerValidator.INSTANCE.checkName(name);
-		this.name = name;
-		return this;
-	}
-	
-	public StringToComputerBuilder setId(String strId) throws ClassNotFoundException, SQLException, ValidatorException {
-		this.id = ComputerValidator.INSTANCE.checkComputerId(strId);
-		return this;
-	}
-	
-	public StringToComputerBuilder setCompany(String strId) throws ClassNotFoundException, SQLException, ValidatorException {
-		if (!(strId.equals("null") || strId.equals(""))) {
-			Company comp = new Company();
-			comp.setId(CompanyValidator.INSTANCE.checkCompanyIdOrNull(strId));
-			this.company = comp;
+	public static class StringToComputerBuilder {
+
+		private long id;
+		private String name;
+		private LocalDate introduced;
+		private LocalDate discontinued;
+		private Company company;
+
+		public StringToComputerBuilder() {
+
 		}
-		return this;
-	}
-	
-	public StringToComputerBuilder setIntroduced(String introducedStr) throws ValidatorException {
-		introduced = ComputerValidator.INSTANCE.getDate(introducedStr);
-		return this;
-	}
-	
-	public StringToComputerBuilder setDiscontinued(String discontinuedStr) throws ValidatorException {
-		discontinued = ComputerValidator.INSTANCE.getDate(discontinuedStr);
-		return this;
-	}
-	
-	public Computer build() {
-		return new Computer (this);
-	}
-	
-	public Computer build(ComputerStringAttributes compStr) throws ClassNotFoundException, ValidatorException, SQLException {
-		this.setName(compStr.getName())
+
+		public StringToComputerBuilder setName(String name) throws ValidatorException {
+			ComputerValidator.INSTANCE.checkName(name);
+			this.name = name;
+			return this;
+		}
+
+		public StringToComputerBuilder setId(String strId) throws ClassNotFoundException, SQLException, ValidatorException {
+			this.id = ComputerValidator.INSTANCE.checkComputerId(strId);
+			this.id = Long.parseLong(strId);
+			return this;
+		}
+
+		public StringToComputerBuilder setCompany(String strId) throws ClassNotFoundException, SQLException, ValidatorException {
+			if (!(strId.equals("null") || strId.equals(""))) {
+				Company comp = new Company();
+				comp.setId(CompanyValidator.INSTANCE.checkCompanyIdOrNull(strId));
+				comp.setId(Long.parseLong(strId));
+				this.company = comp;
+			}
+			return this;
+		}
+
+		public StringToComputerBuilder setIntroduced(String introducedStr) throws ValidatorException {
+			introduced = ComputerValidator.INSTANCE.getDate(introducedStr);
+			return this;
+		}
+
+		public StringToComputerBuilder setDiscontinued(String discontinuedStr) throws ValidatorException {
+			discontinued = ComputerValidator.INSTANCE.getDate(discontinuedStr);
+			return this;
+		}
+
+		public Computer build() {
+			return new Computer (this);
+		}
+
+		public Computer build(ComputerStringAttributes compStr) throws ClassNotFoundException, ValidatorException, SQLException {
+			this.setName(compStr.getName())
 			.setCompany(compStr.getCompanyId())
 			.setId(compStr.getId())
 			.setIntroduced(compStr.getIntroduced())
 			.setDiscontinued(compStr.getDiscontinued());
-		return new Computer(this);
+			return new Computer(this);
+		}
 	}
-}
 }

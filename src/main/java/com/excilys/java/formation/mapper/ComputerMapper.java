@@ -2,50 +2,50 @@ package com.excilys.java.formation.mapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.ArrayList;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.entities.Computer;
-import com.excilys.java.formation.persistence.NoComputerInResultSetException;
 
 public enum ComputerMapper {
-	
-	INSTANCE; 
-	
+
+	INSTANCE;
+
 	public LocalDate toLocalDateOrNull(java.sql.Date date) {
 		if (date == null) {
 			return null;
 		}
 		return date.toLocalDate();
 	}
-	
+
 	public List<Computer> createComputerListFromResultSet(ResultSet res) throws SQLException {
 		List <Computer> computers = new ArrayList<>();
 		while (res.next()) {
-			computers.add(new Computer (res.getLong(1), 
-						res.getString(2),
-						toLocalDateOrNull(res.getDate(3)), 
-						toLocalDateOrNull(res.getDate(4)),
-						new Company(res.getLong(5), res.getString(6))));
+			computers.add(new Computer(res.getLong(1),
+					res.getString(2),
+					toLocalDateOrNull(res.getDate(3)),
+					toLocalDateOrNull(res.getDate(4)),
+					new Company(res.getLong(5), res.getString(6))));
 		}
 		return computers;
 	}
-	
-	public Computer createComputerFromResultSet(ResultSet res, long id) throws SQLException, NoComputerInResultSetException {
+
+	public Optional<Computer> createComputerFromResultSet(ResultSet res, long id) throws SQLException {
 		if (res.next()) {
-			Computer c = new Computer (res.getLong(1),
-						res.getString(2), 
-						toLocalDateOrNull(res.getDate(3)), 
-						toLocalDateOrNull(res.getDate(4)), null);
+			Computer c = new Computer(res.getLong(1),
+					res.getString(2),
+					toLocalDateOrNull(res.getDate(3)),
+					toLocalDateOrNull(res.getDate(4)), null);
 			Company company = new Company(res.getLong(5), res.getString(6));
 			if (res.wasNull()) company = null;
 			c.setCompany(company);
-			return c;
+			return Optional.of(c);
 		}
 		else {
-			throw new NoComputerInResultSetException ("No computer found with id : "+id);
+			return Optional.ofNullable(null);
 		}
 	}
 

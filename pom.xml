@@ -69,9 +69,10 @@
         <!-- tests -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
+            <artifactId>junit-jupiter-api</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
+         
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>

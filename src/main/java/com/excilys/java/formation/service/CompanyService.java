@@ -22,7 +22,7 @@ public enum CompanyService {
 		return companyDAO.get(offset, size);
 	}
 	
-	public int count () throws ClassNotFoundException, SQLException {
+	public int count() throws ClassNotFoundException, SQLException {
 		return CompanyDAOImpl.INSTANCE.count();
 	}
 

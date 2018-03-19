@@ -4,13 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.sql.SQLException;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
-
-import com.excilys.java.formation.validator.CompanyValidator;
-import com.excilys.java.formation.validator.ValidatorException;
 
 public class CompanyValidatorTest {
 
@@ -27,25 +22,5 @@ public class CompanyValidatorTest {
 		assertThrows(ValidatorException.class, getId);
 		assertEquals(validator.getLongId("1"), new Long(1L));
 		assertEquals(validator.getLongId("100"), new Long(100L));
-	}
-
-	@Test 
-	void testCheckCompanyId() throws ValidatorException {
-		CompanyValidator validator = CompanyValidator.INSTANCE;
-		Executable checkId = () -> {validator.checkCompanyId("");};
-		assertThrows(ValidatorException.class, checkId);
-		checkId = () -> {validator.checkCompanyId("-2");};
-		assertThrows(ValidatorException.class, checkId);		
-	}
-	
-	@Test
-	void testCheckCompanyIdOrNull() throws ValidatorException, ClassNotFoundException, SQLException {
-		CompanyValidator validator = CompanyValidator.INSTANCE;
-		Executable checkId = () -> {validator.checkCompanyId("");};
-		assertThrows(ValidatorException.class, checkId);
-		checkId = () -> {validator.checkCompanyId("-2");};
-		assertThrows(ValidatorException.class, checkId);
-		assertNull(validator.checkCompanyIdOrNull(""));
-		assertNull(validator.checkCompanyIdOrNull("Null"));
 	}
 }

@@ -1,8 +1,11 @@
 package com.excilys.java.formation.ui;
 
 import java.sql.SQLException;
+import java.util.InputMismatchException;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
+
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.entities.Computer.StringToComputerBuilder;
@@ -18,34 +21,34 @@ import com.excilys.java.formation.validator.ValidatorException;
 public class UserInterface {
 
 	private static final int PAGE_SIZE = 10;
-	
-	
+
 	private static void printPagedList(Scanner scanner, Page page) throws ClassNotFoundException, SQLException {
 		scanner.nextLine();
 		while (true) {
 			page.printPage();
 			System.out.println("p : previous page, n : next page, q : quit, g : goto page");
-			switch (scanner.nextLine().toLowerCase()) {
-			case "p":
+			switch (PageActionEnum.getAction(scanner.nextLine())) {
+			case PREVIOUS:
 				page.prevPage();
 				break;
-			case "n":
+			case NEXT:
 				page.nextPage();
 				break;
-			case "g":
+			case GOTO:
 				System.out.println("Enter page number");
 				int number = scanner.nextInt();
 				scanner.nextLine();
 				page.getPage(number);
 				break;
-			case "q":
+			case EXIT:
 				return;
+			case DEFAULT:
+				break;
 			}
 		}
-
 	}
-	
-	
+
+
 	private static void findCompanyByName(Scanner scanner) throws ClassNotFoundException, SQLException {
 		CompanyService companyService = CompanyService.INSTANCE;
 		System.out.println("Enter name :");
@@ -59,9 +62,8 @@ public class UserInterface {
 			}
 		}
 	}
-	
-	
-	
+
+
 	/**
 	 * Prints the details of a computer
 	 * @param scanner
@@ -70,22 +72,29 @@ public class UserInterface {
 	 * @throws ClassNotFoundException
 	 */
 	private static void printComputerByID(Scanner scanner, ComputerService computerService) throws SQLException, ClassNotFoundException {
-		scanner.nextLine();
 		System.out.println("Enter id of computer : ");
-		String computerId = scanner.nextLine();
 		try {
-			System.out.println(computerService.getComputerById(computerId));
-		} catch (NoComputerInResultSetException | ValidatorException e) {
+			Long computerId = scanner.nextLong();
+			Optional<Computer> optComp = computerService.getComputerById(computerId);
+			if (optComp.isPresent()) {
+				System.out.println(optComp.get());
+			}else {
+				System.out.println("No computer found with id : "+computerId);
+			}
+		} catch (ValidatorException e) {
 			System.out.println(e.getMessage());
+		} catch (InputMismatchException e) {
+			System.out.println("Numbers only are accepted as id");
 		}
 	}
-	
+
 	/**
 	 * Creates a computer
 	 * @param scanner
 	 * @param computerService
 	 * @throws SQLException
 	 * @throws ClassNotFoundException
+	 * @throws ValidatorException
 	 */
 	private static void createComputer(Scanner scanner, ComputerService computerService) throws SQLException, ClassNotFoundException {
 		scanner.nextLine();
@@ -100,31 +109,36 @@ public class UserInterface {
 		try {
 			StringToComputerBuilder builder = new StringToComputerBuilder();
 			builder.setName(name)
-				.setIntroduced(introducedStr)
-				.setDiscontinued(discontinuedStr)
-				.setCompany(companyIdStr);
+			.setIntroduced(introducedStr)
+			.setDiscontinued(discontinuedStr)
+			.setCompany(companyIdStr);
 			Computer c = computerService.createComputer(builder.build());
 			System.out.println("Successful creation with id "+c.getId());
 		}catch(ValidatorException e) {
 			System.out.println(e.getMessage());
 		}
 	}
-	
-	
+
+
 	private static boolean updateAttribute(String attributeName, String varValue, Scanner scanner) {
 		System.out.println("Current "+attributeName+" : "+varValue+". Do you want do update ? (y/n)");
 		String validation = scanner.next();
 		scanner.nextLine();
 		return validation.toLowerCase().equals("y");
 	}
-	
-	private static void updateAttributes(Scanner scanner, ComputerService computerService, String idStr) 
+
+	private static void updateAttributes(Scanner scanner, ComputerService computerService, Long computerId)
 			throws ClassNotFoundException, SQLException, NoComputerInResultSetException, ValidatorException {
-		ComputerStringAttributes computerStr = new ComputerStringAttributes(computerService.getComputerById(idStr));
+		Optional<Computer> optComputer = computerService.getComputerById(computerId);
+		if (!optComputer.isPresent()) {
+			System.out.println("No computer found with id "+computerId);
+			return;
+		}
+		ComputerStringAttributes computerStr = new ComputerStringAttributes(optComputer.get());
 		if (updateAttribute("name", computerStr.getName(), scanner)) {
 			System.out.println("Enter new name");
 			computerStr.setName(scanner.nextLine());
-		}	
+		}
 		if (updateAttribute("date of introduction", computerStr.getIntroduced(), scanner)) {
 			System.out.println("Enter new date of introduction");
 			computerStr.setIntroduced(scanner.nextLine());
@@ -137,30 +151,30 @@ public class UserInterface {
 			System.out.println("Enter company id");
 			computerStr.setCompanyId(scanner.nextLine());
 		}
-		if (computerService.updateComputer(computerStr)) {
+		if (computerService.updateComputer(new StringToComputerBuilder().build(computerStr))) {
 			System.out.println("Successful update");
 		}else {
 			System.out.println("Error : update not taken into account");
 		}
 	}
-	
+
 	private static void updateComputer(Scanner scanner, ComputerService computerService) throws  SQLException, ClassNotFoundException {
-		scanner.nextLine();
 		System.out.println("Enter id of computer to update");
-		String idStr = scanner.nextLine();
 		try {
-			updateAttributes(scanner, computerService, idStr);
+			Long computerId = scanner.nextLong();
+			updateAttributes(scanner, computerService, computerId);
 		}catch(NoComputerInResultSetException | ValidatorException e) {
 			System.out.println(e.getMessage());
+		}catch(InputMismatchException e) {
+			System.out.println("Numbers only are accepted as id");
 		}
-		
+
 	}
-	
+
 	private static void deleteComputer(Scanner scanner, ComputerService computerService) throws SQLException, ClassNotFoundException {
-		scanner.nextLine();
 		System.out.println("Enter id of computer : ");
-		String computerId = scanner.nextLine();
 		try {
+			Long computerId = scanner.nextLong();
 			boolean deleted = computerService.deleteComputer(computerId);
 			if (deleted) {
 				System.out.println("Successful deletion");
@@ -169,13 +183,15 @@ public class UserInterface {
 			}
 		} catch (ValidatorException e) {
 			System.out.println(e.getMessage());
+		} catch (InputMismatchException e) {
+			System.out.println("Only numbers are excepted as id");
 		}
 	}
-		
-	public static void startUI(Scanner scanner) throws SQLException, ClassNotFoundException {
-			while (true) {
+
+	public static void startUI(Scanner scanner) throws SQLException, ClassNotFoundException, ValidatorException {
+		while (true) {
 			System.out.println("Computer database application\n"+
-					"Select operation:\n"+ 
+					"Select operation:\n"+
 					"1. List computers\n"+
 					"2. List companies\n"+
 					"3. Show computer details (by id)\n"+
@@ -184,10 +200,13 @@ public class UserInterface {
 					"6. Delete a computer\n"+
 					"7. Find company by name\n"+
 					"8. Quit");
-			
+
 			ComputerService computerService = ComputerService.INSTANCE;
-			int featureChoice = scanner.nextInt();
-			switch(CLIActionEnum.values()[featureChoice-1]) {
+			int featureChoice = 0;
+			try {
+				featureChoice = scanner.nextInt();
+			}catch (InputMismatchException e) {}
+			switch(CLIActionEnum.values()[featureChoice]) {
 			case LIST_COMPUTERS:
 				printPagedList(scanner, new ComputerPage(PAGE_SIZE));
 				break;
@@ -212,13 +231,16 @@ public class UserInterface {
 			case EXIT:
 				System.out.println("Bye!");
 				return;
+			default:
+				System.out.println("Choose a number");
+				break;
 			}
 			System.out.println("");
 			scanner.nextLine();
 		}
-		
+
 	}
-	public static void main (String [] args) throws ClassNotFoundException, SQLException{
+	public static void main (String [] args) throws ClassNotFoundException, SQLException, ValidatorException{
 		Scanner scanner = new Scanner (System.in);
 		startUI(scanner);
 		scanner.close();
