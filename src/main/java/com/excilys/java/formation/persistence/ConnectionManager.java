@@ -17,8 +17,16 @@ public enum ConnectionManager {
 	 * @throws SQLException
 	 */
 
-	synchronized public static Connection open() throws ClassNotFoundException, SQLException {
+	/****
+	 *  PROBLEME OPEN ouvre plusieurs connections
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
+	synchronized public  Connection open() throws ClassNotFoundException, SQLException {
+		System.out.println("ETAT Conn "+conn);
 		if (conn == null || conn.isClosed()) {
+			System.out.println("NEW OPEN");
 			ResourceBundle resources = ResourceBundle.getBundle(RESOURCE_PATH);
 			String url = resources.getString("url");
 			String user = resources.getString("user");
@@ -28,9 +36,8 @@ public enum ConnectionManager {
 		return conn;
 	}
 
-	synchronized public static Connection open(String url, String user, String pass) throws ClassNotFoundException, SQLException {
+	synchronized public  Connection open(String url, String user, String pass) throws ClassNotFoundException, SQLException {
 		if (conn == null || conn.isClosed()) {
-			ResourceBundle resources = ResourceBundle.getBundle(RESOURCE_PATH);
 			conn = DriverManager.getConnection(url, user, pass);
 		}
 		return conn;

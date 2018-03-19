@@ -38,7 +38,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
 	public List<Computer> getAll() throws ClassNotFoundException, SQLException{
 		ComputerMapper computerMapper = ComputerMapper.INSTANCE;
 		List<Computer> computers = new ArrayList<>();
-		try (Connection connection = ConnectionManager.open();
+		try (Connection connection = ConnectionManager.INSTANCE.open();
 				PreparedStatement stmt = connection.prepareStatement(SELECT_ALL_JOIN);){
 			ResultSet res = stmt.executeQuery();
 			computers = computerMapper.createComputerListFromResultSet(res);
@@ -54,7 +54,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
 	public List<Computer> get(int offset, int size) throws ClassNotFoundException, SQLException{
 		ComputerMapper computerMapper = ComputerMapper.INSTANCE;
 		List<Computer> computers = new ArrayList<>();
-		try(Connection connection = ConnectionManager.open();
+		try(Connection connection = ConnectionManager.INSTANCE.open();
 				PreparedStatement stmt = connection.prepareStatement(SELECT_LIMIT);){
 			stmt.setInt(1, offset);
 			stmt.setInt(2, size);
@@ -71,9 +71,10 @@ public enum ComputerDAOImpl implements ComputerDAO {
 
 	@Override
 	public Optional<Computer> getComputerById(long id) throws SQLException, ClassNotFoundException  {
+		System.out.println("-----\n-------"+ConnectionManager.INSTANCE.open());
 		ComputerMapper computerMapper = ComputerMapper.INSTANCE;
 		Optional<Computer> c = Optional.empty();
-		try (Connection connection = ConnectionManager.open();
+		try (Connection connection = ConnectionManager.INSTANCE.open();
 				PreparedStatement stmt = connection.prepareStatement(SELECT_BY_ID_JOIN)){
 			stmt.setLong(1, id);
 			ResultSet res = stmt.executeQuery();
@@ -105,7 +106,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
 	@Override
 	public Long createComputer(Computer c) throws SQLException, ClassNotFoundException {
 		long id = -1;
-		try (Connection connection = ConnectionManager.open();
+		try (Connection connection = ConnectionManager.INSTANCE.open();
 				PreparedStatement stmt = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);){
 			stmt.setString(1, c.getName());
 			setCompanyIdOrNull(c.getCompany(), stmt, 2);
@@ -125,7 +126,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
 
 	@Override
 	public boolean update (Computer c) throws SQLException, ClassNotFoundException {
-		try (Connection connection = ConnectionManager.open();
+		try (Connection connection = ConnectionManager.INSTANCE.open();
 				PreparedStatement stmt = connection.prepareStatement(UPDATE);){
 			stmt.setString(1, c.getName());
 			setDateOrNull(c.getIntroduced(), stmt, 2);
@@ -145,7 +146,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
 
 	@Override
 	public boolean delete(long id) throws SQLException, ClassNotFoundException {
-		try (Connection connection = ConnectionManager.open();
+		try (Connection connection = ConnectionManager.INSTANCE.open();
 				PreparedStatement stmt = connection.prepareStatement(DELETE);){
 			stmt.setLong(1,id);
 			int res = stmt.executeUpdate();
@@ -160,7 +161,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
 	@Override
 	public int count() throws SQLException, ClassNotFoundException {
 		int count = - 1;
-		try (Connection connection = ConnectionManager.open();
+		try (Connection connection = ConnectionManager.INSTANCE.open();
 				PreparedStatement stmt = connection.prepareStatement(COUNT);){
 			ResultSet rSet = stmt.executeQuery();
 			rSet.next();

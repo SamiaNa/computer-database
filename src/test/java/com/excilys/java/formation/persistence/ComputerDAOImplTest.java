@@ -2,13 +2,17 @@ package com.excilys.java.formation.persistence;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import com.excilys.java.formation.entities.Computer;
@@ -16,28 +20,17 @@ import com.excilys.java.formation.entities.Computer;
 public class ComputerDAOImplTest{
 
 
-	void createTableCompany() {
-
+	@BeforeAll
+	static void before() throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+		Class.forName("org.hsqldb.jdbcDriver").newInstance();
+		Connection conn = ConnectionManager.INSTANCE.open("jdbc:hsqldb:file:testdb", "sa", "");
+		destroyTables(conn);
+		createTableCompany(conn);
+		createTableComputer(conn);
 	}
 
-	void createTableComputer(Connection conn) throws SQLException {
-		// Create and populate table Company
-		String sql = "  create table company (" +
-				"    id bigint not null identity," +
-				"    name varchar(255)," +
-				"    constraint pk_company primary key (id));";
-		PreparedStatement stmt = conn.prepareStatement(sql);
-		stmt.executeUpdate();
-		stmt = conn.prepareStatement("INSERT INTO company (name) VALUES ('HP');");
-		stmt.executeUpdate();
-		stmt = conn.prepareStatement("INSERT INTO company (name) VALUES ('Dell');");
-		stmt.executeUpdate();
-		stmt = conn.prepareStatement("INSERT INTO company (name) VALUES ('Apple');");
-		stmt.executeUpdate();
 
-	}
-
-	void createTableCompany(Connection conn) throws SQLException{
+	static void createTableCompany(Connection conn) throws SQLException{
 		// Create and populate table Computer
 		String sql = "  create table computer (" +
 				"    id                        bigint not null identity," +
@@ -56,20 +49,34 @@ public class ComputerDAOImplTest{
 		stmt.executeUpdate();
 	}
 
-	void destroyTables(Connection conn) throws SQLException {
+	static void createTableComputer(Connection conn) throws SQLException {
+		// Create and populate table Company
+		String sql = "  create table company (" +
+				"    id bigint not null identity," +
+				"    name varchar(255)," +
+				"    constraint pk_company primary key (id));";
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		stmt.executeUpdate();
+		stmt = conn.prepareStatement("INSERT INTO company (name) VALUES ('HP');");
+		stmt.executeUpdate();
+		stmt = conn.prepareStatement("INSERT INTO company (name) VALUES ('Dell');");
+		stmt.executeUpdate();
+		stmt = conn.prepareStatement("INSERT INTO company (name) VALUES ('Apple');");
+		stmt.executeUpdate();
+
+	}
+
+	static void destroyTables(Connection conn) throws SQLException, ClassNotFoundException {
 		PreparedStatement stmt = conn.prepareStatement("drop table if exists computer;");
 		stmt.executeUpdate();
 		stmt = conn.prepareStatement("drop table if exists company;");
 		stmt.executeUpdate();
 	}
 
+
+
 	@Test
 	void getAllTest() throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException {
-		Class.forName("org.hsqldb.jdbcDriver").newInstance();
-		Connection conn = ConnectionManager.open("jdbc:hsqldb:file:testdb", "sa", "");
-		destroyTables(conn);
-		createTableComputer(conn);
-		createTableCompany(conn);
 		List<Computer> computers = ComputerDAOImpl.INSTANCE.getAll();
 		assertEquals(computers.size(), 3);
 		Computer comp0 = computers.get(0);
@@ -79,7 +86,22 @@ public class ComputerDAOImplTest{
 		assertNull(comp0.getDiscontinued());
 		assertEquals(comp0.getCompany().getId(), 0);
 		assertEquals(comp0.getCompany().getName(), "HP");
-		conn.close();
+	}
+
+	@Test
+	void getComputerByIdTest() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		Optional<Computer> computerOpt = ComputerDAOImpl.INSTANCE.getComputerById(-1);
+		assertFalse(computerOpt.isPresent());
+		computerOpt = ComputerDAOImpl.INSTANCE.getComputerById(10);
+		assertFalse(computerOpt.isPresent());
+		computerOpt = ComputerDAOImpl.INSTANCE.getComputerById(2);
+		assertTrue(computerOpt.isPresent());
+		Computer computer = computerOpt.get();
+		System.out.println("-------\nNAME\n"+computer.getName());
+		assertEquals(computer.getName(), "Apple IIe");
+		assertEquals(computer.getId(), 2);
+		assertEquals(computer.getCompany().getId(), 2);
+		assertEquals(computer.getCompany().getName(), "Apple");
 	}
 
 }

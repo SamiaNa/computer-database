@@ -12,9 +12,9 @@ public class MySQLConnectionTest {
 
 	@Test
 	void test() throws ClassNotFoundException, SQLException {
-		Connection c = ConnectionManager.open();
+		Connection c = ConnectionManager.INSTANCE.open();
 		assertTrue(c.isValid(100));
-		Connection c1 = ConnectionManager.open();
+		Connection c1 = ConnectionManager.INSTANCE.open();
 		assertTrue(c == c1);
 		c.close();
 		assertTrue(c.isClosed());

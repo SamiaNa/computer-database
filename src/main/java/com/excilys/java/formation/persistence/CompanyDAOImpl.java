@@ -29,7 +29,7 @@ public enum CompanyDAOImpl implements CompanyDAO {
 	public List<Company> getAll() throws SQLException, ClassNotFoundException{
 		CompanyMapper companyMapper = CompanyMapper.INSTANCE;
 		List<Company> companies = new ArrayList<>();
-		try (Connection connection = ConnectionManager.open();
+		try (Connection connection = ConnectionManager.INSTANCE.open();
 				PreparedStatement stmt = connection.prepareStatement(SELECT);){
 			ResultSet res = stmt.executeQuery();
 			companies = companyMapper.createCompanyListFromResultSet(res);
@@ -45,7 +45,7 @@ public enum CompanyDAOImpl implements CompanyDAO {
 	public List<Company> get(int offset, int size) throws SQLException, ClassNotFoundException{
 		CompanyMapper companyMapper = CompanyMapper.INSTANCE;
 		List<Company> companies = new ArrayList<>();
-		try (Connection connection = ConnectionManager.open();
+		try (Connection connection = ConnectionManager.INSTANCE.open();
 				PreparedStatement stmt = connection.prepareStatement(SELECT_LIMIT);){
 			stmt.setInt(1, offset);
 			stmt.setInt(2, size);
@@ -64,7 +64,7 @@ public enum CompanyDAOImpl implements CompanyDAO {
 	public List<Company> getByName(String name) throws SQLException, ClassNotFoundException{
 		CompanyMapper companyMapper = CompanyMapper.INSTANCE;
 		List<Company> companies = new ArrayList<>();
-		try (Connection connection = ConnectionManager.open();
+		try (Connection connection = ConnectionManager.INSTANCE.open();
 				PreparedStatement stmt = connection.prepareStatement(SELECT_BY_NAME);){
 			stmt.setString(1, "%"+name+"%");
 			ResultSet res = stmt.executeQuery();
@@ -80,7 +80,7 @@ public enum CompanyDAOImpl implements CompanyDAO {
 
 	@Override
 	public boolean checkCompanyById(long id) throws SQLException, ClassNotFoundException  {
-		try (Connection connection = ConnectionManager.open();
+		try (Connection connection = ConnectionManager.INSTANCE.open();
 				PreparedStatement stmt = connection.prepareStatement(SELECT_BY_ID);){
 			stmt.setLong(1, id);
 			ResultSet res = stmt.executeQuery();
@@ -96,7 +96,7 @@ public enum CompanyDAOImpl implements CompanyDAO {
 
 	@Override
 	public int count() throws ClassNotFoundException, SQLException {
-		try (Connection connection = ConnectionManager.open();
+		try (Connection connection = ConnectionManager.INSTANCE.open();
 				PreparedStatement stmt = connection.prepareStatement(COUNT);){
 			ResultSet res = stmt.executeQuery();
 			res.next();
