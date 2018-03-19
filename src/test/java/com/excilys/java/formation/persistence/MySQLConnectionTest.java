@@ -1,16 +1,14 @@
 package com.excilys.java.formation.persistence;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.junit.jupiter.api.Test;
 
-import com.excilys.java.formation.persistence.ConnectionManager;
 
-
-class MySQLConnectionTest {
+public class MySQLConnectionTest {
 
 	@Test
 	void test() throws ClassNotFoundException, SQLException {

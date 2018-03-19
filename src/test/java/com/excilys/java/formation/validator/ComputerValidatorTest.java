@@ -1,6 +1,6 @@
 package com.excilys.java.formation.validator;
 
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.sql.SQLException;
@@ -12,7 +12,7 @@ import org.junit.jupiter.api.function.Executable;
 
 import com.excilys.java.formation.entities.Computer;
 
-class ComputerValidatorTest {
+public class ComputerValidatorTest {
 
 	@Test
 	void testCheckName() throws ValidatorException  {
