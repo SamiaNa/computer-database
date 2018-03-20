@@ -57,6 +57,7 @@ public class ComputerDAOImplTest{
 		stmt.executeUpdate();
 	}
 
+
 	static void createTableComputer(Connection conn) throws SQLException {
 		// Create and populate table Company
 		String sql = "  create table company (" +
@@ -114,7 +115,7 @@ public class ComputerDAOImplTest{
 		assertEquals(computer.getId(), 2);
 		assertEquals(computer.getCompany().getId(), 2);
 		assertEquals(computer.getCompany().getName(), "Apple");
-
 	}
+
 
 }

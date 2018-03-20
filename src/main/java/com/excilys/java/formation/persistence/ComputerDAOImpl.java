@@ -46,6 +46,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
 			for (Throwable e : se) {
 				logger.error(e.toString());
 			}
+			throw se;
 		}
 		return computers;
 	}
@@ -64,6 +65,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
 			for (Throwable e : se) {
 				logger.error(e.toString());
 			}
+			throw se;
 		}
 		return computers;
 	}
@@ -82,6 +84,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
 			for (Throwable e : se) {
 				logger.error(e.toString());
 			}
+			throw se;
 		}
 		return c;
 	}
@@ -119,6 +122,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
 			for (Throwable e : se) {
 				logger.error(e.toString());
 			}
+			throw se;
 		}
 		return id;
 	}
@@ -138,8 +142,8 @@ public enum ComputerDAOImpl implements ComputerDAO {
 			for (Throwable e : se) {
 				logger.error(e.toString());
 			}
+			return false;
 		}
-		return false;
 	}
 
 
@@ -169,6 +173,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
 			for (Throwable e : se) {
 				logger.error(e.toString());
 			}
+			throw se;
 		}
 		return count;
 	}
