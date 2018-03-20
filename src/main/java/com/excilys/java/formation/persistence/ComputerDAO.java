@@ -12,9 +12,9 @@ public interface ComputerDAO {
 	 * Returns the list of all computers in the database
 	 * @return ArrayList of Computer
 	 * @throws SQLException
-	 * @throws ClassNotFoundException 
+	 * @throws ClassNotFoundException
 	 */
-	List<Computer> getAll() throws ClassNotFoundException, SQLException;
+	List<Computer> getAll() throws ClassNotFoundException, DAOException;
 
 	/**
 	 * Returns a list of all computers between lines offset and offset + size
@@ -24,7 +24,7 @@ public interface ComputerDAO {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	List<Computer> get(int offset, int size) throws ClassNotFoundException, SQLException;
+	List<Computer> get(int offset, int size) throws ClassNotFoundException, DAOException;
 
 	/**
 	 * Returns the computer with the specified id in the database
@@ -35,14 +35,14 @@ public interface ComputerDAO {
 	 * @throws ClassNotFoundException
 	 */
 
-	Optional<Computer> getComputerById(long id) throws SQLException, NoComputerInResultSetException, ClassNotFoundException;
+	Optional<Computer> getComputerById(long id) throws DAOException, ClassNotFoundException;
 
-	Long createComputer(Computer c) throws SQLException, ClassNotFoundException;
+	Long createComputer(Computer c) throws DAOException, ClassNotFoundException, DAOConstraintException;
 
-	boolean update(Computer c) throws SQLException, ClassNotFoundException;
+	boolean update(Computer c) throws DAOException, ClassNotFoundException;
 
-	boolean delete(long id) throws SQLException, ClassNotFoundException;
+	boolean delete(long id) throws DAOException, ClassNotFoundException;
 
-	int count() throws SQLException, ClassNotFoundException;
+	int count() throws DAOException, ClassNotFoundException;
 
 }

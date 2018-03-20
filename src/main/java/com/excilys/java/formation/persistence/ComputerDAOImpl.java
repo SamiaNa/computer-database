@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
 
 
 	private static String SELECT_ALL_JOIN = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id;";
-	private static String SELECT_LIMIT = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id LIMIT ?,?;";
+	private static String SELECT_LIMIT = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id LIMIT ? OFFSET ?;";
 	private static String SELECT_BY_ID_JOIN = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id = ? ;";
 	private static String INSERT = "INSERT INTO computer (name, company_id, introduced, discontinued) VALUES (?, ?, ?, ?);";
 	private static String UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?;";
@@ -35,7 +36,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Override
-	public List<Computer> getAll() throws ClassNotFoundException, SQLException{
+	public List<Computer> getAll() throws ClassNotFoundException, DAOException{
 		ComputerMapper computerMapper = ComputerMapper.INSTANCE;
 		List<Computer> computers = new ArrayList<>();
 		try (Connection connection = ConnectionManager.INSTANCE.open();
@@ -46,33 +47,33 @@ public enum ComputerDAOImpl implements ComputerDAO {
 			for (Throwable e : se) {
 				logger.error(e.toString());
 			}
-			throw se;
+			throw new DAOException(se.getMessage());
 		}
 		return computers;
 	}
 
 	@Override
-	public List<Computer> get(int offset, int size) throws ClassNotFoundException, SQLException{
+	public List<Computer> get(int offset, int size) throws ClassNotFoundException, DAOException {
 		ComputerMapper computerMapper = ComputerMapper.INSTANCE;
 		List<Computer> computers = new ArrayList<>();
 		try(Connection connection = ConnectionManager.INSTANCE.open();
 				PreparedStatement stmt = connection.prepareStatement(SELECT_LIMIT);){
-			stmt.setInt(1, offset);
-			stmt.setInt(2, size);
+			stmt.setInt(1, size);
+			stmt.setInt(2, offset);
 			ResultSet res = stmt.executeQuery();
 			computers = computerMapper.createComputerListFromResultSet(res);
 		}catch(SQLException se) {
 			for (Throwable e : se) {
 				logger.error(e.toString());
 			}
-			throw se;
+			throw new DAOException(se.getMessage());
 		}
 		return computers;
 	}
 
 
 	@Override
-	public Optional<Computer> getComputerById(long id) throws SQLException, ClassNotFoundException  {
+	public Optional<Computer> getComputerById(long id) throws DAOException, ClassNotFoundException  {
 		ComputerMapper computerMapper = ComputerMapper.INSTANCE;
 		Optional<Computer> c = Optional.empty();
 		try (Connection connection = ConnectionManager.INSTANCE.open();
@@ -84,7 +85,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
 			for (Throwable e : se) {
 				logger.error(e.toString());
 			}
-			throw se;
+			throw new DAOException(se.getMessage());
 		}
 		return c;
 	}
@@ -106,7 +107,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
 	}
 
 	@Override
-	public Long createComputer(Computer c) throws SQLException, ClassNotFoundException {
+	public Long createComputer(Computer c) throws DAOException, ClassNotFoundException, DAOConstraintException {
 		long id = -1;
 		try (Connection connection = ConnectionManager.INSTANCE.open();
 				PreparedStatement stmt = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);){
@@ -118,17 +119,21 @@ public enum ComputerDAOImpl implements ComputerDAO {
 			ResultSet res = stmt.getGeneratedKeys();
 			res.next();
 			id = res.getLong(1);
+		}
+		catch(SQLIntegrityConstraintViolationException e) {
+			throw new DAOConstraintException(e.getMessage());
 		}catch(SQLException se) {
+			System.err.println("---------\n Exception se");
 			for (Throwable e : se) {
 				logger.error(e.toString());
 			}
-			throw se;
+			throw new DAOException(se.getMessage());
 		}
 		return id;
 	}
 
 	@Override
-	public boolean update (Computer c) throws SQLException, ClassNotFoundException {
+	public boolean update (Computer c) throws ClassNotFoundException, DAOException {
 		try (Connection connection = ConnectionManager.INSTANCE.open();
 				PreparedStatement stmt = connection.prepareStatement(UPDATE);){
 			stmt.setString(1, c.getName());
@@ -142,13 +147,13 @@ public enum ComputerDAOImpl implements ComputerDAO {
 			for (Throwable e : se) {
 				logger.error(e.toString());
 			}
-			return false;
+			throw new DAOException(se.getMessage());
 		}
 	}
 
 
 	@Override
-	public boolean delete(long id) throws SQLException, ClassNotFoundException {
+	public boolean delete(long id) throws DAOException, ClassNotFoundException {
 		try (Connection connection = ConnectionManager.INSTANCE.open();
 				PreparedStatement stmt = connection.prepareStatement(DELETE);){
 			stmt.setLong(1,id);
@@ -158,11 +163,12 @@ public enum ComputerDAOImpl implements ComputerDAO {
 			for (Throwable e : se) {
 				logger.error(e.toString());
 			}
-		}	return false;
+			throw new DAOException(se.getMessage());
+		}
 	}
 
 	@Override
-	public int count() throws SQLException, ClassNotFoundException {
+	public int count() throws DAOException, ClassNotFoundException {
 		int count = - 1;
 		try (Connection connection = ConnectionManager.INSTANCE.open();
 				PreparedStatement stmt = connection.prepareStatement(COUNT);){
@@ -173,7 +179,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
 			for (Throwable e : se) {
 				logger.error(e.toString());
 			}
-			throw se;
+			throw new DAOException(se.getMessage());
 		}
 		return count;
 	}

@@ -1,8 +1,8 @@
 package com.excilys.java.formation.entities;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 
+import com.excilys.java.formation.persistence.DAOException;
 import com.excilys.java.formation.validator.CompanyValidator;
 import com.excilys.java.formation.validator.ComputerValidator;
 import com.excilys.java.formation.validator.ValidatorException;
@@ -115,13 +115,13 @@ public class Computer {
 			return this;
 		}
 
-		public StringToComputerBuilder setId(String strId) throws ClassNotFoundException, SQLException, ValidatorException {
+		public StringToComputerBuilder setId(String strId) throws ClassNotFoundException, DAOException, ValidatorException {
 			this.id = ComputerValidator.INSTANCE.checkComputerId(strId);
 			this.id = Long.parseLong(strId);
 			return this;
 		}
 
-		public StringToComputerBuilder setCompany(String strId) throws ClassNotFoundException, SQLException, ValidatorException {
+		public StringToComputerBuilder setCompany(String strId) throws ClassNotFoundException, DAOException, ValidatorException {
 			if (!(strId.equals("null") || strId.equals(""))) {
 				Company comp = new Company();
 				comp.setId(CompanyValidator.INSTANCE.checkCompanyIdOrNull(strId));
@@ -145,7 +145,7 @@ public class Computer {
 			return new Computer (this);
 		}
 
-		public Computer build(ComputerStringAttributes compStr) throws ClassNotFoundException, ValidatorException, SQLException {
+		public Computer build(ComputerStringAttributes compStr) throws ClassNotFoundException, ValidatorException, DAOException {
 			this.setName(compStr.getName())
 			.setCompany(compStr.getCompanyId())
 			.setId(compStr.getId())

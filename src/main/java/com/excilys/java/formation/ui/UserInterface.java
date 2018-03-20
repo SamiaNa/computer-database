@@ -1,6 +1,5 @@
 package com.excilys.java.formation.ui;
 
-import java.sql.SQLException;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +12,7 @@ import com.excilys.java.formation.entities.ComputerStringAttributes;
 import com.excilys.java.formation.page.CompanyPage;
 import com.excilys.java.formation.page.ComputerPage;
 import com.excilys.java.formation.page.Page;
+import com.excilys.java.formation.persistence.DAOException;
 import com.excilys.java.formation.persistence.NoComputerInResultSetException;
 import com.excilys.java.formation.service.CompanyService;
 import com.excilys.java.formation.service.ComputerService;
@@ -22,7 +22,7 @@ public class UserInterface {
 
 	private static final int PAGE_SIZE = 10;
 
-	private static void printPagedList(Scanner scanner, Page page) throws ClassNotFoundException, SQLException {
+	private static void printPagedList(Scanner scanner, Page page) throws ClassNotFoundException,  DAOException {
 		scanner.nextLine();
 		while (true) {
 			page.printPage();
@@ -49,7 +49,7 @@ public class UserInterface {
 	}
 
 
-	private static void findCompanyByName(Scanner scanner) throws ClassNotFoundException, SQLException {
+	private static void findCompanyByName(Scanner scanner) throws ClassNotFoundException, DAOException {
 		CompanyService companyService = CompanyService.INSTANCE;
 		System.out.println("Enter name :");
 		scanner.nextLine();
@@ -68,10 +68,10 @@ public class UserInterface {
 	 * Prints the details of a computer
 	 * @param scanner
 	 * @param computerService
-	 * @throws SQLException
+	 * @throws DAOException
 	 * @throws ClassNotFoundException
 	 */
-	private static void printComputerByID(Scanner scanner, ComputerService computerService) throws SQLException, ClassNotFoundException {
+	private static void printComputerByID(Scanner scanner, ComputerService computerService) throws DAOException, ClassNotFoundException {
 		System.out.println("Enter id of computer : ");
 		try {
 			Long computerId = scanner.nextLong();
@@ -92,11 +92,11 @@ public class UserInterface {
 	 * Creates a computer
 	 * @param scanner
 	 * @param computerService
-	 * @throws SQLException
+	 * @throws DAOException
 	 * @throws ClassNotFoundException
 	 * @throws ValidatorException
 	 */
-	private static void createComputer(Scanner scanner, ComputerService computerService) throws SQLException, ClassNotFoundException {
+	private static void createComputer(Scanner scanner, ComputerService computerService) throws DAOException, ClassNotFoundException {
 		scanner.nextLine();
 		System.out.println("Enter name");
 		String name = scanner.nextLine();
@@ -112,8 +112,12 @@ public class UserInterface {
 			.setIntroduced(introducedStr)
 			.setDiscontinued(discontinuedStr)
 			.setCompany(companyIdStr);
-			Computer c = computerService.createComputer(builder.build());
-			System.out.println("Successful creation with id "+c.getId());
+			Optional<Computer> optComp = computerService.createComputer(builder.build());
+			if (optComp.isPresent()) {
+				System.out.println("Successful creation with id "+optComp.get().getId());
+			}else {
+				System.out.println("Constraint violation, make sure company exists in database");
+			}
 		}catch(ValidatorException e) {
 			System.out.println(e.getMessage());
 		}
@@ -128,7 +132,7 @@ public class UserInterface {
 	}
 
 	private static void updateAttributes(Scanner scanner, ComputerService computerService, Long computerId)
-			throws ClassNotFoundException, SQLException, NoComputerInResultSetException, ValidatorException {
+			throws ClassNotFoundException, DAOException, NoComputerInResultSetException, ValidatorException {
 		Optional<Computer> optComputer = computerService.getComputerById(computerId);
 		if (!optComputer.isPresent()) {
 			System.out.println("No computer found with id "+computerId);
@@ -158,7 +162,7 @@ public class UserInterface {
 		}
 	}
 
-	private static void updateComputer(Scanner scanner, ComputerService computerService) throws  SQLException, ClassNotFoundException {
+	private static void updateComputer(Scanner scanner, ComputerService computerService) throws  DAOException, ClassNotFoundException {
 		System.out.println("Enter id of computer to update");
 		try {
 			Long computerId = scanner.nextLong();
@@ -171,7 +175,7 @@ public class UserInterface {
 
 	}
 
-	private static void deleteComputer(Scanner scanner, ComputerService computerService) throws SQLException, ClassNotFoundException {
+	private static void deleteComputer(Scanner scanner, ComputerService computerService) throws DAOException, ClassNotFoundException {
 		System.out.println("Enter id of computer : ");
 		try {
 			Long computerId = scanner.nextLong();
@@ -188,7 +192,7 @@ public class UserInterface {
 		}
 	}
 
-	public static void startUI(Scanner scanner) throws SQLException, ClassNotFoundException, ValidatorException {
+	public static void startUI(Scanner scanner) throws DAOException, ClassNotFoundException, ValidatorException {
 		while (true) {
 			System.out.println("Computer database application\n"+
 					"Select operation:\n"+
@@ -240,7 +244,7 @@ public class UserInterface {
 		}
 
 	}
-	public static void main (String [] args) throws ClassNotFoundException, SQLException, ValidatorException{
+	public static void main (String [] args) throws ClassNotFoundException, DAOException, ValidatorException{
 		Scanner scanner = new Scanner (System.in);
 		startUI(scanner);
 		scanner.close();

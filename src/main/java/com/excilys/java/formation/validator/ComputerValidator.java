@@ -1,13 +1,12 @@
 package com.excilys.java.formation.validator;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
 import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.persistence.ComputerDAO;
 import com.excilys.java.formation.persistence.ComputerDAOImpl;
-import com.excilys.java.formation.persistence.NoComputerInResultSetException;
+import com.excilys.java.formation.persistence.DAOException;
 
 public enum ComputerValidator{
 
@@ -41,14 +40,12 @@ public enum ComputerValidator{
 		}
 	}
 
-	public Long checkComputerId (String strId) throws ClassNotFoundException, SQLException, ValidatorException {
+	public Long checkComputerId (String strId) throws ClassNotFoundException, DAOException, ValidatorException {
 		try {
 			long id = Long.parseLong(strId);
 			ComputerDAO computerDAO = ComputerDAOImpl.INSTANCE;
 			computerDAO.getComputerById(id);
 			return id;
-		}catch(NoComputerInResultSetException e){
-			throw new ValidatorException("No existing company with id "+strId);
 		}catch(NumberFormatException e) {
 			throw new ValidatorException("Only numbers are accepted as id");
 		}
