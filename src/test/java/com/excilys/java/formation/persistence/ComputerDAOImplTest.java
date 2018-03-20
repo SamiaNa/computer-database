@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.excilys.java.formation.entities.Computer;
@@ -27,6 +28,13 @@ public class ComputerDAOImplTest{
 		destroyTables(conn);
 		createTableCompany(conn);
 		createTableComputer(conn);
+	}
+
+	@BeforeEach
+	void beforeEach() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		Class.forName("org.hsqldb.jdbcDriver").newInstance();
+		ConnectionManager.INSTANCE.open("jdbc:hsqldb:file:testdb", "sa", "");
+
 	}
 
 
@@ -88,20 +96,25 @@ public class ComputerDAOImplTest{
 		assertEquals(comp0.getCompany().getName(), "HP");
 	}
 
+
 	@Test
 	void getComputerByIdTest() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		ConnectionManager.INSTANCE.close();
+		ConnectionManager.INSTANCE.open("jdbc:hsqldb:file:testdb", "sa", "");
 		Optional<Computer> computerOpt = ComputerDAOImpl.INSTANCE.getComputerById(-1);
 		assertFalse(computerOpt.isPresent());
+		ConnectionManager.INSTANCE.open("jdbc:hsqldb:file:testdb", "sa", "");
 		computerOpt = ComputerDAOImpl.INSTANCE.getComputerById(10);
 		assertFalse(computerOpt.isPresent());
+		ConnectionManager.INSTANCE.open("jdbc:hsqldb:file:testdb", "sa", "");
 		computerOpt = ComputerDAOImpl.INSTANCE.getComputerById(2);
 		assertTrue(computerOpt.isPresent());
 		Computer computer = computerOpt.get();
-		System.out.println("-------\nNAME\n"+computer.getName());
 		assertEquals(computer.getName(), "Apple IIe");
 		assertEquals(computer.getId(), 2);
 		assertEquals(computer.getCompany().getId(), 2);
 		assertEquals(computer.getCompany().getName(), "Apple");
+
 	}
 
 }

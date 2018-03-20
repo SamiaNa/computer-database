@@ -10,23 +10,15 @@ public enum ConnectionManager {
 	private static Connection conn = null;
 	private static final String RESOURCE_PATH = "connection";
 
-	/**
-	 *  Creates or return a connection to mysql database
-	 * @return Connection to mysql database computer-database-db
-	 * @throws ClassNotFoundException
-	 * @throws SQLException
-	 */
 
 	/****
-	 *  PROBLEME OPEN ouvre plusieurs connections
+	 *  ouvre plusieurs connections
 	 * @return
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
 	synchronized public  Connection open() throws ClassNotFoundException, SQLException {
-		System.out.println("ETAT Conn "+conn);
 		if (conn == null || conn.isClosed()) {
-			System.out.println("NEW OPEN");
 			ResourceBundle resources = ResourceBundle.getBundle(RESOURCE_PATH);
 			String url = resources.getString("url");
 			String user = resources.getString("user");
@@ -48,7 +40,7 @@ public enum ConnectionManager {
 	 * Closes mysql connection to computer-database-db if not already closed
 	 * @throws SQLException
 	 */
-	synchronized public static void close () throws SQLException {
+	synchronized public  void close () throws SQLException {
 		if (conn != null) {
 			conn.close();
 		}

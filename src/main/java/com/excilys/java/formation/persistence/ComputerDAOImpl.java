@@ -71,7 +71,6 @@ public enum ComputerDAOImpl implements ComputerDAO {
 
 	@Override
 	public Optional<Computer> getComputerById(long id) throws SQLException, ClassNotFoundException  {
-		System.out.println("-----\n-------"+ConnectionManager.INSTANCE.open());
 		ComputerMapper computerMapper = ComputerMapper.INSTANCE;
 		Optional<Computer> c = Optional.empty();
 		try (Connection connection = ConnectionManager.INSTANCE.open();
