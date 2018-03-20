@@ -4,42 +4,50 @@ package com.excilys.java.formation.persistence;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
+import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.entities.Computer;
 
 public class ComputerDAOImplTest{
 
 
-	@BeforeAll
-	static void before() throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+	static Connection openTestConnection() throws ClassNotFoundException, SQLException {
+		return ConnectionManager.INSTANCE.open("jdbc:hsqldb:file:testdb", "sa", "");
+	}
+
+	@BeforeEach
+	void before() throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		Class.forName("org.hsqldb.jdbcDriver").newInstance();
 		Connection conn = ConnectionManager.INSTANCE.open("jdbc:hsqldb:file:testdb", "sa", "");
 		destroyTables(conn);
 		createTableCompany(conn);
 		createTableComputer(conn);
+		populateTableCompany(conn);
+		populateTableComputer(conn);
 	}
 
-	@BeforeEach
+	/*@BeforeEach
 	void beforeEach() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		Class.forName("org.hsqldb.jdbcDriver").newInstance();
 		ConnectionManager.INSTANCE.open("jdbc:hsqldb:file:testdb", "sa", "");
 
 	}
+	 */
 
-
-	static void createTableCompany(Connection conn) throws SQLException{
-		// Create and populate table Computer
+	static void createTableCompany(Connection conn) throws SQLException, ClassNotFoundException{
 		String sql = "  create table computer (" +
 				"    id                        bigint not null identity," +
 				"    name                      varchar(255)," +
@@ -49,24 +57,32 @@ public class ComputerDAOImplTest{
 				"    constraint pk_computer primary key (id));";
 		PreparedStatement stmt = conn.prepareStatement(sql);
 		stmt.executeUpdate();
-		stmt = conn.prepareStatement("INSERT INTO computer (name, company_id, introduced, discontinued) VALUES ('HP1', 0, NULL, NULL);");
-		stmt.executeUpdate();
-		stmt = conn.prepareStatement("INSERT INTO computer (name, company_id, introduced, discontinued) VALUES ('Ordi1', NULL, '1998-01-01' , NULL);");
-		stmt.executeUpdate();
-		stmt = conn.prepareStatement("insert into computer (name, company_id, introduced, discontinued) values ('Apple IIe', 2,null,null);");
-		stmt.executeUpdate();
+
 	}
 
 
 	static void createTableComputer(Connection conn) throws SQLException {
-		// Create and populate table Company
 		String sql = "  create table company (" +
 				"    id bigint not null identity," +
 				"    name varchar(255)," +
 				"    constraint pk_company primary key (id));";
 		PreparedStatement stmt = conn.prepareStatement(sql);
 		stmt.executeUpdate();
-		stmt = conn.prepareStatement("INSERT INTO company (name) VALUES ('HP');");
+		stmt = conn.prepareStatement("alter table computer add constraint fk_computer_company_1 foreign key (company_id) references company (id) on delete restrict on update restrict;");
+		stmt.executeUpdate();
+	}
+
+	static void populateTableComputer(Connection conn) throws SQLException {
+		PreparedStatement stmt = conn.prepareStatement("INSERT INTO computer (name, company_id, introduced, discontinued) VALUES ('HP1', 0, NULL, NULL);");
+		stmt.executeUpdate();
+		stmt = conn.prepareStatement("INSERT INTO computer (name, company_id, introduced, discontinued) VALUES ('Ordi1', NULL, '1998-01-01' , NULL);");
+		stmt.executeUpdate();
+		stmt = conn.prepareStatement("INSERT INTO computer (name, company_id, introduced, discontinued) values ('Apple IIe', 2,null,null);");
+		stmt.executeUpdate();
+	}
+
+	static void populateTableCompany(Connection conn) throws SQLException {
+		PreparedStatement stmt = conn.prepareStatement("INSERT INTO company (name) VALUES ('HP');");
 		stmt.executeUpdate();
 		stmt = conn.prepareStatement("INSERT INTO company (name) VALUES ('Dell');");
 		stmt.executeUpdate();
@@ -75,7 +91,7 @@ public class ComputerDAOImplTest{
 
 	}
 
-	static void destroyTables(Connection conn) throws SQLException, ClassNotFoundException {
+	void destroyTables(Connection conn) throws SQLException, ClassNotFoundException {
 		PreparedStatement stmt = conn.prepareStatement("drop table if exists computer;");
 		stmt.executeUpdate();
 		stmt = conn.prepareStatement("drop table if exists company;");
@@ -83,9 +99,8 @@ public class ComputerDAOImplTest{
 	}
 
 
-
 	@Test
-	void getAllTest() throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException {
+	void getAllTest() throws ClassNotFoundException, DAOException, InstantiationException, IllegalAccessException {
 		List<Computer> computers = ComputerDAOImpl.INSTANCE.getAll();
 		assertEquals(computers.size(), 3);
 		Computer comp0 = computers.get(0);
@@ -99,15 +114,15 @@ public class ComputerDAOImplTest{
 
 
 	@Test
-	void getComputerByIdTest() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+	void getComputerByIdTest() throws InstantiationException, IllegalAccessException, ClassNotFoundException, DAOException, SQLException {
 		ConnectionManager.INSTANCE.close();
-		ConnectionManager.INSTANCE.open("jdbc:hsqldb:file:testdb", "sa", "");
+		openTestConnection();
 		Optional<Computer> computerOpt = ComputerDAOImpl.INSTANCE.getComputerById(-1);
 		assertFalse(computerOpt.isPresent());
-		ConnectionManager.INSTANCE.open("jdbc:hsqldb:file:testdb", "sa", "");
+		openTestConnection();
 		computerOpt = ComputerDAOImpl.INSTANCE.getComputerById(10);
 		assertFalse(computerOpt.isPresent());
-		ConnectionManager.INSTANCE.open("jdbc:hsqldb:file:testdb", "sa", "");
+		openTestConnection();
 		computerOpt = ComputerDAOImpl.INSTANCE.getComputerById(2);
 		assertTrue(computerOpt.isPresent());
 		Computer computer = computerOpt.get();
@@ -117,5 +132,29 @@ public class ComputerDAOImplTest{
 		assertEquals(computer.getCompany().getName(), "Apple");
 	}
 
+
+	@Test
+	void createComputerTest () throws ClassNotFoundException, DAOException, SQLException, DAOConstraintException {
+		ConnectionManager.INSTANCE.close();
+		openTestConnection();
+		Computer c0 = new Computer ("Ordi1", null, null, new Company(1, null));
+		long id = ComputerDAOImpl.INSTANCE.createComputer(c0);
+		Connection conn = openTestConnection();
+		PreparedStatement stmt = conn.prepareStatement("SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE id = ?");
+		stmt.setLong(1, id);
+		ResultSet res =	stmt.executeQuery();
+		assertTrue(res.next());
+		assertEquals(res.getLong(1), id);
+		assertEquals(res.getString(2), c0.getName());
+		assertEquals(res.getDate(3), c0.getIntroduced());
+		assertEquals(res.getDate(4), c0.getDiscontinued());
+		assertEquals(res.getLong(5), c0.getCompany().getId());
+		assertEquals(res.getString(6), "Dell");
+
+		conn = openTestConnection();
+		Computer c1 = new Computer ("Ordi1", null, null, new Company(6, null));
+		Executable create = () -> {ComputerDAOImpl.INSTANCE.createComputer(c1);};
+		assertThrows(DAOConstraintException.class, create);
+	}
 
 }

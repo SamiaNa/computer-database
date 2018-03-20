@@ -9,26 +9,25 @@ import com.excilys.java.formation.persistence.DAOException;
 
 public enum CompanyService {
 
-	INSTANCE;
+    INSTANCE;
 
+    public List<Company> getCompaniesList() throws DAOException, ClassNotFoundException {
+        CompanyDAO companyDAO = CompanyDAOImpl.INSTANCE;
+        return companyDAO.getAll();
+    }
 
-	public List<Company> getCompaniesList() throws DAOException, ClassNotFoundException {
-		CompanyDAO companyDAO = CompanyDAOImpl.INSTANCE;
-		return companyDAO.getAll();
-	}
+    public List<Company> getCompaniesList(int offset, int size) throws ClassNotFoundException, DAOException {
+        CompanyDAO companyDAO = CompanyDAOImpl.INSTANCE;
+        return companyDAO.get(offset, size);
+    }
 
-	public List<Company> getCompaniesList(int offset, int size) throws ClassNotFoundException, DAOException{
-		CompanyDAO companyDAO = CompanyDAOImpl.INSTANCE;
-		return companyDAO.get(offset, size);
-	}
+    public int count() throws ClassNotFoundException, DAOException {
+        return CompanyDAOImpl.INSTANCE.count();
+    }
 
-	public int count() throws ClassNotFoundException, DAOException {
-		return CompanyDAOImpl.INSTANCE.count();
-	}
+    public List<Company> getCompaniesByName(String name) throws ClassNotFoundException, DAOException {
+        CompanyDAO companyDAO = CompanyDAOImpl.INSTANCE;
+        return companyDAO.getByName(name);
 
-	public List<Company> getCompaniesByName(String name) throws ClassNotFoundException, DAOException{
-		CompanyDAO companyDAO = CompanyDAOImpl.INSTANCE;
-		return companyDAO.getByName(name);
-
-	}
+    }
 }

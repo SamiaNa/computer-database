@@ -1,12 +1,17 @@
 package com.excilys.java.formation.persistence;
 
-public class DAOConstraintException extends Exception{
+public class DAOConstraintException extends Exception {
 
-	public DAOConstraintException() {
-		super();
-	}
+    /**
+     *
+     */
+    private static final long serialVersionUID = 386775541189073090L;
 
-	public DAOConstraintException(String message) {
-		super(message);
-	}
+    public DAOConstraintException() {
+        super();
+    }
+
+    public DAOConstraintException(String message) {
+        super(message);
+    }
 }
