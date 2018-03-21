@@ -20,6 +20,7 @@ public enum ConnectionManager {
      */
     synchronized public Connection open() throws ClassNotFoundException, SQLException {
         if (conn == null || conn.isClosed()) {
+            Class.forName("com.mysql.cj.jdbc.Driver");
             ResourceBundle resources = ResourceBundle.getBundle(RESOURCE_PATH);
             String url = resources.getString("url");
             String user = resources.getString("user");
