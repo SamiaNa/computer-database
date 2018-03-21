@@ -20,18 +20,20 @@
 			Computer Database </a>
 	</div>
 	</header>
-	
+
 	<c:choose>
-		<c:when test="${computerCount == null}">
-			<c:redirect url="ComputerCountServlet" />
+		<c:when test="${computers == null || computerCount == null}">
+			<c:redirect url="ComputerListServlet?offset=0&limit=10" />
 		</c:when>
 	</c:choose>
-	
+
+	<c:set var="offset" value="${param.offset}" />
+	<c:set var="pageSize" value="${param.limit}" />
+ 
 	<section id="main">
 	<div class="container">
 		<h1 id="homeTitle">
-			<c:out value="${computerCount}" />
-			Computers found
+			<c:out value="${computerCount} Computers found" />
 		</h1>
 		<div id="actions" class="form-horizontal">
 			<div class="pull-left">
@@ -78,117 +80,22 @@
 
 				</tr>
 			</thead>
+
+
 			<!-- Browse attribute computers -->
 			<tbody id="results">
-				<tr>
-					<td class="editMode"><input type="checkbox" name="cb"
-						class="cb" value="0"></td>
-					<td><a href="editComputer.html" onclick="">MacBook Pro</a></td>
-					<td>2006-01-10</td>
-					<td></td>
-					<td>Apple Inc.</td>
 
-				</tr>
-				<tr>
-					<td class="editMode"><input type="checkbox" name="cb"
-						class="cb" value="0"></td>
-					<td><a href="editComputer.html" onclick="">Connection
-							Machine</a></td>
-					<td>1987-01-01</td>
-					<td></td>
-					<td>Thinking Machines</td>
-
-				</tr>
-				<tr>
-					<td class="editMode"><input type="checkbox" name="cb"
-						class="cb" value="0"></td>
-					<td><a href="editComputer.html" onclick="">PowerBook</a></td>
-					<td>1991-01-01</td>
-					<td>2006-01-01</td>
-					<td>Apple Inc.</td>
-
-				</tr>
-				<tr>
-					<td class="editMode"><input type="checkbox" name="cb"
-						class="cb" value="0"></td>
-					<td><a href="editComputer.html" onclick="">Commodore 64</a></td>
-					<td>1982-08-01</td>
-					<td>1994-01-01</td>
-					<td>Commodore International</td>
-
-				</tr>
-				<tr>
-					<td class="editMode"><input type="checkbox" name="cb"
-						class="cb" value="0"></td>
-					<td><a href="editComputer.html" onclick="">Altair 8800</a></td>
-					<td>1974-12-19</td>
-					<td></td>
-					<td>Micro Instrumentation and Telemetry Systems</td>
-
-				</tr>
-				<tr>
-					<td class="editMode"><input type="checkbox" name="cb"
-						class="cb" value="0"></td>
-					<td><a href="editComputer.html" onclick="">Canon Cat</a></td>
-					<td>1987-01-01</td>
-					<td></td>
-					<td>Canon</td>
-
-				</tr>
-				<tr>
-					<td class="editMode"><input type="checkbox" name="cb"
-						class="cb" value="0"></td>
-					<td><a href="editComputer.html" onclick="">Nokia 770</a></td>
-					<td></td>
-					<td></td>
-					<td>Nokia</td>
-
-				</tr>
-				<tr>
-					<td class="editMode"><input type="checkbox" name="cb"
-						class="cb" value="0"></td>
-					<td><a href="editComputer.html" onclick="">NeXTcube</a></td>
-					<td>1988-01-01</td>
-					<td>1993-01-01</td>
-					<td>NeXT</td>
-
-				</tr>
-				<tr>
-					<td class="editMode"><input type="checkbox" name="cb"
-						class="cb" value="0"></td>
-					<td><a href="editComputer.html" onclick="">IBM 650</a></td>
-					<td>1953-01-01</td>
-					<td>1962-01-01</td>
-					<td>IBM</td>
-
-				</tr>
-				<tr>
-					<td class="editMode"><input type="checkbox" name="cb"
-						class="cb" value="0"></td>
-					<td><a href="editComputer.html" onclick="">PlayStation 2</a></td>
-					<td>2000-03-24</td>
-					<td></td>
-					<td>Sony</td>
-
-				</tr>
-				<tr>
-					<td class="editMode"><input type="checkbox" name="cb"
-						class="cb" value="0"></td>
-					<td><a href="editComputer.html" onclick="">Archos 101</a></td>
-					<td></td>
-					<td></td>
-					<td></td>
-
-				</tr>
-				<tr>
-					<td class="editMode"><input type="checkbox" name="cb"
-						class="cb" value="0"></td>
-					<td><a href="editComputer.html" onclick="">Nintendo 3DS</a></td>
-					<td>2010-03-23</td>
-					<td></td>
-					<td>Nintendo</td>
-
-				</tr>
+				<c:forEach var="c" items="${computers}">
+					<tr>
+						<td class="editMode"><input type="checkbox" name="cb"
+							class="cb" value="0"></td>
+						<td><a href="editComputer.html" onclick=""> <c:out
+									value="${c.name}" /></a></td>
+						<td><c:out value="${c.introduced}" /></td>
+						<td><c:out value="${c.discontinued}" /></td>
+						<td><c:out value="${c.company.name}" /></td>
+					</tr>
+				</c:forEach>
 
 			</tbody>
 		</table>
@@ -201,18 +108,25 @@
 			<li><a href="#" aria-label="Previous"> <span
 					aria-hidden="true">&laquo;</span>
 			</a></li>
-			<li><a href="#">1</a></li>
-			<li><a href="#">2</a></li>
-			<li><a href="#">3</a></li>
-			<li><a href="#">4</a></li>
-			<li><a href="#">5</a></li>
+			<li><a href="ComputerListServlet">1</a></li>
+			<li><a href="ComputerListServlet">2</a></li>
+			<li><a href="ComputerListServlet">3</a></li>
+			<li><a href="ComputerListServlet">4</a></li>
+			<li><a href="ComputerListServlet">5</a></li>
 			<li><a href="#" aria-label="Next"> <span aria-hidden="true">&raquo;</span>
 			</a></li>
 		</ul>
 
 		<div class="btn-group btn-group-sm pull-right" role="group">
-			<button type="button" class="btn btn-default">10</button>
-			<button type="button" class="btn btn-default">50</button>
+
+			<form action="ComputerListServlet?offset=${offset}&limit=10"
+				method="get">
+				<button type="submit" class="btn btn-default">10</button>
+			</form>
+			<form action="ComputerListServlet?offset=${offset}&limit=50"
+				method="get">
+				<button type="submit" class="btn btn-default">50</button>
+			</form>
 			<button type="button" class="btn btn-default">100</button>
 		</div>
 	</footer>
