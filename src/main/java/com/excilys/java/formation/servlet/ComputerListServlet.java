@@ -38,7 +38,7 @@ public class ComputerListServlet extends HttpServlet {
             String pageSizeStr = request.getParameter("pageSize");
             int pageNumber = 0;
             int pageSize = 0;
-            RequestDispatcher rd = request.getRequestDispatcher("dashboard.jsp");
+            RequestDispatcher rd = request.getRequestDispatcher("/static/views/dashboard.jsp");
             try {
                 pageNumber = Integer.parseUnsignedInt(pageNumberStr);
                 pageSize = Integer.parseUnsignedInt(pageSizeStr);
