@@ -7,7 +7,7 @@ import com.excilys.java.formation.validator.CompanyValidator;
 import com.excilys.java.formation.validator.ComputerValidator;
 import com.excilys.java.formation.validator.ValidatorException;
 
-public class Computer {
+public class Computer extends Entity {
 
     private long id;
     private String name;

@@ -1,6 +1,6 @@
 package com.excilys.java.formation.entities;
 
-public class Company {
+public class Company extends Entity{
 
     private long id;
     private String name;
