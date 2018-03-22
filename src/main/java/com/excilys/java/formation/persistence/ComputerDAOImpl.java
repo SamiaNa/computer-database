@@ -119,7 +119,6 @@ public enum ComputerDAOImpl implements ComputerDAO {
         } catch (SQLIntegrityConstraintViolationException e) {
             throw new DAOConstraintException(e.getMessage());
         } catch (SQLException se) {
-            System.err.println("---------\n Exception se");
             for (Throwable e : se) {
                 logger.error(e.toString());
             }

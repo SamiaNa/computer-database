@@ -20,18 +20,38 @@
 			Computer Database </a>
 	</div>
 	</header>
-	
+
 	<c:choose>
-		<c:when test="${computerCount == null}">
-			<c:redirect url="ComputerCountServlet" />
+		<c:when test="${param.pageNumber == null}">
+			<c:set var="pageNumber" value="1" />
+		</c:when>
+		<c:otherwise>
+			<c:set var="pageNumber" value="${param.pageNumber}" />
+		</c:otherwise>
+	</c:choose>
+
+	<c:choose>
+		<c:when test="${param.pageSize == null}">
+			<c:set var="pageSize" value="10" />
+		</c:when>
+		<c:otherwise>
+			<c:set var="pageSize" value="${param.pageSize}" />
+		</c:otherwise>
+	</c:choose>
+
+
+	<c:choose>
+		<c:when test="${computers == null || computerCount == null}">
+			<c:redirect
+				url="ComputerListServlet?pageNumber=${pageNumber}&pageSize=${pageSize}" />
 		</c:when>
 	</c:choose>
-	
+
+
 	<section id="main">
 	<div class="container">
 		<h1 id="homeTitle">
-			<c:out value="${computerCount}" />
-			Computers found
+			<c:out value="${computerCount} Computers found" />
 		</h1>
 		<div id="actions" class="form-horizontal">
 			<div class="pull-left">
@@ -78,117 +98,22 @@
 
 				</tr>
 			</thead>
+
+
 			<!-- Browse attribute computers -->
 			<tbody id="results">
-				<tr>
-					<td class="editMode"><input type="checkbox" name="cb"
-						class="cb" value="0"></td>
-					<td><a href="editComputer.html" onclick="">MacBook Pro</a></td>
-					<td>2006-01-10</td>
-					<td></td>
-					<td>Apple Inc.</td>
 
-				</tr>
-				<tr>
-					<td class="editMode"><input type="checkbox" name="cb"
-						class="cb" value="0"></td>
-					<td><a href="editComputer.html" onclick="">Connection
-							Machine</a></td>
-					<td>1987-01-01</td>
-					<td></td>
-					<td>Thinking Machines</td>
-
-				</tr>
-				<tr>
-					<td class="editMode"><input type="checkbox" name="cb"
-						class="cb" value="0"></td>
-					<td><a href="editComputer.html" onclick="">PowerBook</a></td>
-					<td>1991-01-01</td>
-					<td>2006-01-01</td>
-					<td>Apple Inc.</td>
-
-				</tr>
-				<tr>
-					<td class="editMode"><input type="checkbox" name="cb"
-						class="cb" value="0"></td>
-					<td><a href="editComputer.html" onclick="">Commodore 64</a></td>
-					<td>1982-08-01</td>
-					<td>1994-01-01</td>
-					<td>Commodore International</td>
-
-				</tr>
-				<tr>
-					<td class="editMode"><input type="checkbox" name="cb"
-						class="cb" value="0"></td>
-					<td><a href="editComputer.html" onclick="">Altair 8800</a></td>
-					<td>1974-12-19</td>
-					<td></td>
-					<td>Micro Instrumentation and Telemetry Systems</td>
-
-				</tr>
-				<tr>
-					<td class="editMode"><input type="checkbox" name="cb"
-						class="cb" value="0"></td>
-					<td><a href="editComputer.html" onclick="">Canon Cat</a></td>
-					<td>1987-01-01</td>
-					<td></td>
-					<td>Canon</td>
-
-				</tr>
-				<tr>
-					<td class="editMode"><input type="checkbox" name="cb"
-						class="cb" value="0"></td>
-					<td><a href="editComputer.html" onclick="">Nokia 770</a></td>
-					<td></td>
-					<td></td>
-					<td>Nokia</td>
-
-				</tr>
-				<tr>
-					<td class="editMode"><input type="checkbox" name="cb"
-						class="cb" value="0"></td>
-					<td><a href="editComputer.html" onclick="">NeXTcube</a></td>
-					<td>1988-01-01</td>
-					<td>1993-01-01</td>
-					<td>NeXT</td>
-
-				</tr>
-				<tr>
-					<td class="editMode"><input type="checkbox" name="cb"
-						class="cb" value="0"></td>
-					<td><a href="editComputer.html" onclick="">IBM 650</a></td>
-					<td>1953-01-01</td>
-					<td>1962-01-01</td>
-					<td>IBM</td>
-
-				</tr>
-				<tr>
-					<td class="editMode"><input type="checkbox" name="cb"
-						class="cb" value="0"></td>
-					<td><a href="editComputer.html" onclick="">PlayStation 2</a></td>
-					<td>2000-03-24</td>
-					<td></td>
-					<td>Sony</td>
-
-				</tr>
-				<tr>
-					<td class="editMode"><input type="checkbox" name="cb"
-						class="cb" value="0"></td>
-					<td><a href="editComputer.html" onclick="">Archos 101</a></td>
-					<td></td>
-					<td></td>
-					<td></td>
-
-				</tr>
-				<tr>
-					<td class="editMode"><input type="checkbox" name="cb"
-						class="cb" value="0"></td>
-					<td><a href="editComputer.html" onclick="">Nintendo 3DS</a></td>
-					<td>2010-03-23</td>
-					<td></td>
-					<td>Nintendo</td>
-
-				</tr>
+				<c:forEach var="computer" items="${computers}">
+					<tr>
+						<td class="editMode"><input type="checkbox" name="cb"
+							class="cb" value="0"></td>
+						<td><a href="editComputer.html" onclick=""> <c:out
+									value="${computer.name}" /></a></td>
+						<td><c:out value="${computer.introduced}" /></td>
+						<td><c:out value="${computer.discontinued}" /></td>
+						<td><c:out value="${computer.companyName}" /></td>
+					</tr>
+				</c:forEach>
 
 			</tbody>
 		</table>
@@ -198,27 +123,55 @@
 	<footer class="navbar-fixed-bottom">
 	<div class="container text-center">
 		<ul class="pagination">
-			<li><a href="#" aria-label="Previous"> <span
-					aria-hidden="true">&laquo;</span>
-			</a></li>
-			<li><a href="#">1</a></li>
-			<li><a href="#">2</a></li>
-			<li><a href="#">3</a></li>
-			<li><a href="#">4</a></li>
-			<li><a href="#">5</a></li>
-			<li><a href="#" aria-label="Next"> <span aria-hidden="true">&raquo;</span>
-			</a></li>
+
+			<c:if test="${pageNumber > 1}">
+				<li><a
+					href=<c:url value="ComputerListServlet?pageNumber=${pageNumber-1}&pageSize=${pageSize}"/>
+					aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
+				</a></li>
+			</c:if>
+
+			<c:forEach var="i" begin="0" end="4">
+				<c:if
+					test="${(pageNumber+i <= (computerCount / pageSize) && computerCount % pageSize == 0)
+			|| (pageNumber+i <= (computerCount / pageSize) + 1 && computerCount % pageSize != 0)}">
+					<li><a
+						href=<c:url value="ComputerListServlet?pageNumber=${pageNumber+i}&pageSize=${pageSize}"/>><c:out
+								value="${pageNumber+i}" /></a></li>
+				</c:if>
+			</c:forEach>
+
+			<c:if
+				test="${(pageNumber + 1 < (computerCount / pageSize) && computerCount % pageSize == 0)
+			|| (pageNumber + 1 <(computerCount / pageSize) + 1 && computerCount % pageSize != 0)}">
+				<li><a
+					href=<c:url
+					value="ComputerListServlet?pageNumber=${pageNumber+1}&pageSize=${pageSize}" />
+					aria-label="Next"> <span aria-hidden="true">&raquo;</span>
+				</a></li>
+			</c:if>
+
+
 		</ul>
 
 		<div class="btn-group btn-group-sm pull-right" role="group">
-			<button type="button" class="btn btn-default">10</button>
-			<button type="button" class="btn btn-default">50</button>
-			<button type="button" class="btn btn-default">100</button>
+
+			<form
+				action="ComputerListServlet?pageNumber=${pageNumber}&pageSize=10"
+				method="post">
+				<button type="submit" class="btn btn-default">10</button>
+				<button type="submit" class="btn btn-default"
+					formaction="ComputerListServlet?pageNumber=${pageNumber}&pageSize=50">50</button>
+				<button type="submit" class="btn btn-default"
+					formaction="ComputerListServlet?pageNumber=${pageNumber}&pageSize=100">100</button>
+			</form>
+
 		</div>
 	</footer>
 	<script src="../js/jquery.min.js"></script>
 	<script src="../js/bootstrap.min.js"></script>
 	<script src="../js/dashboard.js"></script>
+
 
 </body>
 </html>
