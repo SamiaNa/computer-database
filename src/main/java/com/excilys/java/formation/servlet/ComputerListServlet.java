@@ -10,7 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.excilys.java.formation.entities.Computer;
+import com.excilys.java.formation.dto.ComputerDTO;
+import com.excilys.java.formation.mapper.ComputerDTOMapper;
 import com.excilys.java.formation.page.ComputerPage;
 import com.excilys.java.formation.persistence.DAOException;
 import com.excilys.java.formation.service.ComputerService;
@@ -57,7 +58,8 @@ public class ComputerListServlet extends HttpServlet {
                 // Log
             }
 
-            List<Computer> computers = computerPage.getPage(pageNumber, pageSize);
+            List<ComputerDTO> computers = ComputerDTOMapper.INSTANCE
+                    .toDTOList(computerPage.getPage(pageNumber, pageSize));
             request.setAttribute("computers", computers);
             rd.forward(request, response);
         } catch (ClassNotFoundException | DAOException e) {

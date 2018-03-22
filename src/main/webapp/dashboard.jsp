@@ -38,7 +38,9 @@
 			<c:set var="pageSize" value="${param.pageSize}" />
 		</c:otherwise>
 	</c:choose>
-		<c:choose>
+
+
+	<c:choose>
 		<c:when test="${computers == null || computerCount == null}">
 			<c:redirect
 				url="ComputerListServlet?pageNumber=${pageNumber}&pageSize=${pageSize}" />
@@ -101,15 +103,15 @@
 			<!-- Browse attribute computers -->
 			<tbody id="results">
 
-				<c:forEach var="c" items="${computers}">
+				<c:forEach var="computer" items="${computers}">
 					<tr>
 						<td class="editMode"><input type="checkbox" name="cb"
 							class="cb" value="0"></td>
 						<td><a href="editComputer.html" onclick=""> <c:out
-									value="${c.name}" /></a></td>
-						<td><c:out value="${c.introduced}" /></td>
-						<td><c:out value="${c.discontinued}" /></td>
-						<td><c:out value="${c.company.name}" /></td>
+									value="${computer.name}" /></a></td>
+						<td><c:out value="${computer.introduced}" /></td>
+						<td><c:out value="${computer.discontinued}" /></td>
+						<td><c:out value="${computer.companyName}" /></td>
 					</tr>
 				</c:forEach>
 
@@ -121,16 +123,35 @@
 	<footer class="navbar-fixed-bottom">
 	<div class="container text-center">
 		<ul class="pagination">
-			<li><a href="#" aria-label="Previous"> <span
-					aria-hidden="true">&laquo;</span>
-			</a></li>
-			<li><a href="">1</a></li>
-			<li><a href="ComputerListServlet?pageNumber=20&pageSize=50">2</a></li>
-			<li><a href="ComputerListServlet">3</a></li>
-			<li><a href="ComputerListServlet">4</a></li>
-			<li><a href="ComputerListServlet">5</a></li>
-			<li><a href="#" aria-label="Next"> <span aria-hidden="true">&raquo;</span>
-			</a></li>
+
+			<c:if test="${pageNumber > 1}">
+				<li><a
+					href=<c:url value="ComputerListServlet?pageNumber=${pageNumber-1}&pageSize=${pageSize}"/>
+					aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
+				</a></li>
+			</c:if>
+
+			<c:forEach var="i" begin="0" end="4">
+				<c:if
+					test="${(pageNumber+i <= (computerCount / pageSize) && computerCount % pageSize == 0)
+			|| (pageNumber+i <= (computerCount / pageSize) + 1 && computerCount % pageSize != 0)}">
+					<li><a
+						href=<c:url value="ComputerListServlet?pageNumber=${pageNumber+i}&pageSize=${pageSize}"/>><c:out
+								value="${pageNumber+i}" /></a></li>
+				</c:if>
+			</c:forEach>
+
+			<c:if
+				test="${(pageNumber + 1 < (computerCount / pageSize) && computerCount % pageSize == 0)
+			|| (pageNumber + 1 <(computerCount / pageSize) + 1 && computerCount % pageSize != 0)}">
+				<li><a
+					href=<c:url
+					value="ComputerListServlet?pageNumber=${pageNumber+1}&pageSize=${pageSize}" />
+					aria-label="Next"> <span aria-hidden="true">&raquo;</span>
+				</a></li>
+			</c:if>
+
+
 		</ul>
 
 		<div class="btn-group btn-group-sm pull-right" role="group">
