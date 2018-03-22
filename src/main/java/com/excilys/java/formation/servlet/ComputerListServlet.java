@@ -48,6 +48,8 @@ public class ComputerListServlet extends HttpServlet {
             try {
                 offset = Integer.parseUnsignedInt(offsetStr);
                 limit = Integer.parseUnsignedInt(limitStr);
+                request.setAttribute("offest", offset);
+                request.setAttribute("limit", limit);
             }catch(NumberFormatException e) {
                 request.setAttribute("errorMessage", "");
                 rd.forward(request, response);

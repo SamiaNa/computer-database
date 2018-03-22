@@ -1,17 +1,48 @@
 package com.excilys.java.formation.dto;
 
-import java.time.LocalDate;
-
 public class ComputerDTO {
 
     private long id;
     private String name;
-    private LocalDate introduced;
-    private LocalDate discontinued;
-    private CompanyDTO companyDTO;
+    private String introduced;
+    private String discontinued;
+    private long companyId;
+    private long companyName;
 
     public long getId() {
         return id;
+    }
+
+    public String getIntroduced() {
+        return introduced;
+    }
+
+    public void setIntroduced(String introduced) {
+        this.introduced = introduced;
+    }
+
+    public String getDiscontinued() {
+        return discontinued;
+    }
+
+    public void setDiscontinued(String discontinued) {
+        this.discontinued = discontinued;
+    }
+
+    public long getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(long companyId) {
+        this.companyId = companyId;
+    }
+
+    public long getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(long companyName) {
+        this.companyName = companyName;
     }
 
     public void setId(long id) {
@@ -26,27 +57,4 @@ public class ComputerDTO {
         this.name = name;
     }
 
-    public LocalDate getIntroduced() {
-        return introduced;
-    }
-
-    public void setIntroduced(LocalDate introduced) {
-        this.introduced = introduced;
-    }
-
-    public LocalDate getDiscontinued() {
-        return discontinued;
-    }
-
-    public void setDiscontinued(LocalDate discontinued) {
-        this.discontinued = discontinued;
-    }
-
-    public CompanyDTO getCompanyDTO() {
-        return companyDTO;
-    }
-
-    public void setCompanyDTO(CompanyDTO companyDTO) {
-        this.companyDTO = companyDTO;
-    }
 }

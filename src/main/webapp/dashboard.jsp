@@ -22,18 +22,36 @@
 	</header>
 
 	<c:choose>
+		<c:when test="${param.offset == null}">
+			<c:set var="offset" value="0" />
+		</c:when>
+		<c:otherwise>
+			<c:set var="offset" value="${param.offset}" />
+		</c:otherwise>
+	</c:choose>
+
+
+	<c:choose>
+		<c:when test="${param.limit == null}">
+			<c:set var="limit" value="10" />
+		</c:when>
+		<c:otherwise>
+			<c:set var="limit" value="${param.limit}" />
+		</c:otherwise>
+	</c:choose>
+
+	<c:choose>
 		<c:when test="${computers == null || computerCount == null}">
-			<c:redirect url="ComputerListServlet?offset=0&limit=10" />
+			<c:redirect url="ComputerListServlet?offset=${offset}&limit=${limit}" />
 		</c:when>
 	</c:choose>
 
-	<c:set var="offset" value="${param.offset}" />
-	<c:set var="pageSize" value="${param.limit}" />
- 
+
 	<section id="main">
 	<div class="container">
 		<h1 id="homeTitle">
 			<c:out value="${computerCount} Computers found" />
+			<c:out value="${offset} ${limit}" />
 		</h1>
 		<div id="actions" class="form-horizontal">
 			<div class="pull-left">
@@ -108,8 +126,8 @@
 			<li><a href="#" aria-label="Previous"> <span
 					aria-hidden="true">&laquo;</span>
 			</a></li>
-			<li><a href="ComputerListServlet">1</a></li>
-			<li><a href="ComputerListServlet">2</a></li>
+			<li><a href="">1</a></li>
+			<li><a href="ComputerListServlet?offset=20&limit=50">2</a></li>
 			<li><a href="ComputerListServlet">3</a></li>
 			<li><a href="ComputerListServlet">4</a></li>
 			<li><a href="ComputerListServlet">5</a></li>
@@ -120,19 +138,20 @@
 		<div class="btn-group btn-group-sm pull-right" role="group">
 
 			<form action="ComputerListServlet?offset=${offset}&limit=10"
-				method="get">
+				method="post">
 				<button type="submit" class="btn btn-default">10</button>
+				<button type="submit" class="btn btn-default"
+					formaction="ComputerListServlet?offset=${offset}&limit=50">50</button>
+				<button type="submit" class="btn btn-default"
+					formaction="ComputerListServlet?offset=${offset}&limit=100">100</button>
 			</form>
-			<form action="ComputerListServlet?offset=${offset}&limit=50"
-				method="get">
-				<button type="submit" class="btn btn-default">50</button>
-			</form>
-			<button type="button" class="btn btn-default">100</button>
+
 		</div>
 	</footer>
 	<script src="../js/jquery.min.js"></script>
 	<script src="../js/bootstrap.min.js"></script>
 	<script src="../js/dashboard.js"></script>
+
 
 </body>
 </html>
