@@ -42,7 +42,7 @@ public class ComputerListServlet extends HttpServlet {
         ComputerService computerService = ComputerService.INSTANCE;
         try {
 
-            RequestDispatcher rd = request.getRequestDispatcher("/dashboard.jsp");
+            RequestDispatcher rd = request.getRequestDispatcher(request.getContextPath()+"dashboard.jsp");
             request.setAttribute("computerCount", computerService.count());
             String pageNumberStr = request.getParameter("pageNumber");
             String pageSizeStr = request.getParameter("pageSize");

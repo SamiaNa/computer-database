@@ -16,7 +16,7 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 	<div class="container">
-		<a class="navbar-brand" href="dashboard.html"> Application -
+		<a class="navbar-brand" href="dashboard.jsp"> Application -
 			Computer Database </a>
 	</div>
 	</header>
@@ -43,7 +43,7 @@
 	<c:choose>
 		<c:when test="${computers == null || computerCount == null}">
 			<c:redirect
-				url="ComputerListServlet?pageNumber=${pageNumber}&pageSize=${pageSize}" />
+				url="/ComputerListServlet?pageNumber=${pageNumber}&pageSize=${pageSize}" />
 		</c:when>
 	</c:choose>
 
@@ -126,7 +126,7 @@
 
 			<c:if test="${pageNumber > 1}">
 				<li><a
-					href=<c:url value="ComputerListServlet?pageNumber=${pageNumber-1}&pageSize=${pageSize}"/>
+					href=<c:url value="/ComputerListServlet?pageNumber=${pageNumber-1}&pageSize=${pageSize}"/>
 					aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
 				</a></li>
 			</c:if>
@@ -136,7 +136,7 @@
 					test="${(pageNumber+i <= (computerCount / pageSize) && computerCount % pageSize == 0)
 			|| (pageNumber+i <= (computerCount / pageSize) + 1 && computerCount % pageSize != 0)}">
 					<li><a
-						href=<c:url value="ComputerListServlet?pageNumber=${pageNumber+i}&pageSize=${pageSize}"/>><c:out
+						href=<c:url value="/ComputerListServlet?pageNumber=${pageNumber+i}&pageSize=${pageSize}"/>><c:out
 								value="${pageNumber+i}" /></a></li>
 				</c:if>
 			</c:forEach>
@@ -146,7 +146,7 @@
 			|| (pageNumber + 1 <(computerCount / pageSize) + 1 && computerCount % pageSize != 0)}">
 				<li><a
 					href=<c:url
-					value="ComputerListServlet?pageNumber=${pageNumber+1}&pageSize=${pageSize}" />
+					value="/ComputerListServlet?pageNumber=${pageNumber+1}&pageSize=${pageSize}" />
 					aria-label="Next"> <span aria-hidden="true">&raquo;</span>
 				</a></li>
 			</c:if>
@@ -157,13 +157,13 @@
 		<div class="btn-group btn-group-sm pull-right" role="group">
 
 			<form
-				action="ComputerListServlet?pageNumber=${pageNumber}&pageSize=10"
+				action="/ComputerListServlet?pageNumber=${pageNumber}&pageSize=10"
 				method="post">
 				<button type="submit" class="btn btn-default">10</button>
 				<button type="submit" class="btn btn-default"
-					formaction="ComputerListServlet?pageNumber=${pageNumber}&pageSize=50">50</button>
+					formaction="/ComputerListServlet?pageNumber=${pageNumber}&pageSize=50">50</button>
 				<button type="submit" class="btn btn-default"
-					formaction="ComputerListServlet?pageNumber=${pageNumber}&pageSize=100">100</button>
+					formaction="/ComputerListServlet?pageNumber=${pageNumber}&pageSize=100">100</button>
 			</form>
 
 		</div>

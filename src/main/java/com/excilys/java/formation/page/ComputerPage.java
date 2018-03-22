@@ -6,7 +6,7 @@ import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.persistence.DAOException;
 import com.excilys.java.formation.service.ComputerService;
 
-public final class ComputerPage extends Page {
+public class ComputerPage extends Page {
 
     private static volatile ComputerPage instance;
 
