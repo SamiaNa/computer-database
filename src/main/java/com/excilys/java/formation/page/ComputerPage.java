@@ -6,55 +6,36 @@ import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.persistence.DAOException;
 import com.excilys.java.formation.service.ComputerService;
 
-public class ComputerPage extends Page {
+public final class ComputerPage extends Page {
 
-    private List<Computer> computers;
-    private ComputerService computerService;
+    private static volatile ComputerPage instance;
 
-    public ComputerPage(int size) throws DAOException, ClassNotFoundException {
-        this.offset = 0;
-        this.size = size;
-        this.computerService = ComputerService.INSTANCE;
-        this.computers = computerService.getComputerList(offset, size);
-        this.dbSize = computerService.count();
+    private ComputerPage() {
+
     }
 
-    public void updateList() throws ClassNotFoundException, DAOException {
-        this.computers = computerService.getComputerList(offset, size);
+    public static synchronized ComputerPage getPage() {
+        if (instance == null) {
+            instance = new ComputerPage();
+        }
+        return instance;
     }
 
-    @Override
-    public void nextPage() throws DAOException, ClassNotFoundException {
-        dbSize = computerService.count();
-        super.offsetNextPage(dbSize);
-        updateList();
-    }
 
-    @Override
-    public void prevPage() throws DAOException, ClassNotFoundException {
-        super.offsetPrevPage();
-        updateList();
+    public List<Computer> getPage(int pageNumber, int pageSize) throws ClassNotFoundException, DAOException {
+        if (pageNumber <= 0) {
+            pageNumber = 0;
+        }
+        int offset = super.getOffset(pageNumber, pageSize);
+        return ComputerService.INSTANCE.getComputerList(offset, pageSize);
     }
 
     @Override
-    public void getPage(int pageNumber) throws DAOException, ClassNotFoundException {
-        this.dbSize = computerService.count();
-        super.offsetGetPage(pageNumber, dbSize);
-        updateList();
-    }
-
-    public int getOffset() {
-        return this.offset;
-    }
-
-    public int getSize() {
-        return this.size;
-    }
-
-    @Override
-    public void printPage() {
-        for (Computer c : this.computers) {
+    public void printPage(int pageNumber, int pageSize) throws ClassNotFoundException, DAOException {
+        List<Computer> computers = getPage(pageNumber, pageSize);
+        for (Computer c : computers) {
             System.out.println(c);
         }
     }
+
 }

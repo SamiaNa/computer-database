@@ -11,12 +11,12 @@ public enum CompanyService {
 
     INSTANCE;
 
-    public List<Company> getCompaniesList() throws DAOException, ClassNotFoundException {
+    public List<Company> getCompanyList() throws DAOException, ClassNotFoundException {
         CompanyDAO companyDAO = CompanyDAOImpl.INSTANCE;
         return companyDAO.getAll();
     }
 
-    public List<Company> getCompaniesList(int offset, int size) throws ClassNotFoundException, DAOException {
+    public List<Company> getCompanyList(int offset, int size) throws ClassNotFoundException, DAOException {
         CompanyDAO companyDAO = CompanyDAOImpl.INSTANCE;
         return companyDAO.get(offset, size);
     }

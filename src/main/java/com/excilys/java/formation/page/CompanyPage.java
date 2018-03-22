@@ -6,57 +6,36 @@ import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.persistence.DAOException;
 import com.excilys.java.formation.service.CompanyService;
 
-public class CompanyPage extends Page {
+public final class CompanyPage extends Page {
 
-    List<Company> companies;
-    CompanyService companyService;
+    private static volatile CompanyPage instance;
 
-    public CompanyPage(int size) throws DAOException, ClassNotFoundException {
-        this.offset = 0;
-        this.size = size;
-        this.companyService = CompanyService.INSTANCE;
-        this.companies = companyService.getCompaniesList(offset, size);
-        this.dbSize = companyService.count();
+    private CompanyPage() {
 
     }
 
-    public void updateList() throws DAOException, ClassNotFoundException {
-        this.companies = companyService.getCompaniesList(offset, size);
+    public static synchronized CompanyPage getPage() {
+        if (instance == null) {
+            instance = new CompanyPage();
+        }
+        return instance;
     }
 
-    @Override
-    public void nextPage() throws DAOException, ClassNotFoundException {
-        this.dbSize = companyService.count();
-        super.offsetNextPage(dbSize);
-        updateList();
-    }
 
-    @Override
-    public void prevPage() throws DAOException, ClassNotFoundException {
-        super.offsetPrevPage();
-        updateList();
-    }
-
-    public int getOffset() {
-        return this.offset;
-    }
-
-    public int getSize() {
-        return this.size;
+    public List<Company> getPage(int pageNumber, int pageSize) throws ClassNotFoundException, DAOException {
+        if (pageNumber <= 0) {
+            pageNumber = 0;
+        }
+        int offset = super.getOffset(pageNumber, pageSize);
+        return CompanyService.INSTANCE.getCompanyList(offset, pageSize);
     }
 
     @Override
-    public void printPage() {
-        for (Company c : this.companies) {
+    public void printPage(int pageNumber, int pageSize) throws ClassNotFoundException, DAOException {
+        List<Company> companies = getPage(pageNumber, pageSize);
+        for (Company c : companies) {
             System.out.println(c);
         }
-    }
-
-    @Override
-    public void getPage(int pageNumber) throws DAOException, ClassNotFoundException {
-        this.dbSize = companyService.count();
-        super.offsetGetPage(pageNumber, dbSize);
-        this.companies = companyService.getCompaniesList(offset, size);
     }
 
 }

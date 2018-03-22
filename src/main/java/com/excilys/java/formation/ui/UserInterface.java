@@ -24,21 +24,21 @@ public class UserInterface {
 
     private static void printPagedList(Scanner scanner, Page page) throws ClassNotFoundException, DAOException {
         scanner.nextLine();
+        int pageNumber = 1;
         while (true) {
-            page.printPage();
+            page.printPage(pageNumber, PAGE_SIZE);
             System.out.println("p : previous page, n : next page, q : quit, g : goto page");
             switch (PageActionEnum.getAction(scanner.nextLine())) {
             case PREVIOUS:
-                page.prevPage();
+                pageNumber --;
                 break;
             case NEXT:
-                page.nextPage();
+                pageNumber ++;
                 break;
             case GOTO:
                 System.out.println("Enter page number");
-                int number = scanner.nextInt();
+                pageNumber = scanner.nextInt();
                 scanner.nextLine();
-                page.getPage(number);
                 break;
             case EXIT:
                 return;
@@ -207,10 +207,10 @@ public class UserInterface {
             }
             switch (CLIActionEnum.values()[featureChoice]) {
             case LIST_COMPUTERS:
-                printPagedList(scanner, new ComputerPage(PAGE_SIZE));
+                printPagedList(scanner, ComputerPage.getPage());
                 break;
             case LIST_COMPANIES:
-                printPagedList(scanner, new CompanyPage(PAGE_SIZE));
+                printPagedList(scanner, CompanyPage.getPage());
                 break;
             case COMPUTER_DETAILS:
                 printComputerByID(scanner, computerService);

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.excilys.java.formation.entities.Computer;
+import com.excilys.java.formation.page.ComputerPage;
 import com.excilys.java.formation.persistence.DAOException;
 import com.excilys.java.formation.service.ComputerService;
 
@@ -36,27 +37,27 @@ public class ComputerListServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        ComputerPage computerPage = ComputerPage.getPage();
         ComputerService computerService = ComputerService.INSTANCE;
         try {
 
             RequestDispatcher rd = request.getRequestDispatcher("/dashboard.jsp");
             request.setAttribute("computerCount", computerService.count());
-            String offsetStr = request.getParameter("offset");
-            String limitStr =  request.getParameter("limit");
-            int offset = 0;
-            int limit = 0;
+            String pageNumberStr = request.getParameter("pageNumber");
+            String pageSizeStr = request.getParameter("pageSize");
+            int pageNumber = 0;
+            int pageSize = 0;
             try {
-                offset = Integer.parseUnsignedInt(offsetStr);
-                limit = Integer.parseUnsignedInt(limitStr);
-                request.setAttribute("offest", offset);
-                request.setAttribute("limit", limit);
-            }catch(NumberFormatException e) {
+                pageNumber = Integer.parseUnsignedInt(pageNumberStr);
+                pageSize = Integer.parseUnsignedInt(pageSizeStr);
+            } catch (NumberFormatException e) {
                 request.setAttribute("errorMessage", "");
                 rd.forward(request, response);
                 return;
-                //Log
+                // Log
             }
-            List<Computer> computers = computerService.getComputerList(offset, limit);
+
+            List<Computer> computers = computerPage.getPage(pageNumber, pageSize);
             request.setAttribute("computers", computers);
             rd.forward(request, response);
         } catch (ClassNotFoundException | DAOException e) {

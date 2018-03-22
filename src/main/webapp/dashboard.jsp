@@ -22,27 +22,26 @@
 	</header>
 
 	<c:choose>
-		<c:when test="${param.offset == null}">
-			<c:set var="offset" value="0" />
+		<c:when test="${param.pageNumber == null}">
+			<c:set var="pageNumber" value="1" />
 		</c:when>
 		<c:otherwise>
-			<c:set var="offset" value="${param.offset}" />
-		</c:otherwise>
-	</c:choose>
-
-
-	<c:choose>
-		<c:when test="${param.limit == null}">
-			<c:set var="limit" value="10" />
-		</c:when>
-		<c:otherwise>
-			<c:set var="limit" value="${param.limit}" />
+			<c:set var="pageNumber" value="${param.pageNumber}" />
 		</c:otherwise>
 	</c:choose>
 
 	<c:choose>
+		<c:when test="${param.pageSize == null}">
+			<c:set var="pageSize" value="10" />
+		</c:when>
+		<c:otherwise>
+			<c:set var="pageSize" value="${param.pageSize}" />
+		</c:otherwise>
+	</c:choose>
+		<c:choose>
 		<c:when test="${computers == null || computerCount == null}">
-			<c:redirect url="ComputerListServlet?offset=${offset}&limit=${limit}" />
+			<c:redirect
+				url="ComputerListServlet?pageNumber=${pageNumber}&pageSize=${pageSize}" />
 		</c:when>
 	</c:choose>
 
@@ -51,7 +50,6 @@
 	<div class="container">
 		<h1 id="homeTitle">
 			<c:out value="${computerCount} Computers found" />
-			<c:out value="${offset} ${limit}" />
 		</h1>
 		<div id="actions" class="form-horizontal">
 			<div class="pull-left">
@@ -127,7 +125,7 @@
 					aria-hidden="true">&laquo;</span>
 			</a></li>
 			<li><a href="">1</a></li>
-			<li><a href="ComputerListServlet?offset=20&limit=50">2</a></li>
+			<li><a href="ComputerListServlet?pageNumber=20&pageSize=50">2</a></li>
 			<li><a href="ComputerListServlet">3</a></li>
 			<li><a href="ComputerListServlet">4</a></li>
 			<li><a href="ComputerListServlet">5</a></li>
@@ -137,13 +135,14 @@
 
 		<div class="btn-group btn-group-sm pull-right" role="group">
 
-			<form action="ComputerListServlet?offset=${offset}&limit=10"
+			<form
+				action="ComputerListServlet?pageNumber=${pageNumber}&pageSize=10"
 				method="post">
 				<button type="submit" class="btn btn-default">10</button>
 				<button type="submit" class="btn btn-default"
-					formaction="ComputerListServlet?offset=${offset}&limit=50">50</button>
+					formaction="ComputerListServlet?pageNumber=${pageNumber}&pageSize=50">50</button>
 				<button type="submit" class="btn btn-default"
-					formaction="ComputerListServlet?offset=${offset}&limit=100">100</button>
+					formaction="ComputerListServlet?pageNumber=${pageNumber}&pageSize=100">100</button>
 			</form>
 
 		</div>
