@@ -12,6 +12,7 @@ import com.excilys.java.formation.entities.ComputerStringAttributes;
 import com.excilys.java.formation.page.CompanyPage;
 import com.excilys.java.formation.page.ComputerPage;
 import com.excilys.java.formation.page.Page;
+import com.excilys.java.formation.persistence.ConnectionException;
 import com.excilys.java.formation.persistence.DAOException;
 import com.excilys.java.formation.persistence.NoComputerInResultSetException;
 import com.excilys.java.formation.service.CompanyService;
@@ -37,7 +38,7 @@ public class UserInterface {
             }
         }
     }
-    private static void printPagedList(Scanner scanner, Page page) throws ClassNotFoundException, DAOException {
+    private static void printPagedList(Scanner scanner, Page page) throws ConnectionException, DAOException {
         scanner.nextLine();
         page.getPage(1, PAGE_SIZE);
         while (true) {
@@ -63,7 +64,7 @@ public class UserInterface {
         }
     }
 
-    private static void findCompanyByName(Scanner scanner) throws ClassNotFoundException, DAOException {
+    private static void findCompanyByName(Scanner scanner) throws ConnectionException, DAOException {
         CompanyService companyService = CompanyService.INSTANCE;
         System.out.println("Enter name :");
         scanner.nextLine();
@@ -83,10 +84,10 @@ public class UserInterface {
      * @param scanner
      * @param computerService
      * @throws DAOException
-     * @throws ClassNotFoundException
+     * @throws ConnectionException
      */
     private static void printComputerByID(Scanner scanner, ComputerService computerService)
-            throws DAOException, ClassNotFoundException {
+            throws DAOException, ConnectionException {
         System.out.println("Enter id of computer : ");
         try {
             Long computerId = scanner.nextLong();
@@ -109,11 +110,11 @@ public class UserInterface {
      * @param scanner
      * @param computerService
      * @throws DAOException
-     * @throws ClassNotFoundException
+     * @throws ConnectionException
      * @throws ValidatorException
      */
     private static void createComputer(Scanner scanner, ComputerService computerService)
-            throws DAOException, ClassNotFoundException {
+            throws DAOException, ConnectionException {
         scanner.nextLine();
         System.out.println("Enter name");
         String name = scanner.nextLine();
@@ -146,7 +147,7 @@ public class UserInterface {
     }
 
     private static void updateAttributes(Scanner scanner, ComputerService computerService, Long computerId)
-            throws ClassNotFoundException, DAOException, NoComputerInResultSetException, ValidatorException {
+            throws ConnectionException, DAOException, NoComputerInResultSetException, ValidatorException {
         Optional<Computer> optComputer = computerService.getComputerById(computerId);
         if (!optComputer.isPresent()) {
             System.out.println("No computer found with id " + computerId);
@@ -177,7 +178,7 @@ public class UserInterface {
     }
 
     private static void updateComputer(Scanner scanner, ComputerService computerService)
-            throws DAOException, ClassNotFoundException {
+            throws DAOException, ConnectionException {
         System.out.println("Enter id of computer to update");
         try {
             Long computerId = scanner.nextLong();
@@ -191,7 +192,7 @@ public class UserInterface {
     }
 
     private static void deleteComputer(Scanner scanner, ComputerService computerService)
-            throws DAOException, ClassNotFoundException {
+            throws DAOException, ConnectionException {
         System.out.println("Enter id of computer : ");
         try {
             Long computerId = scanner.nextLong();
@@ -208,7 +209,7 @@ public class UserInterface {
         }
     }
 
-    public static void startUI(Scanner scanner) throws DAOException, ClassNotFoundException, ValidatorException {
+    public static void startUI(Scanner scanner) throws DAOException, ConnectionException, ValidatorException {
         while (true) {
             System.out.println("Computer database application\n" + "Select operation:\n" + "1. List computers\n"
                     + "2. List companies\n" + "3. Show computer details (by id)\n" + "4. Create a computer\n"
@@ -255,7 +256,7 @@ public class UserInterface {
 
     }
 
-    public static void main(String[] args) throws ClassNotFoundException, DAOException, ValidatorException {
+    public static void main(String[] args) throws ConnectionException, DAOException, ValidatorException {
         Scanner scanner = new Scanner(System.in);
         startUI(scanner);
         scanner.close();

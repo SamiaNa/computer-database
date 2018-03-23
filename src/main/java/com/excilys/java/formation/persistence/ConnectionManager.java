@@ -13,37 +13,48 @@ public enum ConnectionManager {
 
     /****
      * @return
-     * @throws ClassNotFoundException
-     * @throws SQLException
+     * @throws ConnectionException
      */
-    synchronized public Connection open() throws ClassNotFoundException, SQLException {
-        if (conn == null || conn.isClosed()) {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            ResourceBundle resources = ResourceBundle.getBundle(RESOURCE_PATH);
-            String url = resources.getString("url");
-            String user = resources.getString("user");
-            String pass = resources.getString("pass");
-            conn = DriverManager.getConnection(url, user, pass);
+    synchronized public Connection open() throws ConnectionException  {
+        try {
+            if (conn == null || conn.isClosed()) {
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                ResourceBundle resources = ResourceBundle.getBundle(RESOURCE_PATH);
+                String url = resources.getString("url");
+                String user = resources.getString("user");
+                String pass = resources.getString("pass");
+                conn = DriverManager.getConnection(url, user, pass);
+            }
+            return conn;
+        }catch(ClassNotFoundException | SQLException e) {
+            throw new ConnectionException(e);
         }
-        return conn;
     }
 
-    synchronized public Connection open(String url, String user, String pass)
-            throws ClassNotFoundException, SQLException {
-        if (conn == null || conn.isClosed()) {
-            conn = DriverManager.getConnection(url, user, pass);
+    synchronized public Connection open(String url, String user, String pass) throws ConnectionException {
+        try {
+            if (conn == null || conn.isClosed()) {
+                conn = DriverManager.getConnection(url, user, pass);
+            }
+            return conn;
+        }catch(SQLException e) {
+            throw new ConnectionException(e);
         }
-        return conn;
     }
 
     /**
      * Closes mysql connection to computer-database-db if not already closed
+     * @throws ConnectionException
      *
      * @throws SQLException
      */
-    synchronized public void close() throws SQLException {
-        if (conn != null) {
-            conn.close();
+    synchronized public void close() throws ConnectionException {
+        try {
+            if (conn != null) {
+                conn.close();
+            }
+        }catch(SQLException e) {
+            throw new ConnectionException (e);
         }
     }
 

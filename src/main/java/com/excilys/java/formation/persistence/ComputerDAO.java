@@ -13,9 +13,10 @@ public interface ComputerDAO {
      *
      * @return ArrayList of Computer
      * @throws SQLException
-     * @throws ClassNotFoundException
+     * @throws
+     * @throws ConnectionException
      */
-    List<Computer> getAll() throws ClassNotFoundException, DAOException;
+    List<Computer> getAll() throws DAOException, ConnectionException;
 
     /**
      * Returns a list of all computers between lines offset and offset + size
@@ -25,10 +26,11 @@ public interface ComputerDAO {
      * @param size
      *            the maximum number of lines to select
      * @return an ArrayList of computers
-     * @throws ClassNotFoundException
+     * @throws
+     * @throws ConnectionException
      * @throws SQLException
      */
-    List<Computer> get(int offset, int size) throws ClassNotFoundException, DAOException;
+    List<Computer> get(int offset, int size) throws  DAOException, ConnectionException;
 
     /**
      * Returns the computer with the specified id in the database
@@ -39,17 +41,18 @@ public interface ComputerDAO {
      * @throws SQLException
      * @throws NoComputerInResultSetException
      *             if there is no computer with the corresponding id
-     * @throws ClassNotFoundException
+     * @throws
+     * @throws ConnectionException
      */
 
-    Optional<Computer> getComputerById(long id) throws DAOException, ClassNotFoundException;
+    Optional<Computer> getComputerById(long id) throws DAOException,  ConnectionException;
 
-    Long createComputer(Computer c) throws DAOException, ClassNotFoundException, DAOConstraintException;
+    Long createComputer(Computer c) throws DAOException,  DAOConstraintException, ConnectionException;
 
-    boolean update(Computer c) throws DAOException, ClassNotFoundException;
+    boolean update(Computer c) throws DAOException,  ConnectionException;
 
-    boolean delete(long id) throws DAOException, ClassNotFoundException;
+    boolean delete(long id) throws DAOException,  ConnectionException;
 
-    int count() throws DAOException, ClassNotFoundException;
+    int count() throws DAOException,  ConnectionException;
 
 }

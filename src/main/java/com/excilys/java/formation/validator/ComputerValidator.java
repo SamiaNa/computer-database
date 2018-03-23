@@ -6,6 +6,7 @@ import java.time.format.DateTimeParseException;
 import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.persistence.ComputerDAO;
 import com.excilys.java.formation.persistence.ComputerDAOImpl;
+import com.excilys.java.formation.persistence.ConnectionException;
 import com.excilys.java.formation.persistence.DAOException;
 
 public enum ComputerValidator {
@@ -40,7 +41,7 @@ public enum ComputerValidator {
         }
     }
 
-    public Long checkComputerId(String strId) throws ClassNotFoundException, DAOException, ValidatorException {
+    public Long checkComputerId(String strId) throws DAOException, ValidatorException, ConnectionException {
         try {
             long id = Long.parseLong(strId);
             ComputerDAO computerDAO = ComputerDAOImpl.INSTANCE;

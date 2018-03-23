@@ -11,9 +11,10 @@ public interface CompanyDAO {
      *
      * @return an ArrayList of all the companies in the database
      * @throws DAOException
+     * @throws ConnectionException
      * @throws ClassNotFoundException
      */
-    List<Company> getAll() throws DAOException, ClassNotFoundException;
+    List<Company> getAll() throws DAOException, ConnectionException;
 
     /**
      * Returns a list of all the companies between lines offset and offset + size
@@ -22,9 +23,10 @@ public interface CompanyDAO {
      * @param size
      * @return a list of all companies between offset and offset + size
      * @throws DAOException
+     * @throws ConnectionException
      * @throws ClassNotFoundException
      */
-    List<Company> get(int offset, int size) throws DAOException, ClassNotFoundException;
+    List<Company> get(int offset, int size) throws DAOException, ConnectionException;
 
     /**
      * Returns a list of all the companies between lines offset and offset + size
@@ -33,9 +35,10 @@ public interface CompanyDAO {
      * @param size
      * @return a list of all companies between offset and offset + size
      * @throws DAOException
+     * @throws ConnectionException
      * @throws ClassNotFoundException
      */
-    List<Company> getByName(String name) throws DAOException, ClassNotFoundException;
+    List<Company> getByName(String name) throws DAOException, ConnectionException;
 
     /**
      * Check if a company with the specified id exists
@@ -45,8 +48,9 @@ public interface CompanyDAO {
      * @return true if a company with the specified id exists
      * @throws DAOException
      * @throws ClassNotFoundException
+     * @throws ConnectionException
      */
-    boolean checkCompanyById(long id) throws DAOException, ClassNotFoundException;
+    boolean checkCompanyById(long id) throws DAOException, ConnectionException;
 
     /**
      * Returns the number of companies in the database
@@ -54,7 +58,8 @@ public interface CompanyDAO {
      * @return number of lines in table company
      * @throws ClassNotFoundException
      * @throws DAOException
+     * @throws ConnectionException
      */
-    int count() throws ClassNotFoundException, DAOException;
+    int count() throws DAOException, ConnectionException;
 
 }

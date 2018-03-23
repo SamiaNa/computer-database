@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.excilys.java.formation.entities.Computer;
+import com.excilys.java.formation.persistence.ConnectionException;
 import com.excilys.java.formation.persistence.DAOException;
 import com.excilys.java.formation.service.ComputerService;
 
@@ -24,12 +25,12 @@ public class ComputerPage extends Page{
         this.elements = new ArrayList<>();
     }
 
-    public void updateList() throws ClassNotFoundException, DAOException {
+    public void updateList() throws DAOException, ConnectionException {
         this.elements = ComputerService.INSTANCE.getComputerList(pageNumber, size);
     }
 
     @Override
-    public void getPage(int pageNumber, int pageSize) throws  ClassNotFoundException, DAOException{
+    public void getPage(int pageNumber, int pageSize) throws  ConnectionException, DAOException{
         this.count = ComputerService.INSTANCE.count();
         this.size = pageSize;
         this.pageNumber = super.offsetGetPage(pageNumber, count);
@@ -37,14 +38,14 @@ public class ComputerPage extends Page{
     }
 
     @Override
-    public void nextPage() throws  ClassNotFoundException, DAOException {
+    public void nextPage() throws  ConnectionException, DAOException {
         this.count = ComputerService.INSTANCE.count();
         super.offsetNextPage(count);
         updateList();
     }
 
     @Override
-    public void prevPage() throws  ClassNotFoundException, DAOException {
+    public void prevPage() throws  ConnectionException, DAOException {
         super.offsetPrevPage();
         updateList();
 

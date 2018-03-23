@@ -35,7 +35,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    public List<Computer> getAll() throws ClassNotFoundException, DAOException {
+    public List<Computer> getAll() throws  DAOException, ConnectionException {
         ComputerMapper computerMapper = ComputerMapper.INSTANCE;
         List<Computer> computers = new ArrayList<>();
         try (Connection connection = ConnectionManager.INSTANCE.open();
@@ -52,7 +52,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
     }
 
     @Override
-    public List<Computer> get(int offset, int size) throws ClassNotFoundException, DAOException {
+    public List<Computer> get(int offset, int size) throws ConnectionException, DAOException {
         ComputerMapper computerMapper = ComputerMapper.INSTANCE;
         List<Computer> computers = new ArrayList<>();
         try (Connection connection = ConnectionManager.INSTANCE.open();
@@ -71,7 +71,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
     }
 
     @Override
-    public Optional<Computer> getComputerById(long id) throws DAOException, ClassNotFoundException {
+    public Optional<Computer> getComputerById(long id) throws DAOException, ConnectionException {
         ComputerMapper computerMapper = ComputerMapper.INSTANCE;
         Optional<Computer> c = Optional.empty();
         try (Connection connection = ConnectionManager.INSTANCE.open();
@@ -88,7 +88,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
         return c;
     }
 
-    public List<Computer> getByName(String name) throws DAOException, ClassNotFoundException {
+    public List<Computer> getByName(String name) throws DAOException, ConnectionException {
         ComputerMapper computerMapper = ComputerMapper.INSTANCE;
         List<Computer> computers = new ArrayList<>();
         try (Connection connection = ConnectionManager.INSTANCE.open();
@@ -122,7 +122,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
     }
 
     @Override
-    public Long createComputer(Computer c) throws DAOException, ClassNotFoundException, DAOConstraintException {
+    public Long createComputer(Computer c) throws DAOException, ConnectionException, DAOConstraintException {
         long id = -1;
         try (Connection connection = ConnectionManager.INSTANCE.open();
                 PreparedStatement stmt = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);) {
@@ -146,7 +146,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
     }
 
     @Override
-    public boolean update(Computer c) throws ClassNotFoundException, DAOException {
+    public boolean update(Computer c) throws ConnectionException, DAOException {
         try (Connection connection = ConnectionManager.INSTANCE.open();
                 PreparedStatement stmt = connection.prepareStatement(UPDATE);) {
             stmt.setString(1, c.getName());
@@ -165,7 +165,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
     }
 
     @Override
-    public boolean delete(long id) throws DAOException, ClassNotFoundException {
+    public boolean delete(long id) throws DAOException, ConnectionException {
         try (Connection connection = ConnectionManager.INSTANCE.open();
                 PreparedStatement stmt = connection.prepareStatement(DELETE);) {
             stmt.setLong(1, id);
@@ -180,7 +180,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
     }
 
     @Override
-    public int count() throws DAOException, ClassNotFoundException {
+    public int count() throws DAOException, ConnectionException {
         try (Connection connection = ConnectionManager.INSTANCE.open();
                 PreparedStatement stmt = connection.prepareStatement(COUNT);) {
             ResultSet rSet = stmt.executeQuery();

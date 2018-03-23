@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.entities.Computer.StringToComputerBuilder;
+import com.excilys.java.formation.persistence.ConnectionException;
 import com.excilys.java.formation.persistence.DAOException;
 import com.excilys.java.formation.service.CompanyService;
 import com.excilys.java.formation.service.ComputerService;
@@ -59,7 +60,7 @@ public class AddComputerServlet extends HttpServlet {
         try {
             List<Company> companyList = CompanyService.INSTANCE.getCompanyList();
             request.setAttribute("companyList", companyList);
-        } catch (ClassNotFoundException | DAOException e) {
+        } catch (DAOException | ConnectionException e) {
             logger.error("Exception in addComputerServlet", e);
         }
 
@@ -85,7 +86,7 @@ public class AddComputerServlet extends HttpServlet {
                 logger.debug("validator exception");
                 logger.debug("add computer Result = " + e.getMessage());
                 request.setAttribute("res", e.getMessage());
-            } catch (ClassNotFoundException | DAOException e) {
+            } catch (ConnectionException | DAOException e) {
                 logger.error("Exception in doPost AddCompanyServlet", e);
                 throw new ServletException(e);
             }

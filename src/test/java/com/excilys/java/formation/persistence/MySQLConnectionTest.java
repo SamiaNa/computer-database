@@ -10,15 +10,15 @@ import org.junit.jupiter.api.Test;
 
 public class MySQLConnectionTest {
 
-	@Test
-	void test() throws ClassNotFoundException, SQLException {
-		Connection c = ConnectionManager.INSTANCE.open();
-		assertTrue(c.isValid(100));
-		Connection c1 = ConnectionManager.INSTANCE.open();
-		assertTrue(c == c1);
-		c.close();
-		assertTrue(c.isClosed());
-		assertTrue(c1.isClosed());
-	}
+    @Test
+    void test() throws  ConnectionException, SQLException {
+        Connection c = ConnectionManager.INSTANCE.open();
+        assertTrue(c.isValid(100));
+        Connection c1 = ConnectionManager.INSTANCE.open();
+        assertTrue(c == c1);
+        c.close();
+        assertTrue(c.isClosed());
+        assertTrue(c1.isClosed());
+    }
 
 }

@@ -1,5 +1,6 @@
 package com.excilys.java.formation.page;
 
+import com.excilys.java.formation.persistence.ConnectionException;
 import com.excilys.java.formation.persistence.DAOException;
 import com.excilys.java.formation.service.ComputerService;
 
@@ -11,21 +12,21 @@ public abstract class Page {
 
     protected final static int DEFAULT_SIZE = 10;
 
-    public abstract void nextPage() throws ClassNotFoundException, DAOException;
+    public abstract void nextPage() throws ConnectionException, DAOException;
 
-    public abstract void prevPage() throws  ClassNotFoundException, DAOException;
+    public abstract void prevPage() throws  ConnectionException, DAOException;
 
-    public abstract void getPage(int pageNumber, int pageSize) throws ClassNotFoundException, DAOException ;
+    public abstract void getPage(int pageNumber, int pageSize) throws ConnectionException, DAOException  ;
 
 
-    public int offsetNextPage(int dbSize) throws  ClassNotFoundException {
+    public int offsetNextPage(int dbSize) throws  ConnectionException {
         if (pageNumber + size <= dbSize) {
             pageNumber += size;
         }
         return pageNumber;
     }
 
-    public int offsetPrevPage() throws ClassNotFoundException {
+    public int offsetPrevPage() throws ConnectionException {
         pageNumber -= size;
         if (pageNumber < 0) {
             pageNumber = 0;
@@ -33,7 +34,7 @@ public abstract class Page {
         return pageNumber;
     }
 
-    public int offsetGetPage(int pageNumber, int dbSize) throws  ClassNotFoundException {
+    public int offsetGetPage(int pageNumber, int dbSize) throws  ConnectionException {
         if (pageNumber <= 0) {
             pageNumber = 0;
         } else if ((pageNumber - 1) * size <= dbSize) {
@@ -44,7 +45,7 @@ public abstract class Page {
         return pageNumber;
     }
 
-    protected int getOffset(int pageNumber, int pageSize) throws ClassNotFoundException, DAOException {
+    protected int getOffset(int pageNumber, int pageSize) throws ConnectionException, DAOException {
         int dbSize = ComputerService.INSTANCE.count();
         int offset = 0;
         if ((pageNumber - 1) * pageSize <= dbSize) {

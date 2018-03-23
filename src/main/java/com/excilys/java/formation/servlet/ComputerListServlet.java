@@ -9,7 +9,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.java.formation.page.ComputerDTOPage;
+import com.excilys.java.formation.persistence.ConnectionException;
 import com.excilys.java.formation.persistence.DAOException;
 
 /**
@@ -18,6 +22,7 @@ import com.excilys.java.formation.persistence.DAOException;
 @WebServlet("/ComputerListServlet")
 public class ComputerListServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
+    private static Logger logger = LoggerFactory.getLogger(ComputerListServlet.class);
 
     /**
      * @see HttpServlet#HttpServlet()
@@ -54,7 +59,7 @@ public class ComputerListServlet extends HttpServlet {
             computerPage.getPage(pageNumber, pageSize);
             request.setAttribute("computerPage", computerPage);
             rd.forward(request, response);
-        } catch (ClassNotFoundException | DAOException e) {
+        } catch (ConnectionException | DAOException e) {
             throw new ServletException(e);
         }
     }

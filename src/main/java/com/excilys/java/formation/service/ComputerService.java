@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.persistence.ComputerDAOImpl;
+import com.excilys.java.formation.persistence.ConnectionException;
 import com.excilys.java.formation.persistence.DAOConstraintException;
 import com.excilys.java.formation.persistence.DAOException;
 import com.excilys.java.formation.validator.ComputerValidator;
@@ -14,24 +15,24 @@ public enum ComputerService {
 
     INSTANCE;
 
-    public List<Computer> getComputerList() throws DAOException, ClassNotFoundException {
+    public List<Computer> getComputerList() throws DAOException, ConnectionException {
         return ComputerDAOImpl.INSTANCE.getAll();
     }
 
-    public List<Computer> getComputerList(int offset, int size) throws ClassNotFoundException, DAOException {
+    public List<Computer> getComputerList(int offset, int size) throws ConnectionException, DAOException {
         return ComputerDAOImpl.INSTANCE.get(offset, size);
     }
 
-    public List<Computer> getComputerListByName(String name) throws ClassNotFoundException, DAOException{
+    public List<Computer> getComputerListByName(String name) throws ConnectionException, DAOException{
         return ComputerDAOImpl.INSTANCE.getByName(name);
     }
     public Optional<Computer> getComputerById(Long computerId)
-            throws DAOException, ClassNotFoundException, ValidatorException {
+            throws DAOException, ConnectionException, ValidatorException {
         return ComputerDAOImpl.INSTANCE.getComputerById(computerId);
     }
 
     public Optional<Computer> createComputer(Computer computer)
-            throws ValidatorException, ClassNotFoundException, DAOException {
+            throws ValidatorException, ConnectionException, DAOException {
         ComputerValidator.INSTANCE.checkDates(computer);
         try {
             computer.setId(ComputerDAOImpl.INSTANCE.createComputer(computer));
@@ -41,15 +42,15 @@ public enum ComputerService {
         return Optional.of(computer);
     }
 
-    public boolean updateComputer(Computer computer) throws ClassNotFoundException, DAOException, ValidatorException {
+    public boolean updateComputer(Computer computer) throws ConnectionException, DAOException, ValidatorException {
         return ComputerDAOImpl.INSTANCE.update(computer);
     }
 
-    public boolean deleteComputer(Long computerId) throws ClassNotFoundException, DAOException, ValidatorException {
+    public boolean deleteComputer(Long computerId) throws ConnectionException, DAOException, ValidatorException {
         return ComputerDAOImpl.INSTANCE.delete(computerId);
     }
 
-    public int count() throws ClassNotFoundException, DAOException {
+    public int count() throws ConnectionException, DAOException {
         return ComputerDAOImpl.INSTANCE.count();
     }
 

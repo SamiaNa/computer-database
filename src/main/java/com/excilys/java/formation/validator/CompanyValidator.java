@@ -2,6 +2,7 @@ package com.excilys.java.formation.validator;
 
 import com.excilys.java.formation.persistence.CompanyDAO;
 import com.excilys.java.formation.persistence.CompanyDAOImpl;
+import com.excilys.java.formation.persistence.ConnectionException;
 import com.excilys.java.formation.persistence.DAOException;
 
 public enum CompanyValidator {
@@ -28,7 +29,7 @@ public enum CompanyValidator {
         }
     }
 
-    public Long checkCompanyIdOrNull(String strId) throws ClassNotFoundException, DAOException, ValidatorException {
+    public Long checkCompanyIdOrNull(String strId) throws DAOException, ValidatorException, ConnectionException {
         Long id = getLongId(strId);
         if (id == null) {
             return id;

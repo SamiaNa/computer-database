@@ -26,7 +26,7 @@ public enum CompanyDAOImpl implements CompanyDAO {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    public List<Company> getAll() throws DAOException, ClassNotFoundException {
+    public List<Company> getAll() throws DAOException, ConnectionException {
         CompanyMapper companyMapper = CompanyMapper.INSTANCE;
         List<Company> companies = new ArrayList<>();
         try (Connection connection = ConnectionManager.INSTANCE.open();
@@ -43,7 +43,7 @@ public enum CompanyDAOImpl implements CompanyDAO {
     }
 
     @Override
-    public List<Company> get(int offset, int size) throws DAOException, ClassNotFoundException {
+    public List<Company> get(int offset, int size) throws DAOException, ConnectionException {
         CompanyMapper companyMapper = CompanyMapper.INSTANCE;
         List<Company> companies = new ArrayList<>();
         try (Connection connection = ConnectionManager.INSTANCE.open();
@@ -62,7 +62,7 @@ public enum CompanyDAOImpl implements CompanyDAO {
     }
 
     @Override
-    public List<Company> getByName(String name) throws DAOException, ClassNotFoundException {
+    public List<Company> getByName(String name) throws DAOException, ConnectionException {
         CompanyMapper companyMapper = CompanyMapper.INSTANCE;
         List<Company> companies = new ArrayList<>();
         try (Connection connection = ConnectionManager.INSTANCE.open();
@@ -80,7 +80,7 @@ public enum CompanyDAOImpl implements CompanyDAO {
     }
 
     @Override
-    public boolean checkCompanyById(long id) throws DAOException, ClassNotFoundException {
+    public boolean checkCompanyById(long id) throws DAOException, ConnectionException {
         try (Connection connection = ConnectionManager.INSTANCE.open();
                 PreparedStatement stmt = connection.prepareStatement(SELECT_BY_ID);) {
             stmt.setLong(1, id);
@@ -95,7 +95,7 @@ public enum CompanyDAOImpl implements CompanyDAO {
     }
 
     @Override
-    public int count() throws ClassNotFoundException, DAOException {
+    public int count() throws  DAOException, ConnectionException {
         try (Connection connection = ConnectionManager.INSTANCE.open();
                 PreparedStatement stmt = connection.prepareStatement(COUNT);) {
             ResultSet res = stmt.executeQuery();
