@@ -42,7 +42,7 @@
 	<c:choose>
 		<c:when test="${computerPage == null}">
 			<c:redirect
-				url="ComputerListServlet?pageNumber=${pageNumber}&pageSize=${pageSize}" />
+				url="/ComputerListServlet?pageNumber=${pageNumber}&pageSize=${pageSize}" />
 		</c:when>
 	</c:choose>
 
@@ -126,7 +126,7 @@
 
 			<c:if test="${pageNumber > 1}">
 				<li><a
-					href=<c:url value="ComputerListServlet?pageNumber=${pageNumber-1}&pageSize=${pageSize}"/>
+					href=<c:url value="/ComputerListServlet?pageNumber=${pageNumber-1}&pageSize=${pageSize}"/>
 					aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
 				</a></li>
 			</c:if>
@@ -136,7 +136,7 @@
 					test="${(pageNumber+i <= (computerPage.count / pageSize) && computerPage.count % pageSize == 0)
 			|| (pageNumber+i <= (computerPage.count / pageSize) + 1 && computerPage.count % pageSize != 0)}">
 					<li><a
-						href=<c:url value="ComputerListServlet?pageNumber=${pageNumber+i}&pageSize=${pageSize}"/>><c:out
+						href=<c:url value="/ComputerListServlet?pageNumber=${pageNumber+i}&pageSize=${pageSize}"/>><c:out
 								value="${pageNumber+i}" /></a></li>
 				</c:if>
 			</c:forEach>
@@ -146,7 +146,7 @@
 			|| (pageNumber + 1 <(computerPage.count / pageSize) + 1 && computerPage.count % pageSize != 0)}">
 				<li><a
 					href=<c:url
-					value="ComputerListServlet?pageNumber=${pageNumber+1}&pageSize=${pageSize}" />
+					value="/ComputerListServlet?pageNumber=${pageNumber+1}&pageSize=${pageSize}" />
 					aria-label="Next"> <span aria-hidden="true">&raquo;</span>
 				</a></li>
 			</c:if>

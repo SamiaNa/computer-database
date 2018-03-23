@@ -18,6 +18,7 @@ import com.excilys.java.formation.service.CompanyService;
 import com.excilys.java.formation.service.ComputerService;
 import com.excilys.java.formation.validator.ValidatorException;
 
+
 public class UserInterface {
 
     private static final int PAGE_SIZE = 10;
