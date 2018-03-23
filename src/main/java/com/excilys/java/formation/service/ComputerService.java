@@ -22,6 +22,9 @@ public enum ComputerService {
         return ComputerDAOImpl.INSTANCE.get(offset, size);
     }
 
+    public List<Computer> getComputerListByName(String name) throws ClassNotFoundException, DAOException{
+        return ComputerDAOImpl.INSTANCE.getByName(name);
+    }
     public Optional<Computer> getComputerById(Long computerId)
             throws DAOException, ClassNotFoundException, ValidatorException {
         return ComputerDAOImpl.INSTANCE.getComputerById(computerId);

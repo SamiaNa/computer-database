@@ -39,11 +39,10 @@
 		</c:otherwise>
 	</c:choose>
 
-
 	<c:choose>
-		<c:when test="${computers == null || computerCount == null}">
+		<c:when test="${computerPage == null}">
 			<c:redirect
-				url="ComputerListServlet?pageNumber=${pageNumber}&pageSize=${pageSize}" />
+				url="/ComputerListServlet?pageNumber=${pageNumber}&pageSize=${pageSize}" />
 		</c:when>
 	</c:choose>
 
@@ -51,7 +50,7 @@
 	<section id="main">
 	<div class="container">
 		<h1 id="homeTitle">
-			<c:out value="${computerCount} Computers found" />
+			<c:out value="${computerPage.count} Computers found" />
 		</h1>
 		<div id="actions" class="form-horizontal">
 			<div class="pull-left">
@@ -64,8 +63,9 @@
 				</form>
 			</div>
 			<div class="pull-right">
-				<a class="btn btn-success" id="addComputer" href="addComputer.html">Add
-					Computer</a> <a class="btn btn-default" id="editComputer" href="#"
+				<a class="btn btn-success" id="addComputer"
+					href="./static/views/addComputer.jsp">Add Computer</a> <a
+					class="btn btn-default" id="editComputer" href="#"
 					onclick="$.fn.toggleEditMode();">Edit</a>
 			</div>
 		</div>
@@ -103,7 +103,7 @@
 			<!-- Browse attribute computers -->
 			<tbody id="results">
 
-				<c:forEach var="computer" items="${computers}">
+				<c:forEach var="computer" items="${computerPage.DTOElements}">
 					<tr>
 						<td class="editMode"><input type="checkbox" name="cb"
 							class="cb" value="0"></td>
@@ -126,27 +126,27 @@
 
 			<c:if test="${pageNumber > 1}">
 				<li><a
-					href=<c:url value="ComputerListServlet?pageNumber=${pageNumber-1}&pageSize=${pageSize}"/>
+					href=<c:url value="/ComputerListServlet?pageNumber=${pageNumber-1}&pageSize=${pageSize}"/>
 					aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
 				</a></li>
 			</c:if>
 
 			<c:forEach var="i" begin="0" end="4">
 				<c:if
-					test="${(pageNumber+i <= (computerCount / pageSize) && computerCount % pageSize == 0)
-			|| (pageNumber+i <= (computerCount / pageSize) + 1 && computerCount % pageSize != 0)}">
+					test="${(pageNumber+i <= (computerPage.count / pageSize) && computerPage.count % pageSize == 0)
+			|| (pageNumber+i <= (computerPage.count / pageSize) + 1 && computerPage.count % pageSize != 0)}">
 					<li><a
-						href=<c:url value="ComputerListServlet?pageNumber=${pageNumber+i}&pageSize=${pageSize}"/>><c:out
+						href=<c:url value="/ComputerListServlet?pageNumber=${pageNumber+i}&pageSize=${pageSize}"/>><c:out
 								value="${pageNumber+i}" /></a></li>
 				</c:if>
 			</c:forEach>
 
 			<c:if
-				test="${(pageNumber + 1 < (computerCount / pageSize) && computerCount % pageSize == 0)
-			|| (pageNumber + 1 <(computerCount / pageSize) + 1 && computerCount % pageSize != 0)}">
+				test="${(pageNumber + 1 < (computerPage.count / pageSize) && computerPage.count % pageSize == 0)
+			|| (pageNumber + 1 <(computerPage.count / pageSize) + 1 && computerPage.count % pageSize != 0)}">
 				<li><a
 					href=<c:url
-					value="ComputerListServlet?pageNumber=${pageNumber+1}&pageSize=${pageSize}" />
+					value="/ComputerListServlet?pageNumber=${pageNumber+1}&pageSize=${pageSize}" />
 					aria-label="Next"> <span aria-hidden="true">&raquo;</span>
 				</a></li>
 			</c:if>
@@ -168,9 +168,9 @@
 
 		</div>
 	</footer>
-	<script src="../js/jquery.min.js"></script>
-	<script src="../js/bootstrap.min.js"></script>
-	<script src="../js/dashboard.js"></script>
+	<script src="static/js/jquery.min.js"></script>
+	<script src="static/js/bootstrap.min.js"></script>
+	<script src="static/js/dashboard.js"></script>
 
 
 </body>

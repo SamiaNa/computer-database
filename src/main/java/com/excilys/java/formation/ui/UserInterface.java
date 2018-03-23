@@ -18,26 +18,41 @@ import com.excilys.java.formation.service.CompanyService;
 import com.excilys.java.formation.service.ComputerService;
 import com.excilys.java.formation.validator.ValidatorException;
 
+
 public class UserInterface {
 
     private static final int PAGE_SIZE = 10;
 
+    private static void printElements(Page page) {
+        if (page instanceof ComputerPage) {
+            ComputerPage computerPage = (ComputerPage) page;
+            for (Computer c : computerPage.getElements()) {
+                System.out.println(c);
+            }
+        }
+        else if (page instanceof CompanyPage) {
+            CompanyPage compantPage = (CompanyPage) page;
+            for (Company c : compantPage.getElements()) {
+                System.out.println(c);
+            }
+        }
+    }
     private static void printPagedList(Scanner scanner, Page page) throws ClassNotFoundException, DAOException {
         scanner.nextLine();
-        int pageNumber = 1;
+        page.getPage(1, PAGE_SIZE);
         while (true) {
-            page.printPage(pageNumber, PAGE_SIZE);
+            printElements(page);
             System.out.println("p : previous page, n : next page, q : quit, g : goto page");
             switch (PageActionEnum.getAction(scanner.nextLine())) {
             case PREVIOUS:
-                pageNumber --;
+                page.prevPage();
                 break;
             case NEXT:
-                pageNumber ++;
+                page.nextPage();
                 break;
             case GOTO:
                 System.out.println("Enter page number");
-                pageNumber = scanner.nextInt();
+                page.getPage(scanner.nextInt(), PAGE_SIZE);
                 scanner.nextLine();
                 break;
             case EXIT:
@@ -207,10 +222,10 @@ public class UserInterface {
             }
             switch (CLIActionEnum.values()[featureChoice]) {
             case LIST_COMPUTERS:
-                printPagedList(scanner, ComputerPage.getPage());
+                printPagedList(scanner, new ComputerPage(1, PAGE_SIZE));
                 break;
             case LIST_COMPANIES:
-                printPagedList(scanner, CompanyPage.getPage());
+                printPagedList(scanner, new CompanyPage(1, PAGE_SIZE));
                 break;
             case COMPUTER_DETAILS:
                 printComputerByID(scanner, computerService);

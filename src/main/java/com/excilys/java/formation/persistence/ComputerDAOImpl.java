@@ -26,6 +26,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
     private static String SELECT_ALL_JOIN = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id;";
     private static String SELECT_LIMIT = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id LIMIT ? OFFSET ?;";
     private static String SELECT_BY_ID_JOIN = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id = ? ;";
+    private static String SELECT_BY_NAME = "SELECT id, name FROM computer WHERE name LIKE ?;";
     private static String INSERT = "INSERT INTO computer (name, company_id, introduced, discontinued) VALUES (?, ?, ?, ?);";
     private static String UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?;";
     private static String DELETE = "DELETE FROM computer WHERE id = ?;";
@@ -85,6 +86,23 @@ public enum ComputerDAOImpl implements ComputerDAO {
             throw new DAOException(se.getMessage());
         }
         return c;
+    }
+
+    public List<Computer> getByName(String name) throws DAOException, ClassNotFoundException {
+        ComputerMapper computerMapper = ComputerMapper.INSTANCE;
+        List<Computer> computers = new ArrayList<>();
+        try (Connection connection = ConnectionManager.INSTANCE.open();
+                PreparedStatement stmt = connection.prepareStatement(SELECT_BY_NAME);) {
+            stmt.setString(1, "%" + name + "%");
+            ResultSet res = stmt.executeQuery();
+            computers = computerMapper.createComputerListFromResultSet(res);
+        } catch (SQLException se) {
+            for (Throwable e : se) {
+                logger.error(e.toString());
+            }
+            throw new DAOException(se.getMessage());
+        }
+        return computers;
     }
 
     private void setDateOrNull(LocalDate d, PreparedStatement stmt, int position) throws SQLException {

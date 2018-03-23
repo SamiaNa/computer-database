@@ -12,8 +12,6 @@ public enum ConnectionManager {
     private static final String RESOURCE_PATH = "connection";
 
     /****
-     * ouvre plusieurs connections
-     *
      * @return
      * @throws ClassNotFoundException
      * @throws SQLException
