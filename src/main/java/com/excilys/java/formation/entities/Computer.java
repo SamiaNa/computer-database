@@ -102,9 +102,7 @@ public class Computer  {
         private LocalDate discontinued;
         private Company company;
 
-        public StringToComputerBuilder() {
-
-        }
+    
 
         public StringToComputerBuilder setName(String name) throws ValidatorException {
             ComputerValidator.INSTANCE.checkName(name);

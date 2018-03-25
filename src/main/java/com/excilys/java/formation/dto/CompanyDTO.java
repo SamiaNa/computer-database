@@ -17,4 +17,12 @@ public class CompanyDTO {
     public void setId(long id) {
         this.id = id;
     }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        return (this.name.equals(company.name) && this.id == company.id);
+    }
 }

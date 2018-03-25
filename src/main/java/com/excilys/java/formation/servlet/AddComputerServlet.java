@@ -70,7 +70,6 @@ public class AddComputerServlet extends HttpServlet {
                 String name = request.getParameter("name");
                 String introducedStr = request.getParameter("introduced");
                 String discontinuedStr = request.getParameter("discontinued");
-                logger.debug("."+introducedStr+".");
                 String companyIdStr = request.getParameter("companyId");
                 StringToComputerBuilder builder = new StringToComputerBuilder();
                 builder.setName(name).setIntroduced(introducedStr).setDiscontinued(discontinuedStr)
@@ -79,12 +78,10 @@ public class AddComputerServlet extends HttpServlet {
                 if (optComp.isPresent()) {
                     request.setAttribute("res", "Computer added ");
                 } else {
-                    request.setAttribute("res", "Err");
+                    request.setAttribute("res", "Error");
                 }
 
             } catch (ValidatorException e) {
-                logger.debug("validator exception");
-                logger.debug("add computer Result = " + e.getMessage());
                 request.setAttribute("res", e.getMessage());
             } catch (ConnectionException | DAOException e) {
                 logger.error("Exception in doPost AddCompanyServlet", e);

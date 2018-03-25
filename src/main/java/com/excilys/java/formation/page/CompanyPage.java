@@ -3,6 +3,9 @@ package com.excilys.java.formation.page;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.persistence.ConnectionException;
 import com.excilys.java.formation.persistence.DAOException;
@@ -12,6 +15,7 @@ public class CompanyPage extends Page {
 
 
     private List<Company> elements;
+    private static Logger logger = LoggerFactory.getLogger(CompanyPage.class);
 
     public CompanyPage() {
         this.pageNumber = 0;
@@ -23,9 +27,11 @@ public class CompanyPage extends Page {
         this.pageNumber = pageNumber;
         this.size = size;
         this.elements = new ArrayList<>();
+        
     }
 
     public void updateList() throws ConnectionException, DAOException {
+        logger.debug("Updating company list, page number = "+pageNumber+", page size="+size);
         this.elements = CompanyService.INSTANCE.getCompanyList(pageNumber, size);
     }
 
@@ -34,6 +40,7 @@ public class CompanyPage extends Page {
         this.count = CompanyService.INSTANCE.count();
         this.size = pageSize;
         super.offsetGetPage(pageNumber, count);
+        logger.debug("Getting page "+pageNumber+" with page size="+size);
         updateList();
     }
 
@@ -41,12 +48,14 @@ public class CompanyPage extends Page {
     public void nextPage() throws  ConnectionException, DAOException {
         this.count = CompanyService.INSTANCE.count();
         super.offsetNextPage(count);
+        logger.debug("Getting page "+pageNumber+" with page size="+size);
         updateList();
     }
 
     @Override
     public void prevPage() throws  ConnectionException, DAOException {
         super.offsetPrevPage();
+        logger.debug("Getting page "+pageNumber+" with page size="+size);
         updateList();
 
     }

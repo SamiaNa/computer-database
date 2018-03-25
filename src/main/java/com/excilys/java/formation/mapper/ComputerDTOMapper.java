@@ -4,6 +4,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.java.formation.dto.ComputerDTO;
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.entities.Computer;
@@ -12,12 +15,13 @@ public enum ComputerDTOMapper {
 
     INSTANCE;
     private static final String NULL = "";
+    private static Logger logger = LoggerFactory.getLogger(ComputerDTOMapper.class);
 
     public String dateToString(LocalDate date) {
         if (date == null) {
             return NULL;
         }
-        return date.toString();
+       return date.toString();
     }
 
     public LocalDate stringToLocalDate(String str) {
@@ -41,6 +45,7 @@ public enum ComputerDTOMapper {
             cDTO.setCompanyName(computer.getCompany().getName());
             cDTO.setCompanyId(String.valueOf(computer.getCompany().getId()));
         }
+        logger.debug("Computer "+computer+" converted to ComputerDTO "+cDTO);
         return cDTO;
     }
 

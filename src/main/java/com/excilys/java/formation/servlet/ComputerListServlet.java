@@ -47,19 +47,21 @@ public class ComputerListServlet extends HttpServlet {
             try {
                 pageNumber = Integer.parseUnsignedInt(pageNumberStr);
                 pageSize = Integer.parseUnsignedInt(pageSizeStr);
+                logger.info("Page number = "+pageNumber+", page size = "+pageSize);
             } catch (NumberFormatException e) {
-                request.setAttribute("errorMessage", "");
-                rd.forward(request, response);
-                return;
+                logger.error("Failed to parse "+pageNumberStr+" or "+pageSizeStr+" as an unsigned int");
+                throw new ServletException(e);
             }
             ComputerDTOPage computerPage = (ComputerDTOPage) request.getAttribute("computerPage");
             if (computerPage == null) {
                 computerPage = new ComputerDTOPage();
             }
             computerPage.getPage(pageNumber, pageSize);
+            logger.info("Successfully fetched page content (page number="+pageNumber+" page size="+pageSize);
             request.setAttribute("computerPage", computerPage);
             rd.forward(request, response);
         } catch (ConnectionException | DAOException e) {
+            logger.error("Exception in ComputerListServlet", e);
             throw new ServletException(e);
         }
     }
