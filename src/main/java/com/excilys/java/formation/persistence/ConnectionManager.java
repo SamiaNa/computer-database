@@ -5,11 +5,15 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public enum ConnectionManager {
 
     INSTANCE;
     private static Connection conn = null;
     private static final String RESOURCE_PATH = "connection";
+    private Logger logger = LoggerFactory.getLogger(ConnectionManager.class);
 
     /****
      * @return
@@ -17,16 +21,20 @@ public enum ConnectionManager {
      */
     synchronized public Connection open() throws ConnectionException  {
         try {
+            logger.info("Trying to get database connection");
             if (conn == null || conn.isClosed()) {
+                logger.info("No existing connection, establishing new connection");
                 Class.forName("com.mysql.cj.jdbc.Driver");
                 ResourceBundle resources = ResourceBundle.getBundle(RESOURCE_PATH);
                 String url = resources.getString("url");
                 String user = resources.getString("user");
                 String pass = resources.getString("pass");
                 conn = DriverManager.getConnection(url, user, pass);
+                logger.info("Connection succefully established");
             }
             return conn;
         }catch(ClassNotFoundException | SQLException e) {
+            logger.error("Failed to open connection",e);
             throw new ConnectionException(e);
         }
     }
@@ -58,9 +66,5 @@ public enum ConnectionManager {
         }
     }
 
-    public static void printExceptionList(SQLException se) {
-        for (Throwable e : se) {
-            System.out.println("Problem : " + e);
-        }
-    }
+
 }

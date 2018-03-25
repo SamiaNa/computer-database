@@ -31,6 +31,7 @@ public enum CompanyDAOImpl implements CompanyDAO {
         List<Company> companies = new ArrayList<>();
         try (Connection connection = ConnectionManager.INSTANCE.open();
                 PreparedStatement stmt = connection.prepareStatement(SELECT);) {
+            logger.debug("(getAll) Query : "+stmt.toString());
             ResultSet res = stmt.executeQuery();
             companies = companyMapper.createCompanyListFromResultSet(res);
         } catch (SQLException se) {
@@ -50,6 +51,7 @@ public enum CompanyDAOImpl implements CompanyDAO {
                 PreparedStatement stmt = connection.prepareStatement(SELECT_LIMIT);) {
             stmt.setInt(1, size);
             stmt.setInt(2, offset);
+            logger.debug("(get) Query : "+stmt.toString());
             ResultSet res = stmt.executeQuery();
             companies = companyMapper.createCompanyListFromResultSet(res);
         } catch (SQLException se) {
@@ -68,6 +70,7 @@ public enum CompanyDAOImpl implements CompanyDAO {
         try (Connection connection = ConnectionManager.INSTANCE.open();
                 PreparedStatement stmt = connection.prepareStatement(SELECT_BY_NAME);) {
             stmt.setString(1, "%" + name + "%");
+            logger.debug("(getByName) Query : "+stmt.toString());
             ResultSet res = stmt.executeQuery();
             companies = companyMapper.createCompanyListFromResultSet(res);
         } catch (SQLException se) {
@@ -84,6 +87,7 @@ public enum CompanyDAOImpl implements CompanyDAO {
         try (Connection connection = ConnectionManager.INSTANCE.open();
                 PreparedStatement stmt = connection.prepareStatement(SELECT_BY_ID);) {
             stmt.setLong(1, id);
+            logger.debug("(checkCompanyById) Query : "+stmt.toString());
             ResultSet res = stmt.executeQuery();
             return res.next();
         } catch (SQLException se) {
@@ -98,6 +102,7 @@ public enum CompanyDAOImpl implements CompanyDAO {
     public int count() throws  DAOException, ConnectionException {
         try (Connection connection = ConnectionManager.INSTANCE.open();
                 PreparedStatement stmt = connection.prepareStatement(COUNT);) {
+            logger.debug("(count) Query : "+stmt.toString());
             ResultSet res = stmt.executeQuery();
             res.next();
             return res.getInt(1);

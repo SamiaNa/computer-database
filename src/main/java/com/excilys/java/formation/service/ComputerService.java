@@ -27,7 +27,7 @@ public enum ComputerService {
         return ComputerDAOImpl.INSTANCE.getByName(name);
     }
     public Optional<Computer> getComputerById(Long computerId)
-            throws DAOException, ConnectionException, ValidatorException {
+            throws DAOException, ConnectionException {
         return ComputerDAOImpl.INSTANCE.getComputerById(computerId);
     }
 
@@ -42,11 +42,11 @@ public enum ComputerService {
         return Optional.of(computer);
     }
 
-    public boolean updateComputer(Computer computer) throws ConnectionException, DAOException, ValidatorException {
+    public boolean updateComputer(Computer computer) throws ConnectionException, DAOException {
         return ComputerDAOImpl.INSTANCE.update(computer);
     }
 
-    public boolean deleteComputer(Long computerId) throws ConnectionException, DAOException, ValidatorException {
+    public boolean deleteComputer(Long computerId) throws ConnectionException, DAOException {
         return ComputerDAOImpl.INSTANCE.delete(computerId);
     }
 

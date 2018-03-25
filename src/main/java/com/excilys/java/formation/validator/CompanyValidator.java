@@ -1,5 +1,8 @@
 package com.excilys.java.formation.validator;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.java.formation.persistence.CompanyDAO;
 import com.excilys.java.formation.persistence.CompanyDAOImpl;
 import com.excilys.java.formation.persistence.ConnectionException;
@@ -8,7 +11,7 @@ import com.excilys.java.formation.persistence.DAOException;
 public enum CompanyValidator {
 
     INSTANCE;
-
+    private static Logger logger = LoggerFactory.getLogger(CompanyValidator.class);
     /**
      * Converts string argument to Long
      *
@@ -22,9 +25,10 @@ public enum CompanyValidator {
         try {
             return Long.parseLong(strId);
         } catch (NumberFormatException e) {
-            if (strId.equals("") || strId.toLowerCase().equals("null")) {
+            if (strId.equals("") || strId.equalsIgnoreCase("null")) {
                 return null;
             }
+            logger.error("Validator error : failed to parse "+strId+" as a Long");
             throw new ValidatorException("Only numbers are accepted as id");
         }
     }

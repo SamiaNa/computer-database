@@ -1,5 +1,7 @@
 package com.excilys.java.formation.dto;
 
+import java.util.Objects;
+
 public class CompanyDTO {
 
     private String name;
@@ -16,5 +18,22 @@ public class CompanyDTO {
     }
     public void setId(long id) {
         this.id = id;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof CompanyDTO)) {
+            return false;
+        }
+        CompanyDTO company = (CompanyDTO) o;
+        return (this.name.equals(company.name) && this.id == company.id);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, id);
     }
 }
