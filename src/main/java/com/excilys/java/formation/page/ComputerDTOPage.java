@@ -10,6 +10,7 @@ import com.excilys.java.formation.mapper.ComputerDTOMapper;
 import com.excilys.java.formation.persistence.ConnectionException;
 import com.excilys.java.formation.persistence.DAOException;
 import com.excilys.java.formation.service.ComputerService;
+import com.excilys.java.formation.validator.ValidatorException;
 
 public class ComputerDTOPage extends ComputerPage {
 
@@ -26,7 +27,7 @@ public class ComputerDTOPage extends ComputerPage {
     }
 
     @Override
-    public void updateList() throws ConnectionException, DAOException {
+    public void updateList() throws ConnectionException, DAOException, ValidatorException {
         logger.debug("Updating computer list : page number ="+pageNumber+", page size="+size);
         this.DTOElements = ComputerDTOMapper.INSTANCE
                 .toDTOList(ComputerService.INSTANCE.getComputerList(pageNumber, size));

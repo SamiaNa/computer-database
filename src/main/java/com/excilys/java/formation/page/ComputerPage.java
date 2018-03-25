@@ -10,6 +10,7 @@ import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.persistence.ConnectionException;
 import com.excilys.java.formation.persistence.DAOException;
 import com.excilys.java.formation.service.ComputerService;
+import com.excilys.java.formation.validator.ValidatorException;
 
 public class ComputerPage extends Page{
 
@@ -29,13 +30,13 @@ public class ComputerPage extends Page{
         this.elements = new ArrayList<>();
     }
 
-    public void updateList() throws DAOException, ConnectionException {
+    public void updateList() throws DAOException, ConnectionException, ValidatorException {
         logger.debug("Updating computer list, page number = "+pageNumber+", page size="+size);
         this.elements = ComputerService.INSTANCE.getComputerList(pageNumber, size);
     }
 
     @Override
-    public void getPage(int pageNumber, int pageSize) throws  ConnectionException, DAOException{
+    public void getPage(int pageNumber, int pageSize) throws  ConnectionException, DAOException, ValidatorException{
         this.count = ComputerService.INSTANCE.count();
         this.size = pageSize;
         this.pageNumber = super.offsetGetPage(pageNumber, count);
@@ -44,7 +45,7 @@ public class ComputerPage extends Page{
     }
 
     @Override
-    public void nextPage() throws  ConnectionException, DAOException {
+    public void nextPage() throws  ConnectionException, DAOException, ValidatorException {
         this.count = ComputerService.INSTANCE.count();
         super.offsetNextPage(count);
         logger.debug("Getting page "+pageNumber+" with page size="+size);
@@ -52,7 +53,7 @@ public class ComputerPage extends Page{
     }
 
     @Override
-    public void prevPage() throws  ConnectionException, DAOException {
+    public void prevPage() throws  ConnectionException, DAOException, ValidatorException {
         super.offsetPrevPage();
         logger.debug("Getting page "+pageNumber+" with page size="+size);
         updateList();

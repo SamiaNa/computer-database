@@ -8,8 +8,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.java.formation.dto.ComputerDTO;
+import com.excilys.java.formation.dto.ComputerDTO.ComputerDTOBuilder;
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.entities.Computer;
+import com.excilys.java.formation.persistence.ConnectionException;
+import com.excilys.java.formation.persistence.DAOException;
+import com.excilys.java.formation.validator.CompanyValidator;
+import com.excilys.java.formation.validator.ComputerValidator;
+import com.excilys.java.formation.validator.ValidatorException;
 
 public enum ComputerDTOMapper {
 
@@ -31,38 +37,43 @@ public enum ComputerDTOMapper {
         return LocalDate.parse(str);
     }
 
-    public ComputerDTO toDTO(Computer computer) {
-        ComputerDTO cDTO = new ComputerDTO();
-        cDTO.setName(computer.getName());
-        cDTO.setId(computer.getId());
-        cDTO.setIntroduced(dateToString(computer.getIntroduced()));
-        cDTO.setDiscontinued(dateToString(computer.getDiscontinued()));
+    public ComputerDTO toDTO(Computer computer) throws ValidatorException, DAOException, ConnectionException {
+        ComputerDTOBuilder cDTO = new ComputerDTOBuilder();
+        cDTO.setName(computer.getName())
+            .setId(computer.getId())
+            .setIntroduced(dateToString(computer.getIntroduced()))
+            .setDiscontinued(dateToString(computer.getDiscontinued()));
         Company company = computer.getCompany();
         if (company == null) {
-            cDTO.setCompanyName(NULL);
-            cDTO.setCompanyId(NULL);
+            cDTO.setCompanyName(NULL).setCompanyId(NULL);
         } else {
-            cDTO.setCompanyName(computer.getCompany().getName());
-            cDTO.setCompanyId(String.valueOf(computer.getCompany().getId()));
+            cDTO.setCompanyName(computer.getCompany().getName())
+                .setCompanyId(String.valueOf(computer.getCompany().getId()));
         }
-        logger.debug("Computer "+computer+" converted to ComputerDTO "+cDTO);
-        return cDTO;
+        logger.debug("Computer "+computer+" mapped to ComputerDTO "+cDTO);
+        return cDTO.build();
     }
 
-    public Computer toComputer(ComputerDTO computerDTO) {
+    public Computer toComputer(ComputerDTO computerDTO) throws ValidatorException, DAOException, ConnectionException {
         Company company = new Company();
         if (computerDTO.getCompanyId() == NULL) {
             company = null;
         }else {
+            CompanyValidator.INSTANCE.checkCompanyIdOrNull(computerDTO.getCompanyId());
             company.setId(Long.parseLong(computerDTO.getCompanyId()));
             company.setName(computerDTO.getCompanyName());
         }
-        return new Computer(computerDTO.getId(), computerDTO.getName(),
+        
+        logger.debug("ComputerDTO "+computerDTO+" mapped to computer");
+        Computer computer = new Computer(computerDTO.getId(), computerDTO.getName(),
                 stringToLocalDate(computerDTO.getIntroduced()), stringToLocalDate(computerDTO.getDiscontinued()),
                 company);
+        ComputerValidator.INSTANCE.checkDates(computer);
+        ComputerValidator.INSTANCE.checkName(computer.getName());
+        return computer;
     }
 
-    public List<ComputerDTO> toDTOList(List<Computer> computers){
+    public List<ComputerDTO> toDTOList(List<Computer> computers) throws ValidatorException, DAOException, ConnectionException{
         List<ComputerDTO> computersDTO = new ArrayList <>();
         for (Computer c : computers) {
             computersDTO.add(toDTO(c));
@@ -70,7 +81,7 @@ public enum ComputerDTOMapper {
         return computersDTO;
     }
 
-    public List<Computer> toComputerList(List<ComputerDTO> computersDTO){
+    public List<Computer> toComputerList(List<ComputerDTO> computersDTO) throws ValidatorException, DAOException, ConnectionException{
         List<Computer> computers = new ArrayList <>();
         for (ComputerDTO c : computersDTO) {
             computers.add(toComputer(c));

@@ -1,6 +1,7 @@
 package com.excilys.java.formation.entities;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 import com.excilys.java.formation.persistence.ConnectionException;
 import com.excilys.java.formation.persistence.DAOException;
@@ -35,14 +36,6 @@ public class Computer  {
         this.introduced = introduced;
         this.discontinued = discontinued;
         this.company = company;
-    }
-
-    public Computer(StringToComputerBuilder builder) {
-        this.id = builder.id;
-        this.name = builder.name;
-        this.introduced = builder.introduced;
-        this.discontinued = builder.discontinued;
-        this.company = builder.company;
     }
 
     public long getId() {
@@ -93,60 +86,26 @@ public class Computer  {
         .append(this.company);
         return str.toString();
     }
-
-    public static class StringToComputerBuilder {
-
-        private long id;
-        private String name;
-        private LocalDate introduced;
-        private LocalDate discontinued;
-        private Company company;
-
     
-
-        public StringToComputerBuilder setName(String name) throws ValidatorException {
-            ComputerValidator.INSTANCE.checkName(name);
-            this.name = name;
-            return this;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
         }
-
-        public StringToComputerBuilder setId(String strId)
-                throws DAOException, ValidatorException, ConnectionException {
-            this.id = ComputerValidator.INSTANCE.checkComputerId(strId);
-            this.id = Long.parseLong(strId);
-            return this;
+        if (!(o instanceof Computer)) {
+            return false;
         }
-
-        public StringToComputerBuilder setCompany(String strId)
-                throws  DAOException, ValidatorException, ConnectionException {
-            if (!(strId.equals("null") || strId.equals(""))) {
-                Company comp = new Company();
-                comp.setId(CompanyValidator.INSTANCE.checkCompanyIdOrNull(strId));
-                comp.setId(Long.parseLong(strId));
-                this.company = comp;
-            }
-            return this;
-        }
-
-        public StringToComputerBuilder setIntroduced(String introducedStr) throws ValidatorException {
-            introduced = ComputerValidator.INSTANCE.getDate(introducedStr);
-            return this;
-        }
-
-        public StringToComputerBuilder setDiscontinued(String discontinuedStr) throws ValidatorException {
-            discontinued = ComputerValidator.INSTANCE.getDate(discontinuedStr);
-            return this;
-        }
-
-        public Computer build() {
-            return new Computer(this);
-        }
-
-        public Computer build(ComputerStringAttributes compStr)
-                throws ValidatorException, DAOException, ConnectionException {
-            this.setName(compStr.getName()).setCompany(compStr.getCompanyId()).setId(compStr.getId())
-            .setIntroduced(compStr.getIntroduced()).setDiscontinued(compStr.getDiscontinued());
-            return new Computer(this);
-        }
+        Computer computer = (Computer) o;
+        return (this.id == computer.id &&
+                this.name.equals(computer.name) &&
+                this.introduced.equals(computer.introduced) &&
+                this.discontinued.equals(computer.discontinued) &&
+                this.company.equals(computer.company));
     }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, introduced, discontinued, company);
+    }
+
 }

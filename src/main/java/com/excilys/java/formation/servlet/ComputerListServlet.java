@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import com.excilys.java.formation.page.ComputerDTOPage;
 import com.excilys.java.formation.persistence.ConnectionException;
 import com.excilys.java.formation.persistence.DAOException;
+import com.excilys.java.formation.validator.ValidatorException;
 
 /**
  * Servlet implementation class ComputerListServlet
@@ -60,7 +61,7 @@ public class ComputerListServlet extends HttpServlet {
             logger.info("Successfully fetched page content (page number="+pageNumber+" page size="+pageSize);
             request.setAttribute("computerPage", computerPage);
             rd.forward(request, response);
-        } catch (ConnectionException | DAOException e) {
+        } catch (ConnectionException | DAOException | ValidatorException e) {
             logger.error("Exception in ComputerListServlet", e);
             throw new ServletException(e);
         }
