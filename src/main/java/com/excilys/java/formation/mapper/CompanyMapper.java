@@ -26,7 +26,7 @@ public enum CompanyMapper {
      */
     public List<Company> createCompanyListFromResultSet(ResultSet res) throws SQLException {
         List<Company> companies = new ArrayList<>();
-        logger.debug("Creating a Company ArrayList from a result set");
+        logger.info("Creating a Company ArrayList from a result set");
         while (res.next()) {
             companies.add(new Company(res.getLong(1), res.getString(2)));
         }

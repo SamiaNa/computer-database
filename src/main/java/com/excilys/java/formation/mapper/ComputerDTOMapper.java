@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.java.formation.dto.ComputerDTO;
-import com.excilys.java.formation.dto.ComputerDTO.ComputerDTOBuilder;
+import com.excilys.java.formation.dto.ComputerDTO.Builder;
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.persistence.ConnectionException;
@@ -27,7 +27,7 @@ public enum ComputerDTOMapper {
         if (date == null) {
             return NULL;
         }
-       return date.toString();
+        return date.toString();
     }
 
     public LocalDate stringToLocalDate(String str) {
@@ -38,18 +38,20 @@ public enum ComputerDTOMapper {
     }
 
     public ComputerDTO toDTO(Computer computer) throws ValidatorException, DAOException, ConnectionException {
-        ComputerDTOBuilder cDTO = new ComputerDTOBuilder();
+        Builder cDTO = new Builder();
         cDTO.setName(computer.getName())
-            .setId(computer.getId())
-            .setIntroduced(dateToString(computer.getIntroduced()))
-            .setDiscontinued(dateToString(computer.getDiscontinued()));
+        .setId(computer.getId())
+        .setIntroduced(dateToString(computer.getIntroduced()))
+        .setDiscontinued(dateToString(computer.getDiscontinued()));
         Company company = computer.getCompany();
         if (company == null) {
-            cDTO.setCompanyName(NULL).setCompanyId(NULL);
+            cDTO.setCompanyName(NULL);
+            cDTO.setCompanyId(NULL);
         } else {
-            cDTO.setCompanyName(computer.getCompany().getName())
-                .setCompanyId(String.valueOf(computer.getCompany().getId()));
+            cDTO.setCompanyName(computer.getCompany().getName());
+            cDTO.setCompanyId(String.valueOf(computer.getCompany().getId()));
         }
+        logger.debug(cDTO.toString());
         logger.debug("Computer "+computer+" mapped to ComputerDTO "+cDTO);
         return cDTO.build();
     }
@@ -63,7 +65,7 @@ public enum ComputerDTOMapper {
             company.setId(Long.parseLong(computerDTO.getCompanyId()));
             company.setName(computerDTO.getCompanyName());
         }
-        
+
         logger.debug("ComputerDTO "+computerDTO+" mapped to computer");
         Computer computer = new Computer(computerDTO.getId(), computerDTO.getName(),
                 stringToLocalDate(computerDTO.getIntroduced()), stringToLocalDate(computerDTO.getDiscontinued()),

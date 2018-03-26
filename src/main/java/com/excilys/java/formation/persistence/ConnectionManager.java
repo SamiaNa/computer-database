@@ -3,6 +3,7 @@ package com.excilys.java.formation.persistence;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 import org.slf4j.Logger;
@@ -25,7 +26,7 @@ public enum ConnectionManager {
             if (conn == null || conn.isClosed()) {
                 logger.info("No existing connection, establishing new connection");
                 Class.forName("com.mysql.cj.jdbc.Driver");
-                ResourceBundle resources = ResourceBundle.getBundle(RESOURCE_PATH);
+                ResourceBundle resources = ResourceBundle.getBundle(RESOURCE_PATH, Locale.getDefault());
                 String url = resources.getString("url");
                 String user = resources.getString("user");
                 String pass = resources.getString("pass");

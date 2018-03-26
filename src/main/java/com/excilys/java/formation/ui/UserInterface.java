@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.Scanner;
 
 import com.excilys.java.formation.dto.ComputerDTO;
-import com.excilys.java.formation.dto.ComputerDTO.ComputerDTOBuilder;
+import com.excilys.java.formation.dto.ComputerDTO.Builder;
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.mapper.ComputerDTOMapper;
@@ -124,7 +124,7 @@ public class UserInterface {
         System.out.println("Enter company id (or null)");
         String companyIdStr = scanner.nextLine();
         try {
-            ComputerDTOBuilder computerDTOBuilder = new ComputerDTOBuilder();
+            Builder computerDTOBuilder = new Builder();
             computerDTOBuilder.setName(name)
             .setIntroduced(introducedStr)
             .setDiscontinued(discontinuedStr)
@@ -155,31 +155,31 @@ public class UserInterface {
             return;
         }
         try {
-        ComputerDTO computerDTO = ComputerDTOMapper.INSTANCE.toDTO(optComputer.get());
-        if (updateAttribute("name", computerDTO.getName(), scanner)) {
-            System.out.println("Enter new name");
-            computerDTO.setName(scanner.nextLine());
-        }
-        if (updateAttribute("date of introduction", computerDTO.getIntroduced(), scanner)) {
-            System.out.println("Enter new date of introduction");
-            computerDTO.setIntroduced(scanner.nextLine());
-        }
-        if (updateAttribute("date of discontinuation", computerDTO.getDiscontinued(), scanner)) {
-            System.out.println("Enter new date of discontinuation");
-            computerDTO.setDiscontinued(scanner.nextLine());
-        }
-        if (updateAttribute("company id", computerDTO.getCompanyId(), scanner)) {
-            System.out.println("Enter company id");
-            computerDTO.setCompanyId(scanner.nextLine());
-        }
-        if (computerService.updateComputer(ComputerDTOMapper.INSTANCE.toComputer(computerDTO))) {
-            System.out.println("Successful update");
-        } else {
-            System.out.println("Error : update not taken into account");
-        }}catch (ValidatorException e) {
-            System.out.println(e.getMessage());
-        }
-        
+            ComputerDTO computerDTO = ComputerDTOMapper.INSTANCE.toDTO(optComputer.get());
+            if (updateAttribute("name", computerDTO.getName(), scanner)) {
+                System.out.println("Enter new name");
+                computerDTO.setName(scanner.nextLine());
+            }
+            if (updateAttribute("date of introduction", computerDTO.getIntroduced(), scanner)) {
+                System.out.println("Enter new date of introduction");
+                computerDTO.setIntroduced(scanner.nextLine());
+            }
+            if (updateAttribute("date of discontinuation", computerDTO.getDiscontinued(), scanner)) {
+                System.out.println("Enter new date of discontinuation");
+                computerDTO.setDiscontinued(scanner.nextLine());
+            }
+            if (updateAttribute("company id", computerDTO.getCompanyId(), scanner)) {
+                System.out.println("Enter company id");
+                computerDTO.setCompanyId(scanner.nextLine());
+            }
+            if (computerService.updateComputer(ComputerDTOMapper.INSTANCE.toComputer(computerDTO))) {
+                System.out.println("Successful update");
+            } else {
+                System.out.println("Error : update not taken into account");
+            }}catch (ValidatorException e) {
+                System.out.println(e.getMessage());
+            }
+
     }
 
     private static void updateComputer(Scanner scanner, ComputerService computerService)

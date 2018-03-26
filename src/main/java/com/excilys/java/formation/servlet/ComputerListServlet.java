@@ -57,8 +57,9 @@ public class ComputerListServlet extends HttpServlet {
             if (computerPage == null) {
                 computerPage = new ComputerDTOPage();
             }
+
             computerPage.getPage(pageNumber, pageSize);
-            logger.info("Successfully fetched page content (page number="+pageNumber+" page size="+pageSize);
+            logger.info("Successfully fetched page content (page number="+pageNumber+" page size="+pageSize+")");
             request.setAttribute("computerPage", computerPage);
             rd.forward(request, response);
         } catch (ConnectionException | DAOException | ValidatorException e) {

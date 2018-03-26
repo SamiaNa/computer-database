@@ -4,7 +4,6 @@ import java.util.Objects;
 
 import com.excilys.java.formation.persistence.ConnectionException;
 import com.excilys.java.formation.persistence.DAOException;
-import com.excilys.java.formation.validator.CompanyValidator;
 import com.excilys.java.formation.validator.ComputerValidator;
 import com.excilys.java.formation.validator.ValidatorException;
 
@@ -18,15 +17,17 @@ public class ComputerDTO {
     private String companyName;
 
 
-    private ComputerDTO(ComputerDTOBuilder computerDTOBuilder) {
-        this.id = computerDTOBuilder.id;
-        this.name = computerDTOBuilder.name;
-        this.introduced = computerDTOBuilder.introduced;
-        this.discontinued = computerDTOBuilder.discontinued;
-        this.companyId = computerDTOBuilder.companyId;
-        this.companyName = computerDTOBuilder.companyName;
-        
+    private ComputerDTO(Builder builder) {
+        this.id = builder.id;
+        this.name = builder.name;
+        this.introduced = builder.introduced;
+        this.discontinued = builder.discontinued;
+        this.companyId = builder.companyId;
+        this.companyName = builder.companyName;
     }
+
+    public ComputerDTO() {}
+
     public long getId() {
         return id;
     }
@@ -74,7 +75,7 @@ public class ComputerDTO {
     public void setName(String name) {
         this.name = name;
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -91,14 +92,24 @@ public class ComputerDTO {
                 this.companyId.equals(computer.companyId) &&
                 this.companyName.equals(computer.companyName));
     }
-    
+
     @Override
     public int hashCode() {
         return Objects.hash(id, name, introduced, discontinued, companyId, companyName);
     }
-    
-    
-    public static class ComputerDTOBuilder {
+
+    @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder();
+        str.append("Id=").append(this.id).append(", name=").append(this.name).append(", introduced=")
+        .append(this.introduced).append(", discontinued=").append(this.discontinued).append(", company= ")
+        .append(this.companyId).append(" ").append(this.companyName);
+        return str.toString();
+    }
+
+
+
+    public static class Builder {
 
         private long id;
         private String name;
@@ -107,41 +118,44 @@ public class ComputerDTO {
         private String companyId;
         private String companyName;
 
-        public ComputerDTOBuilder setName(String name) throws ValidatorException {
+        public Builder () {
+
+        }
+        public Builder setName(String name) throws ValidatorException {
             ComputerValidator.INSTANCE.checkName(name);
             this.name = name;
             return this;
         }
-        
-        public ComputerDTOBuilder setId(String strId) {
+
+        public Builder setId(String strId) {
             this.id = Long.parseLong(strId);
             return this;
         }
-        
-        public ComputerDTOBuilder setId(long id) {
+
+        public Builder setId(long id) {
             this.id = id;
             return this;
         }
-        
-        public ComputerDTOBuilder setCompanyId(String strId) throws DAOException, ValidatorException, ConnectionException {
+
+        public Builder setCompanyId(String strId) throws DAOException, ValidatorException, ConnectionException {
             if (!(strId.equals("null") || strId.equals(""))) {
-                CompanyValidator.INSTANCE.checkCompanyIdOrNull(strId);
+                //CompanyValidator.INSTANCE.checkCompanyIdOrNull(strId);
                 this.companyId = strId;
             }
             return this;
         }
-        
-        public ComputerDTOBuilder setCompanyName(String name){
-            this.name = name;
+
+        public Builder setCompanyName(String name){
+            this.companyName = name;
             return this;
         }
-    
-        public ComputerDTOBuilder setIntroduced(String introducedStr) {
+
+        public Builder setIntroduced(String introducedStr) {
             this.introduced = introducedStr;
             return this;
         }
 
-        public ComputerDTOBuilder setDiscontinued(String discontinuedStr) {
+        public Builder setDiscontinued(String discontinuedStr) {
             discontinued = discontinuedStr;
             return this;
         }
@@ -150,7 +164,16 @@ public class ComputerDTO {
             return new ComputerDTO(this);
         }
 
-    
+        @Override
+        public String toString() {
+            StringBuilder str = new StringBuilder();
+            str.append("Id=").append(this.id).append(", name=").append(this.name).append(", introduced=")
+            .append(this.introduced).append(", discontinued=").append(this.discontinued).append(", company= ")
+            .append(this.companyId).append(" ").append(this.companyName);
+            return str.toString();
+        }
+
+
     }
 
 }

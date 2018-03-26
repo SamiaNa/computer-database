@@ -14,8 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.excilys.java.formation.dto.ComputerDTO;
-import com.excilys.java.formation.dto.ComputerDTO.ComputerDTOBuilder;
+import com.excilys.java.formation.dto.ComputerDTO.Builder;
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.mapper.ComputerDTOMapper;
@@ -73,11 +72,11 @@ public class AddComputerServlet extends HttpServlet {
                 String introducedStr = request.getParameter("introduced");
                 String discontinuedStr = request.getParameter("discontinued");
                 String companyIdStr = request.getParameter("companyId");
-                ComputerDTOBuilder computerDTOBuilder = new ComputerDTOBuilder();
+                Builder computerDTOBuilder = new Builder();
                 computerDTOBuilder.setName(name)
-                                  .setIntroduced(introducedStr)
-                                  .setDiscontinued(discontinuedStr)
-                                  .setCompanyId(companyIdStr);
+                .setIntroduced(introducedStr)
+                .setDiscontinued(discontinuedStr)
+                .setCompanyId(companyIdStr);
                 Optional<Computer> optComp = ComputerService.INSTANCE.createComputer(ComputerDTOMapper.INSTANCE.toComputer(computerDTOBuilder.build()));
                 if (optComp.isPresent()) {
                     request.setAttribute("res", "Computer added ");
