@@ -1,4 +1,4 @@
-package com.excilys.java.formation.persistence;
+package com.excilys.java.formation.persistence.implementations;
 
 public class DAOException extends Exception {
 

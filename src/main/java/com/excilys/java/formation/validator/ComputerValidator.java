@@ -7,10 +7,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.java.formation.entities.Computer;
-import com.excilys.java.formation.persistence.ComputerDAO;
-import com.excilys.java.formation.persistence.ComputerDAOImpl;
-import com.excilys.java.formation.persistence.ConnectionException;
-import com.excilys.java.formation.persistence.DAOException;
+import com.excilys.java.formation.persistence.implementations.ComputerDAOImpl;
+import com.excilys.java.formation.persistence.implementations.ConnectionException;
+import com.excilys.java.formation.persistence.implementations.DAOException;
+import com.excilys.java.formation.persistence.interfaces.ComputerDAO;
 
 public enum ComputerValidator {
 

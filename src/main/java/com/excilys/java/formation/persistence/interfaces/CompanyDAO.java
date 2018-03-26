@@ -1,8 +1,10 @@
-package com.excilys.java.formation.persistence;
+package com.excilys.java.formation.persistence.interfaces;
 
 import java.util.List;
 
 import com.excilys.java.formation.entities.Company;
+import com.excilys.java.formation.persistence.implementations.ConnectionException;
+import com.excilys.java.formation.persistence.implementations.DAOException;
 
 public interface CompanyDAO {
 

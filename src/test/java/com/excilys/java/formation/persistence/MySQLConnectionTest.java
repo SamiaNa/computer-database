@@ -7,6 +7,9 @@ import java.sql.SQLException;
 
 import org.junit.jupiter.api.Test;
 
+import com.excilys.java.formation.persistence.implementations.ConnectionException;
+import com.excilys.java.formation.persistence.implementations.ConnectionManager;
+
 
 public class MySQLConnectionTest {
 

@@ -20,6 +20,11 @@ import org.junit.jupiter.api.function.Executable;
 
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.entities.Computer;
+import com.excilys.java.formation.persistence.implementations.ComputerDAOImpl;
+import com.excilys.java.formation.persistence.implementations.ConnectionException;
+import com.excilys.java.formation.persistence.implementations.ConnectionManager;
+import com.excilys.java.formation.persistence.implementations.DAOConstraintException;
+import com.excilys.java.formation.persistence.implementations.DAOException;
 
 public class ComputerDAOImplTest{
 

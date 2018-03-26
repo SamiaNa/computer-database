@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
 
 import com.excilys.java.formation.dto.ComputerDTO;
 import com.excilys.java.formation.mapper.ComputerDTOMapper;
-import com.excilys.java.formation.persistence.ConnectionException;
-import com.excilys.java.formation.persistence.DAOException;
+import com.excilys.java.formation.persistence.implementations.ConnectionException;
+import com.excilys.java.formation.persistence.implementations.DAOException;
 import com.excilys.java.formation.service.ComputerService;
 import com.excilys.java.formation.validator.ValidatorException;
 

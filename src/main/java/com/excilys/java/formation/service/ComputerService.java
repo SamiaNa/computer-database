@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.Optional;
 
 import com.excilys.java.formation.entities.Computer;
-import com.excilys.java.formation.persistence.ComputerDAOImpl;
-import com.excilys.java.formation.persistence.ConnectionException;
-import com.excilys.java.formation.persistence.DAOConstraintException;
-import com.excilys.java.formation.persistence.DAOException;
+import com.excilys.java.formation.persistence.implementations.ComputerDAOImpl;
+import com.excilys.java.formation.persistence.implementations.ConnectionException;
+import com.excilys.java.formation.persistence.implementations.DAOConstraintException;
+import com.excilys.java.formation.persistence.implementations.DAOException;
 import com.excilys.java.formation.validator.ComputerValidator;
 import com.excilys.java.formation.validator.ValidatorException;
 

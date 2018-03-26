@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.entities.Computer;
-import com.excilys.java.formation.persistence.DAOException;
+import com.excilys.java.formation.persistence.implementations.DAOException;
 
 public enum ComputerMapper {
 

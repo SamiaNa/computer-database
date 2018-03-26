@@ -1,4 +1,4 @@
-package com.excilys.java.formation.persistence;
+package com.excilys.java.formation.persistence.implementations;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.mapper.CompanyMapper;
+import com.excilys.java.formation.persistence.interfaces.CompanyDAO;
 
 public enum CompanyDAOImpl implements CompanyDAO {
 

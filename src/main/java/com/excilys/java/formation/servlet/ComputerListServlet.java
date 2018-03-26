@@ -13,8 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.java.formation.page.ComputerDTOPage;
-import com.excilys.java.formation.persistence.ConnectionException;
-import com.excilys.java.formation.persistence.DAOException;
+import com.excilys.java.formation.persistence.implementations.ConnectionException;
+import com.excilys.java.formation.persistence.implementations.DAOException;
 import com.excilys.java.formation.validator.ValidatorException;
 
 /**

@@ -3,10 +3,10 @@ package com.excilys.java.formation.validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.excilys.java.formation.persistence.CompanyDAO;
-import com.excilys.java.formation.persistence.CompanyDAOImpl;
-import com.excilys.java.formation.persistence.ConnectionException;
-import com.excilys.java.formation.persistence.DAOException;
+import com.excilys.java.formation.persistence.implementations.CompanyDAOImpl;
+import com.excilys.java.formation.persistence.implementations.ConnectionException;
+import com.excilys.java.formation.persistence.implementations.DAOException;
+import com.excilys.java.formation.persistence.interfaces.CompanyDAO;
 
 public enum CompanyValidator {
 

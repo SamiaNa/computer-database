@@ -3,8 +3,8 @@ package com.excilys.java.formation.entities;
 import java.time.LocalDate;
 import java.util.Objects;
 
-import com.excilys.java.formation.persistence.ConnectionException;
-import com.excilys.java.formation.persistence.DAOException;
+import com.excilys.java.formation.persistence.implementations.ConnectionException;
+import com.excilys.java.formation.persistence.implementations.DAOException;
 import com.excilys.java.formation.validator.CompanyValidator;
 import com.excilys.java.formation.validator.ComputerValidator;
 import com.excilys.java.formation.validator.ValidatorException;

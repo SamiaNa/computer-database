@@ -1,10 +1,14 @@
-package com.excilys.java.formation.persistence;
+package com.excilys.java.formation.persistence.interfaces;
 
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
 import com.excilys.java.formation.entities.Computer;
+import com.excilys.java.formation.persistence.implementations.ConnectionException;
+import com.excilys.java.formation.persistence.implementations.DAOConstraintException;
+import com.excilys.java.formation.persistence.implementations.DAOException;
+import com.excilys.java.formation.persistence.implementations.NoComputerInResultSetException;
 
 public interface ComputerDAO {
 

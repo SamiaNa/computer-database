@@ -1,7 +1,7 @@
 package com.excilys.java.formation.page;
 
-import com.excilys.java.formation.persistence.ConnectionException;
-import com.excilys.java.formation.persistence.DAOException;
+import com.excilys.java.formation.persistence.implementations.ConnectionException;
+import com.excilys.java.formation.persistence.implementations.DAOException;
 import com.excilys.java.formation.service.ComputerService;
 import com.excilys.java.formation.validator.ValidatorException;
 

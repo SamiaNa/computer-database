@@ -1,4 +1,4 @@
-package com.excilys.java.formation.persistence;
+package com.excilys.java.formation.persistence.implementations;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.mapper.ComputerMapper;
+import com.excilys.java.formation.persistence.interfaces.ComputerDAO;
 
 public enum ComputerDAOImpl implements ComputerDAO {
 
