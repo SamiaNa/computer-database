@@ -1,6 +1,5 @@
 package com.excilys.java.formation.page;
 
-import com.excilys.java.formation.service.ComputerService;
 import com.excilys.java.formation.service.ServiceException;
 import com.excilys.java.formation.validator.ValidatorException;
 
@@ -42,18 +41,6 @@ public abstract class Page {
             pageNumber = dbSize - size;
         }
         return pageNumber;
-    }
-
-    protected int getOffset(int pageNumber, int pageSize) throws ServiceException {
-        int dbSize = ComputerService.INSTANCE.count();
-        int offset = 0;
-        if ((pageNumber - 1) * pageSize <= dbSize) {
-            offset = ((pageNumber - 1) * pageSize);
-        } else {
-            offset = dbSize - pageSize;
-        }
-
-        return offset;
     }
 
     public int getCount() {

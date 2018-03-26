@@ -84,7 +84,7 @@ public class AddComputerServlet extends HttpServlet {
 
             } catch (ValidatorException e) {
                 request.setAttribute("res", e.getMessage());
-            } catch (ServiceException  e) {
+            } catch (ServiceException e) {
                 logger.error("Exception in doPost AddCompanyServlet", e);
                 throw new ServletException(e);
             }

@@ -5,12 +5,11 @@ import org.slf4j.LoggerFactory;
 
 import com.excilys.java.formation.persistence.implementations.CompanyDAOImpl;
 import com.excilys.java.formation.persistence.implementations.DAOException;
-import com.excilys.java.formation.persistence.interfaces.CompanyDAO;
 
 public enum CompanyValidator {
 
     INSTANCE;
-    private static Logger logger = LoggerFactory.getLogger(CompanyValidator.class);
+    private final static Logger logger = LoggerFactory.getLogger(CompanyValidator.class);
     /**
      * Converts string argument to Long
      *
@@ -37,9 +36,8 @@ public enum CompanyValidator {
         if (id == null) {
             return id;
         }
-        CompanyDAO companyDAO = CompanyDAOImpl.INSTANCE;
         try {
-            if (!companyDAO.checkCompanyById(id)) {
+            if (!CompanyDAOImpl.INSTANCE.checkCompanyById(id)) {
                 throw new ValidatorException("No existing company with id " + id);
             }
         } catch (DAOException e) {

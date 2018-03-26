@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.persistence.implementations.ComputerDAOImpl;
 import com.excilys.java.formation.persistence.implementations.DAOException;
-import com.excilys.java.formation.persistence.interfaces.ComputerDAO;
 
 public enum ComputerValidator {
 
@@ -48,8 +47,7 @@ public enum ComputerValidator {
     public Long checkComputerId(String strId) throws ValidatorException {
         try {
             long id = Long.parseLong(strId);
-            ComputerDAO computerDAO = ComputerDAOImpl.INSTANCE;
-            computerDAO.getComputerById(id);
+            ComputerDAOImpl.INSTANCE.getComputerById(id);
             return id;
         } catch (NumberFormatException e) {
             logger.error("Failed to parse "+strId+" as a Long in checkComputerId");

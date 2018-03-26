@@ -19,7 +19,9 @@ public enum ComputerDTOMapper {
 
     INSTANCE;
     private static final String NULL = "";
-    private static Logger logger = LoggerFactory.getLogger(ComputerDTOMapper.class);
+    private static final Logger logger = LoggerFactory.getLogger(ComputerDTOMapper.class);
+    private static final CompanyValidator companyValidator = CompanyValidator.INSTANCE;
+    private static final ComputerValidator computerValidator = ComputerValidator.INSTANCE;
 
     public String dateToString(LocalDate date) {
         if (date == null) {
@@ -58,7 +60,7 @@ public enum ComputerDTOMapper {
         if (computerDTO.getCompanyId() == NULL) {
             company = null;
         } else {
-            CompanyValidator.INSTANCE.checkCompanyIdOrNull(computerDTO.getCompanyId());
+            companyValidator.checkCompanyIdOrNull(computerDTO.getCompanyId());
             company.setId(Long.parseLong(computerDTO.getCompanyId()));
             company.setName(computerDTO.getCompanyName());
         }
@@ -67,12 +69,12 @@ public enum ComputerDTOMapper {
         Computer computer = new Computer(computerDTO.getId(), computerDTO.getName(),
                 stringToLocalDate(computerDTO.getIntroduced()), stringToLocalDate(computerDTO.getDiscontinued()),
                 company);
-        ComputerValidator.INSTANCE.checkDates(computer);
-        ComputerValidator.INSTANCE.checkName(computer.getName());
+        computerValidator.checkDates(computer);
+        computerValidator.checkName(computer.getName());
         return computer;
     }
 
-    public List<ComputerDTO> toDTOList(List<Computer> computers) throws ValidatorException, MapperException {
+    public List<ComputerDTO> toDTOList(List<Computer> computers) throws ValidatorException {
         List<ComputerDTO> computersDTO = new ArrayList<>();
         for (Computer c : computers) {
             computersDTO.add(toDTO(c));

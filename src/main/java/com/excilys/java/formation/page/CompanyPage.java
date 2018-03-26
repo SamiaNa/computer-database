@@ -14,7 +14,8 @@ public class CompanyPage extends Page {
 
 
     private List<Company> elements;
-    private static Logger logger = LoggerFactory.getLogger(CompanyPage.class);
+    private static final Logger logger = LoggerFactory.getLogger(CompanyPage.class);
+    private static final CompanyService companyService = CompanyService.INSTANCE;
 
     public CompanyPage() {
         this.pageNumber = 0;
@@ -31,12 +32,12 @@ public class CompanyPage extends Page {
 
     public void updateList() throws ServiceException  {
         logger.debug("Updating company list, page number = "+pageNumber+", page size="+size);
-        this.elements = CompanyService.INSTANCE.getCompanyList(pageNumber, size);
+        this.elements = companyService.getCompanyList(pageNumber, size);
     }
 
     @Override
     public void getPage(int pageNumber, int pageSize) throws ServiceException {
-        this.count = CompanyService.INSTANCE.count();
+        this.count = companyService.count();
         this.size = pageSize;
         super.offsetGetPage(pageNumber, count);
         logger.debug("Getting page "+pageNumber+" with page size="+size);
@@ -45,7 +46,7 @@ public class CompanyPage extends Page {
 
     @Override
     public void nextPage() throws ServiceException  {
-        this.count = CompanyService.INSTANCE.count();
+        this.count = companyService.count();
         super.offsetNextPage(count);
         logger.debug("Getting page "+pageNumber+" with page size="+size);
         updateList();

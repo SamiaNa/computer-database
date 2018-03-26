@@ -14,7 +14,7 @@ import com.excilys.java.formation.persistence.implementations.NoComputerInResult
 public enum CompanyMapper {
 
     INSTANCE;
-    private static Logger logger = LoggerFactory.getLogger(CompanyMapper.class);
+    private static final Logger logger = LoggerFactory.getLogger(CompanyMapper.class);
 
     /**
      * Creates an ArrayList of companies from a ResultSet

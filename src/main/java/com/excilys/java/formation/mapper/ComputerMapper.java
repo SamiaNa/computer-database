@@ -17,7 +17,7 @@ import com.excilys.java.formation.persistence.implementations.DAOException;
 public enum ComputerMapper {
 
     INSTANCE;
-    private static Logger logger = LoggerFactory.getLogger(ComputerMapper.class);
+    private static final Logger logger = LoggerFactory.getLogger(ComputerMapper.class);
 
     public LocalDate toLocalDateOrNull(java.sql.Date date) {
         if (date == null) {

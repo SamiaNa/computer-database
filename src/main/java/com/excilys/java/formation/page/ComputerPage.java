@@ -14,7 +14,8 @@ import com.excilys.java.formation.validator.ValidatorException;
 public class ComputerPage extends Page {
 
     private List<Computer> elements;
-    private Logger logger = LoggerFactory.getLogger(ComputerPage.class);
+    private static final Logger logger = LoggerFactory.getLogger(ComputerPage.class);
+    private static final ComputerService computerService = ComputerService.INSTANCE;
 
     public ComputerPage() {
         this.pageNumber = 0;
@@ -30,13 +31,13 @@ public class ComputerPage extends Page {
 
     public void updateList() throws ValidatorException, ServiceException {
         logger.debug("Updating computer list, page number = " + pageNumber + ", page size=" + size);
-        this.elements = ComputerService.INSTANCE.getComputerList(pageNumber, size);
+        this.elements = computerService.getComputerList(pageNumber, size);
 
     }
 
     @Override
     public void getPage(int pageNumber, int pageSize) throws ValidatorException, ServiceException {
-        this.count = ComputerService.INSTANCE.count();
+        this.count = computerService.count();
         this.size = pageSize;
         this.pageNumber = super.offsetGetPage(pageNumber, count);
         logger.debug("Getting page " + pageNumber + " with page size=" + size);
@@ -45,7 +46,7 @@ public class ComputerPage extends Page {
 
     @Override
     public void nextPage() throws ValidatorException, ServiceException {
-        this.count = ComputerService.INSTANCE.count();
+        this.count = computerService.count();
         super.offsetNextPage(count);
         logger.debug("Getting page " + pageNumber + " with page size=" + size);
         updateList();
