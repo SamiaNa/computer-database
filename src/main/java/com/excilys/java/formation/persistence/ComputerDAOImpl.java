@@ -35,12 +35,12 @@ public enum ComputerDAOImpl implements ComputerDAO {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    public List<Computer> getAll() throws  DAOException, ConnectionException {
+    public List<Computer> getAll() throws DAOException, ConnectionException {
         ComputerMapper computerMapper = ComputerMapper.INSTANCE;
         List<Computer> computers = new ArrayList<>();
         try (Connection connection = ConnectionManager.INSTANCE.open();
                 PreparedStatement stmt = connection.prepareStatement(SELECT_ALL_JOIN);) {
-            logger.debug("(getAll) Query : "+stmt.toString());
+            logger.debug("(getAll) Query : " + stmt.toString());
             ResultSet res = stmt.executeQuery();
             computers = computerMapper.createComputerListFromResultSet(res);
         } catch (SQLException se) {
@@ -60,7 +60,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
                 PreparedStatement stmt = connection.prepareStatement(SELECT_LIMIT);) {
             stmt.setInt(1, size);
             stmt.setInt(2, offset);
-            logger.debug("(get) Query : "+stmt.toString());
+            logger.debug("(get) Query : " + stmt.toString());
             ResultSet res = stmt.executeQuery();
             computers = computerMapper.createComputerListFromResultSet(res);
         } catch (SQLException se) {
@@ -79,7 +79,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
         try (Connection connection = ConnectionManager.INSTANCE.open();
                 PreparedStatement stmt = connection.prepareStatement(SELECT_BY_ID_JOIN)) {
             stmt.setLong(1, id);
-            logger.debug("(getComputerById) Query : "+stmt.toString());
+            logger.debug("(getComputerById) Query : " + stmt.toString());
             ResultSet res = stmt.executeQuery();
             c = computerMapper.createComputerFromResultSet(res, id);
         } catch (SQLException se) {
@@ -97,7 +97,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
         try (Connection connection = ConnectionManager.INSTANCE.open();
                 PreparedStatement stmt = connection.prepareStatement(SELECT_BY_NAME);) {
             stmt.setString(1, "%" + name + "%");
-            logger.debug("(getByName) Query : "+stmt.toString());
+            logger.debug("(getByName) Query : " + stmt.toString());
             ResultSet res = stmt.executeQuery();
             computers = computerMapper.createComputerListFromResultSet(res);
         } catch (SQLException se) {
@@ -109,19 +109,33 @@ public enum ComputerDAOImpl implements ComputerDAO {
         return computers;
     }
 
-    private void setDateOrNull(LocalDate d, PreparedStatement stmt, int position) throws SQLException {
-        if (d == null) {
-            stmt.setNull(position, java.sql.Types.DATE);
-        } else {
-            stmt.setDate(position, Date.valueOf(d));
+    private void setDateOrNull(LocalDate d, PreparedStatement stmt, int position) throws DAOException {
+        try {
+            if (d == null) {
+                stmt.setNull(position, java.sql.Types.DATE);
+            } else {
+                stmt.setDate(position, Date.valueOf(d));
+            }
+        } catch (SQLException se) {
+            for (Throwable e : se) {
+                logger.error(e.toString());
+            }
+            throw new DAOException(se.getMessage());
         }
     }
 
-    private void setCompanyIdOrNull(Company c, PreparedStatement stmt, int position) throws SQLException {
-        if (c == null) {
-            stmt.setNull(position, java.sql.Types.BIGINT);
-        } else {
-            stmt.setLong(position, c.getId());
+    private void setCompanyIdOrNull(Company c, PreparedStatement stmt, int position) throws DAOException {
+        try {
+            if (c == null) {
+                stmt.setNull(position, java.sql.Types.BIGINT);
+            } else {
+                stmt.setLong(position, c.getId());
+            }
+        } catch (SQLException se) {
+            for (Throwable e : se) {
+                logger.error(e.toString());
+            }
+            throw new DAOException(se.getMessage());
         }
     }
 
@@ -138,7 +152,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
             ResultSet res = stmt.getGeneratedKeys();
             res.next();
             id = res.getLong(1);
-            logger.debug("(createComputer) Query : "+stmt.toString());
+            logger.debug("(createComputer) Query : " + stmt.toString());
         } catch (SQLIntegrityConstraintViolationException e) {
             throw new DAOConstraintException(e.getMessage());
         } catch (SQLException se) {
@@ -159,7 +173,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
             setDateOrNull(c.getDiscontinued(), stmt, 3);
             setCompanyIdOrNull(c.getCompany(), stmt, 4);
             stmt.setLong(5, c.getId());
-            logger.debug("(update) Query : "+stmt.toString());
+            logger.debug("(update) Query : " + stmt.toString());
             int res = stmt.executeUpdate();
             return res == 1;
         } catch (SQLException se) {
@@ -175,7 +189,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
         try (Connection connection = ConnectionManager.INSTANCE.open();
                 PreparedStatement stmt = connection.prepareStatement(DELETE);) {
             stmt.setLong(1, id);
-            logger.debug("(delete) Query : "+stmt.toString());
+            logger.debug("(delete) Query : " + stmt.toString());
             int res = stmt.executeUpdate();
             return res == 1;
         } catch (SQLException se) {
@@ -191,7 +205,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
         try (Connection connection = ConnectionManager.INSTANCE.open();
                 PreparedStatement stmt = connection.prepareStatement(COUNT);) {
             ResultSet rSet = stmt.executeQuery();
-            logger.debug("(count) Query : "+stmt.toString());
+            logger.debug("(count) Query : " + stmt.toString());
             if (rSet.next()) {
                 return rSet.getInt(1);
             }

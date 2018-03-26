@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import com.excilys.java.formation.persistence.ConnectionException;
 import com.excilys.java.formation.persistence.DAOException;
+import com.excilys.java.formation.validator.CompanyValidator;
 import com.excilys.java.formation.validator.ComputerValidator;
 import com.excilys.java.formation.validator.ValidatorException;
 
@@ -139,7 +140,7 @@ public class ComputerDTO {
 
         public Builder setCompanyId(String strId) throws DAOException, ValidatorException, ConnectionException {
             if (!(strId.equals("null") || strId.equals(""))) {
-                //CompanyValidator.INSTANCE.checkCompanyIdOrNull(strId);
+                CompanyValidator.INSTANCE.checkCompanyIdOrNull(strId);
                 this.companyId = strId;
             }
             return this;
