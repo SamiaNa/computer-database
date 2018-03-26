@@ -1,4 +1,4 @@
-package com.excilys.java.formation.persistence;
+package com.excilys.java.formation.persistence.implementations;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,7 +9,7 @@ import java.util.ResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public enum ConnectionManager {
+public enum ConnectionManager implements AutoCloseable{
 
     INSTANCE;
     private static Connection conn = null;
@@ -57,6 +57,7 @@ public enum ConnectionManager {
      *
      * @throws SQLException
      */
+    @Override
     synchronized public void close() throws ConnectionException {
         try {
             if (conn != null) {
