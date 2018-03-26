@@ -39,36 +39,40 @@ public enum ComputerDTOMapper {
 
     public ComputerDTO toDTO(Computer computer) throws ValidatorException {
         Builder cDTO = new Builder();
-        cDTO.setName(computer.getName()).setId(computer.getId()).setIntroduced(dateToString(computer.getIntroduced()))
-        .setDiscontinued(dateToString(computer.getDiscontinued()));
+        cDTO.withName(computer.getName())
+            .withId(computer.getId())
+            .withIntroduced(dateToString(computer.getIntroduced()))
+            .withDiscontinued(dateToString(computer.getDiscontinued()));
         Company company = computer.getCompany();
         if (company == null) {
-            cDTO.setCompanyName(NULL);
-            cDTO.setCompanyId(NULL);
+            cDTO.withCompanyName(NULL);
+            cDTO.withCompanyId(NULL);
         } else {
-            cDTO.setCompanyName(computer.getCompany().getName());
-            cDTO.setCompanyId(String.valueOf(computer.getCompany().getId()));
+            cDTO.withCompanyName(computer.getCompany().getName());
+            cDTO.withCompanyId(String.valueOf(computer.getCompany().getId()));
         }
-
-        logger.debug(cDTO.toString());
         logger.debug("Computer " + computer + " mapped to ComputerDTO " + cDTO);
         return cDTO.build();
     }
 
     public Computer toComputer(ComputerDTO computerDTO) throws ValidatorException {
         Company company = new Company();
-        if (computerDTO.getCompanyId() == NULL) {
+        logger.debug("ComputerDTO"+ computerDTO.getCompanyId());
+        if (computerDTO.getCompanyId().equals(NULL)) {
             company = null;
         } else {
             companyValidator.checkCompanyIdOrNull(computerDTO.getCompanyId());
             company.setId(Long.parseLong(computerDTO.getCompanyId()));
             company.setName(computerDTO.getCompanyName());
         }
-
         logger.debug("ComputerDTO " + computerDTO + " mapped to computer");
-        Computer computer = new Computer(computerDTO.getId(), computerDTO.getName(),
-                stringToLocalDate(computerDTO.getIntroduced()), stringToLocalDate(computerDTO.getDiscontinued()),
-                company);
+        Computer computer = new Computer.ComputerBuilder()
+                            .withId(computerDTO.getId())
+                            .withName(computerDTO.getName())
+                            .withIntroduced(stringToLocalDate(computerDTO.getIntroduced()))
+                            .withDiscontinued(stringToLocalDate(computerDTO.getDiscontinued()))
+                            .withCompany(company)
+                            .build();
         computerValidator.checkDates(computer);
         computerValidator.checkName(computer.getName());
         return computer;

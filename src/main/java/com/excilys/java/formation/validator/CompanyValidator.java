@@ -3,13 +3,14 @@ package com.excilys.java.formation.validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.persistence.implementations.CompanyDAOImpl;
 import com.excilys.java.formation.persistence.implementations.DAOException;
 
 public enum CompanyValidator {
 
     INSTANCE;
-    private final static Logger logger = LoggerFactory.getLogger(CompanyValidator.class);
+    private static final Logger logger = LoggerFactory.getLogger(CompanyValidator.class);
     /**
      * Converts string argument to Long
      *
@@ -33,17 +34,23 @@ public enum CompanyValidator {
 
     public Long checkCompanyIdOrNull(String strId) throws ValidatorException {
         Long id = getLongId(strId);
-        if (id == null) {
-            return id;
-        }
-        try {
-            if (!CompanyDAOImpl.INSTANCE.checkCompanyById(id)) {
-                throw new ValidatorException("No existing company with id " + id);
-            }
-        } catch (DAOException e) {
-            logger.error("Exception in checkCompanyIdOrNull({})", strId, e);
-            throw new ValidatorException(e);
+        if (id != null) {
+            checkCompanyOrNull(new Company(id, null));
         }
         return id;
+    }
+    
+    public void checkCompanyOrNull(Company company) throws ValidatorException {
+        if (company != null) {
+            long id = company.getId();
+            try {
+                if (!CompanyDAOImpl.INSTANCE.checkCompanyById(id)) {
+                    throw new ValidatorException(("No existing company with id " + id));
+                }
+            }catch(DAOException e) {
+                logger.error("Exception in checkCompanyOrNull({})", id, e);
+                throw new ValidatorException(e);
+            }
+        }
     }
 }

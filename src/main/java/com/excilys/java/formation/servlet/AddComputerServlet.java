@@ -72,8 +72,8 @@ public class AddComputerServlet extends HttpServlet {
                 String discontinuedStr = request.getParameter("discontinued");
                 String companyIdStr = request.getParameter("companyId");
                 Builder computerDTOBuilder = new Builder();
-                computerDTOBuilder.setName(name).setIntroduced(introducedStr).setDiscontinued(discontinuedStr)
-                .setCompanyId(companyIdStr);
+                computerDTOBuilder.withName(name).withIntroduced(introducedStr).withDiscontinued(discontinuedStr)
+                .withCompanyId(companyIdStr);
                 Optional<Computer> optComp = ComputerService.INSTANCE
                         .createComputer(ComputerDTOMapper.INSTANCE.toComputer(computerDTOBuilder.build()));
                 if (optComp.isPresent()) {

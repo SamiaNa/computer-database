@@ -41,6 +41,7 @@
         <sonar.version>7.0</sonar.version>
 
         <jacoco.version>0.8.1</jacoco.version>
+        <jquery.version>3.3.1</jquery.version>
         <!-- maven -->
 
         <maven-compiler.version>3.5.1</maven-compiler.version>
@@ -259,6 +260,13 @@
             <artifactId>logback-core</artifactId>
             <version>${logback.version}</version>
         </dependency>
+        
+        <dependency>
+           <groupId>org.webjars.bower</groupId>
+           <artifactId>jquery</artifactId>
+           <version>${jquery.version}</version>
+        </dependency>
+        
 
     </dependencies>
 

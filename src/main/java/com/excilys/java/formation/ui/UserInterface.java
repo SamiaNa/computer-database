@@ -125,10 +125,10 @@ public class UserInterface {
         String companyIdStr = scanner.nextLine();
         try {
             Builder computerDTOBuilder = new Builder();
-            computerDTOBuilder.setName(name)
-            .setIntroduced(introducedStr)
-            .setDiscontinued(discontinuedStr)
-            .setCompanyId(companyIdStr);
+            computerDTOBuilder.withName(name)
+            .withIntroduced(introducedStr)
+            .withDiscontinued(discontinuedStr)
+            .withCompanyId(companyIdStr);
             Optional<Computer> optComp = computerService.createComputer(ComputerDTOMapper.INSTANCE.toComputer(computerDTOBuilder.build()));
             if (optComp.isPresent()) {
                 System.out.println("Successful creation with id " + optComp.get().getId());

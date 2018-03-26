@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.entities.Computer;
+import com.excilys.java.formation.entities.Computer.ComputerBuilder;
 import com.excilys.java.formation.persistence.implementations.DAOException;
 
 public enum ComputerMapper {
@@ -40,21 +41,24 @@ public enum ComputerMapper {
     }
 
     public Computer createComputerAfterNext(ResultSet res) throws DAOException {
-        Computer c;
         try {
-            c = new Computer(res.getLong(1), res.getString(2), toLocalDateOrNull(res.getDate(3)),
-                    toLocalDateOrNull(res.getDate(4)), null);
             Company company = new Company(res.getLong(5), res.getString(6));
-            if (res.wasNull())
+            if (res.wasNull()) {
                 company = null;
-            c.setCompany(company);
-            return c;
+            }
+            return new Computer.ComputerBuilder()
+                    .withId(res.getLong(1))
+                    .withName(res.getString(2))
+                    .withIntroduced(toLocalDateOrNull(res.getDate(3)))
+                    .withDiscontinued(toLocalDateOrNull(res.getDate(4)))
+                    .withCompany(company)
+                    .build();
         } catch (SQLException e) {
             logger.error("Exception in createComputerAfterNext", e);
             throw new DAOException(e.getMessage());
         }
     }
-    public Optional<Computer> createComputerFromResultSet(ResultSet res, long id) throws DAOException {
+    public Optional<Computer> createComputerFromResultSet(ResultSet res) throws DAOException {
         try {
             if (res.next()) {
                 return Optional.of(createComputerAfterNext(res));

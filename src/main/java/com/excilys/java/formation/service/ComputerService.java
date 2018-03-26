@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.persistence.implementations.ComputerDAOImpl;
 import com.excilys.java.formation.persistence.implementations.DAOException;
+import com.excilys.java.formation.validator.CompanyValidator;
 import com.excilys.java.formation.validator.ComputerValidator;
 import com.excilys.java.formation.validator.ValidatorException;
 
@@ -16,7 +17,9 @@ public enum ComputerService {
 
     INSTANCE;
     private static Logger logger = LoggerFactory.getLogger(ComputerService.class);
-    private static ComputerDAOImpl computerDAO = ComputerDAOImpl.INSTANCE;
+    private static final ComputerDAOImpl computerDAO = ComputerDAOImpl.INSTANCE;
+    private static final ComputerValidator computerValidator = ComputerValidator.INSTANCE;
+    private static final CompanyValidator companyValidator = CompanyValidator.INSTANCE;
 
     public List<Computer> getComputerList() throws ServiceException {
         try {
@@ -55,7 +58,7 @@ public enum ComputerService {
     }
 
     public Optional<Computer> createComputer(Computer computer) throws ServiceException, ValidatorException {
-        ComputerValidator.INSTANCE.checkDates(computer);
+        computerValidator.checkComputer(computer);
         try {
             Optional<Long> computerId = computerDAO.createComputer(computer);
             if (computerId.isPresent()) {
@@ -70,7 +73,8 @@ public enum ComputerService {
         }
     }
 
-    public boolean updateComputer(Computer computer) throws ServiceException   {
+    public boolean updateComputer(Computer computer) throws ServiceException, ValidatorException   {
+        computerValidator.checkComputer(computer);
         try {
             return computerDAO.update(computer);
         }catch (DAOException e) {

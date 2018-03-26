@@ -70,7 +70,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
             stmt.setLong(1, id);
             logger.debug("(getComputerById) Query : " + stmt.toString());
             ResultSet res = stmt.executeQuery();
-            return computerMapper.createComputerFromResultSet(res, id);
+            return computerMapper.createComputerFromResultSet(res);
         } catch (SQLException | ClassNotFoundException e) {
             logger.error("Exception in getComputerById({}), id", e);
             throw new DAOException(e);
