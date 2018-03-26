@@ -101,6 +101,7 @@ buildNumber.properties
 testdb.*
 src/main/resources/*.properties
 build/
+*.script
 
 # End of https://www.gitignore.io/api/java,maven,eclipse
 
