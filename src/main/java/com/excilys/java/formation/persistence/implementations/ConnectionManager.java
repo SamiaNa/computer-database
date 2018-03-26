@@ -18,37 +18,31 @@ public enum ConnectionManager implements AutoCloseable{
 
     /****
      * @return
+     * @throws SQLException
+     * @throws ClassNotFoundException
      * @throws ConnectionException
      */
-    synchronized public Connection open() throws ConnectionException  {
-        try {
-            logger.info("Trying to get database connection");
-            if (conn == null || conn.isClosed()) {
-                logger.info("No existing connection, establishing new connection");
-                Class.forName("com.mysql.cj.jdbc.Driver");
-                ResourceBundle resources = ResourceBundle.getBundle(RESOURCE_PATH, Locale.getDefault());
-                String url = resources.getString("url");
-                String user = resources.getString("user");
-                String pass = resources.getString("pass");
-                conn = DriverManager.getConnection(url, user, pass);
-                logger.info("Connection succefully established");
-            }
-            return conn;
-        }catch(ClassNotFoundException | SQLException e) {
-            logger.error("Failed to open connection",e);
-            throw new ConnectionException(e);
+    synchronized public Connection open() throws ClassNotFoundException, SQLException  {
+        logger.info("Trying to get database connection");
+        if (conn == null || conn.isClosed()) {
+            logger.info("No existing connection, establishing new connection");
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            ResourceBundle resources = ResourceBundle.getBundle(RESOURCE_PATH, Locale.getDefault());
+            String url = resources.getString("url");
+            String user = resources.getString("user");
+            String pass = resources.getString("pass");
+            conn = DriverManager.getConnection(url, user, pass);
+            logger.info("Connection succefully established");
         }
+        return conn;
     }
 
-    synchronized public Connection open(String url, String user, String pass) throws ConnectionException {
-        try {
-            if (conn == null || conn.isClosed()) {
-                conn = DriverManager.getConnection(url, user, pass);
-            }
-            return conn;
-        }catch(SQLException e) {
-            throw new ConnectionException(e);
+
+    synchronized public Connection open(String url, String user, String pass) throws SQLException  {
+        if (conn == null || conn.isClosed()) {
+            conn = DriverManager.getConnection(url, user, pass);
         }
+        return conn;
     }
 
     /**
@@ -58,13 +52,9 @@ public enum ConnectionManager implements AutoCloseable{
      * @throws SQLException
      */
     @Override
-    synchronized public void close() throws ConnectionException {
-        try {
-            if (conn != null) {
-                conn.close();
-            }
-        }catch(SQLException e) {
-            throw new ConnectionException (e);
+    synchronized public void close() throws SQLException   {
+        if (conn != null) {
+            conn.close();
         }
     }
 

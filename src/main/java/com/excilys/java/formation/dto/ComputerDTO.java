@@ -2,8 +2,6 @@ package com.excilys.java.formation.dto;
 
 import java.util.Objects;
 
-import com.excilys.java.formation.persistence.implementations.ConnectionException;
-import com.excilys.java.formation.persistence.implementations.DAOException;
 import com.excilys.java.formation.validator.CompanyValidator;
 import com.excilys.java.formation.validator.ComputerValidator;
 import com.excilys.java.formation.validator.ValidatorException;
@@ -138,7 +136,7 @@ public class ComputerDTO {
             return this;
         }
 
-        public Builder setCompanyId(String strId) throws DAOException, ValidatorException, ConnectionException {
+        public Builder setCompanyId(String strId) throws ValidatorException {
             if (!(strId.equals("null") || strId.equals(""))) {
                 CompanyValidator.INSTANCE.checkCompanyIdOrNull(strId);
                 this.companyId = strId;

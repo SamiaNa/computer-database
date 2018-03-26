@@ -18,10 +18,9 @@ import com.excilys.java.formation.dto.ComputerDTO.Builder;
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.mapper.ComputerDTOMapper;
-import com.excilys.java.formation.persistence.implementations.ConnectionException;
-import com.excilys.java.formation.persistence.implementations.DAOException;
 import com.excilys.java.formation.service.CompanyService;
 import com.excilys.java.formation.service.ComputerService;
+import com.excilys.java.formation.service.ServiceException;
 import com.excilys.java.formation.validator.ValidatorException;
 
 /**
@@ -61,7 +60,7 @@ public class AddComputerServlet extends HttpServlet {
         try {
             List<Company> companyList = CompanyService.INSTANCE.getCompanyList();
             request.setAttribute("companyList", companyList);
-        } catch (DAOException | ConnectionException e) {
+        } catch (ServiceException e) {
             logger.error("Exception in addComputerServlet", e);
         }
 
@@ -73,11 +72,10 @@ public class AddComputerServlet extends HttpServlet {
                 String discontinuedStr = request.getParameter("discontinued");
                 String companyIdStr = request.getParameter("companyId");
                 Builder computerDTOBuilder = new Builder();
-                computerDTOBuilder.setName(name)
-                .setIntroduced(introducedStr)
-                .setDiscontinued(discontinuedStr)
+                computerDTOBuilder.setName(name).setIntroduced(introducedStr).setDiscontinued(discontinuedStr)
                 .setCompanyId(companyIdStr);
-                Optional<Computer> optComp = ComputerService.INSTANCE.createComputer(ComputerDTOMapper.INSTANCE.toComputer(computerDTOBuilder.build()));
+                Optional<Computer> optComp = ComputerService.INSTANCE
+                        .createComputer(ComputerDTOMapper.INSTANCE.toComputer(computerDTOBuilder.build()));
                 if (optComp.isPresent()) {
                     request.setAttribute("res", "Computer added ");
                 } else {
@@ -86,7 +84,7 @@ public class AddComputerServlet extends HttpServlet {
 
             } catch (ValidatorException e) {
                 request.setAttribute("res", e.getMessage());
-            } catch (ConnectionException | DAOException e) {
+            } catch (ServiceException  e) {
                 logger.error("Exception in doPost AddCompanyServlet", e);
                 throw new ServletException(e);
             }

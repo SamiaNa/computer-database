@@ -13,11 +13,10 @@ import com.excilys.java.formation.mapper.ComputerDTOMapper;
 import com.excilys.java.formation.page.CompanyPage;
 import com.excilys.java.formation.page.ComputerPage;
 import com.excilys.java.formation.page.Page;
-import com.excilys.java.formation.persistence.implementations.ConnectionException;
 import com.excilys.java.formation.persistence.implementations.DAOException;
-import com.excilys.java.formation.persistence.implementations.NoComputerInResultSetException;
 import com.excilys.java.formation.service.CompanyService;
 import com.excilys.java.formation.service.ComputerService;
+import com.excilys.java.formation.service.ServiceException;
 import com.excilys.java.formation.validator.ValidatorException;
 
 
@@ -39,7 +38,7 @@ public class UserInterface {
             }
         }
     }
-    private static void printPagedList(Scanner scanner, Page page) throws ConnectionException, DAOException, ValidatorException {
+    private static void printPagedList(Scanner scanner, Page page) throws ValidatorException, ServiceException {
         scanner.nextLine();
         page.getPage(1, PAGE_SIZE);
         while (true) {
@@ -65,7 +64,7 @@ public class UserInterface {
         }
     }
 
-    private static void findCompanyByName(Scanner scanner) throws ConnectionException, DAOException {
+    private static void findCompanyByName(Scanner scanner) throws ServiceException   {
         CompanyService companyService = CompanyService.INSTANCE;
         System.out.println("Enter name :");
         scanner.nextLine();
@@ -84,11 +83,12 @@ public class UserInterface {
      *
      * @param scanner
      * @param computerService
+     * @throws ServiceException
      * @throws DAOException
      * @throws ConnectionException
      */
-    private static void printComputerByID(Scanner scanner, ComputerService computerService)
-            throws DAOException, ConnectionException {
+    private static void printComputerByID(Scanner scanner, ComputerService computerService) throws ServiceException
+    {
         System.out.println("Enter id of computer : ");
         try {
             Long computerId = scanner.nextLong();
@@ -108,12 +108,12 @@ public class UserInterface {
      *
      * @param scanner
      * @param computerService
+     * @throws ServiceException
      * @throws DAOException
      * @throws ConnectionException
      * @throws ValidatorException
      */
-    private static void createComputer(Scanner scanner, ComputerService computerService)
-            throws DAOException, ConnectionException {
+    private static void createComputer(Scanner scanner, ComputerService computerService) throws ServiceException {
         scanner.nextLine();
         System.out.println("Enter name");
         String name = scanner.nextLine();
@@ -147,8 +147,7 @@ public class UserInterface {
         return validation.toLowerCase().equals("y");
     }
 
-    private static void updateAttributes(Scanner scanner, ComputerService computerService, Long computerId)
-            throws ConnectionException, DAOException, NoComputerInResultSetException {
+    private static void updateAttributes(Scanner scanner, ComputerService computerService, Long computerId) throws  ServiceException {
         Optional<Computer> optComputer = computerService.getComputerById(computerId);
         if (!optComputer.isPresent()) {
             System.out.println("No computer found with id " + computerId);
@@ -182,22 +181,18 @@ public class UserInterface {
 
     }
 
-    private static void updateComputer(Scanner scanner, ComputerService computerService)
-            throws DAOException, ConnectionException {
+    private static void updateComputer(Scanner scanner, ComputerService computerService) throws  ServiceException {
         System.out.println("Enter id of computer to update");
         try {
             Long computerId = scanner.nextLong();
             updateAttributes(scanner, computerService, computerId);
-        } catch (NoComputerInResultSetException e) {
-            System.out.println(e.getMessage());
         } catch (InputMismatchException e) {
             System.out.println("Numbers only are accepted as id");
         }
 
     }
 
-    private static void deleteComputer(Scanner scanner, ComputerService computerService)
-            throws DAOException, ConnectionException {
+    private static void deleteComputer(Scanner scanner, ComputerService computerService) throws ServiceException{
         System.out.println("Enter id of computer : ");
         try {
             Long computerId = scanner.nextLong();
@@ -212,7 +207,7 @@ public class UserInterface {
         }
     }
 
-    public static void startUI(Scanner scanner) throws DAOException, ConnectionException, ValidatorException{
+    public static void startUI(Scanner scanner) throws ServiceException,  ValidatorException {
         while (true) {
             System.out.println("Computer database application\n" + "Select operation:\n" + "1. List computers\n"
                     + "2. List companies\n" + "3. Show computer details (by id)\n" + "4. Create a computer\n"
@@ -259,7 +254,7 @@ public class UserInterface {
 
     }
 
-    public static void main(String[] args) throws ConnectionException, DAOException, ValidatorException {
+    public static void main(String[] args) throws ValidatorException, ServiceException {
         Scanner scanner = new Scanner(System.in);
         startUI(scanner);
         scanner.close();

@@ -3,10 +3,11 @@ package com.excilys.java.formation.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.persistence.implementations.ComputerDAOImpl;
-import com.excilys.java.formation.persistence.implementations.ConnectionException;
-import com.excilys.java.formation.persistence.implementations.DAOConstraintException;
 import com.excilys.java.formation.persistence.implementations.DAOException;
 import com.excilys.java.formation.validator.ComputerValidator;
 import com.excilys.java.formation.validator.ValidatorException;
@@ -14,44 +15,86 @@ import com.excilys.java.formation.validator.ValidatorException;
 public enum ComputerService {
 
     INSTANCE;
+    private static Logger logger = LoggerFactory.getLogger(ComputerService.class);
+    private static ComputerDAOImpl computerDAO = ComputerDAOImpl.INSTANCE;
 
-    public List<Computer> getComputerList() throws DAOException, ConnectionException {
-        return ComputerDAOImpl.INSTANCE.getAll();
+    public List<Computer> getComputerList() throws ServiceException {
+        try {
+            return computerDAO.getAll();
+        }catch(DAOException e) {
+            logger.error("Exception in getComputerList()", e);
+            throw new ServiceException(e);
+        }
     }
 
-    public List<Computer> getComputerList(int offset, int size) throws ConnectionException, DAOException {
-        return ComputerDAOImpl.INSTANCE.get(offset, size);
+    public List<Computer> getComputerList(int offset, int size) throws ServiceException {
+        try {
+            return computerDAO.get(offset, size);
+        }catch(DAOException e) {
+            logger.error("Exception in getComputerList({}, {})", offset, size, e);
+            throw new ServiceException(e);
+        }
     }
 
-    public List<Computer> getComputerListByName(String name) throws ConnectionException, DAOException{
-        return ComputerDAOImpl.INSTANCE.getByName(name);
-    }
-    public Optional<Computer> getComputerById(Long computerId)
-            throws DAOException, ConnectionException {
-        return ComputerDAOImpl.INSTANCE.getComputerById(computerId);
+    public List<Computer> getComputerListByName(String name) throws ServiceException {
+        try {
+            return computerDAO.getByName(name);
+        }catch(DAOException e) {
+            logger.error("Exception in getComputerListByName({})", name, e);
+            throw new ServiceException(e);
+        }
     }
 
-    public Optional<Computer> createComputer(Computer computer)
-            throws ValidatorException, ConnectionException, DAOException {
+    public Optional<Computer> getComputerById(Long computerId) throws ServiceException {
+        try {
+            return computerDAO.getComputerById(computerId);
+        }catch(DAOException e) {
+            logger.error("Exception in getComptuerById({})", computerId, e);
+            throw new ServiceException(e);
+        }
+    }
+
+    public Optional<Computer> createComputer(Computer computer) throws ServiceException, ValidatorException {
         ComputerValidator.INSTANCE.checkDates(computer);
         try {
-            computer.setId(ComputerDAOImpl.INSTANCE.createComputer(computer));
-        } catch (DAOConstraintException e) {
-            return Optional.empty();
+            Optional<Long> computerId = computerDAO.createComputer(computer);
+            if (computerId.isPresent()) {
+                computer.setId(computerId.get());
+                return Optional.of(computer);
+            }else {
+                return Optional.empty();
+            }
+        } catch (DAOException e) {
+            logger.error("Exception in createComputer({})", computer, e);
+            throw new ServiceException(e);
         }
-        return Optional.of(computer);
     }
 
-    public boolean updateComputer(Computer computer) throws ConnectionException, DAOException {
-        return ComputerDAOImpl.INSTANCE.update(computer);
+    public boolean updateComputer(Computer computer) throws ServiceException   {
+        try {
+            return computerDAO.update(computer);
+        }catch (DAOException e) {
+            logger.error("Exception in updateComputer({})", computer, e);
+            throw new ServiceException(e);
+        }
     }
 
-    public boolean deleteComputer(Long computerId) throws ConnectionException, DAOException {
-        return ComputerDAOImpl.INSTANCE.delete(computerId);
+    public boolean deleteComputer(Long computerId) throws ServiceException {
+        try {
+            return computerDAO.delete(computerId);
+        }catch(DAOException e) {
+            logger.error("Exception in deleteComputer({})", computerId, e);
+            throw new ServiceException(e);
+        }
     }
 
-    public int count() throws ConnectionException, DAOException {
-        return ComputerDAOImpl.INSTANCE.count();
+    public int count() throws ServiceException {
+        try {
+            return computerDAO.count();
+        }catch(DAOException e) {
+            logger.error("Exception in count()", e);
+            throw new ServiceException(e);
+        }
     }
 
 }

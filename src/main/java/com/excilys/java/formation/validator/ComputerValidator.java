@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.persistence.implementations.ComputerDAOImpl;
-import com.excilys.java.formation.persistence.implementations.ConnectionException;
 import com.excilys.java.formation.persistence.implementations.DAOException;
 import com.excilys.java.formation.persistence.interfaces.ComputerDAO;
 
@@ -31,7 +30,7 @@ public enum ComputerValidator {
                 date = LocalDate.parse(strDate);
             } catch (DateTimeParseException e) {
                 logger.error("Failed to parse "+strDate+" as a LocalDate in getDate")
-;                throw new ValidatorException("Date format must be YYYY-MM-DD");
+                ;                throw new ValidatorException("Date format must be YYYY-MM-DD");
             }
         }
         return date;
@@ -46,7 +45,7 @@ public enum ComputerValidator {
         }
     }
 
-    public Long checkComputerId(String strId) throws DAOException, ValidatorException, ConnectionException {
+    public Long checkComputerId(String strId) throws ValidatorException {
         try {
             long id = Long.parseLong(strId);
             ComputerDAO computerDAO = ComputerDAOImpl.INSTANCE;
@@ -55,9 +54,12 @@ public enum ComputerValidator {
         } catch (NumberFormatException e) {
             logger.error("Failed to parse "+strId+" as a Long in checkComputerId");
             throw new ValidatorException("Only numbers are accepted as id");
+        } catch (DAOException e) {
+            logger.error("Exception in checkComputerId({})", strId, e);
+            throw new ValidatorException(e);
         }
     }
-    
-   
+
+
 
 }

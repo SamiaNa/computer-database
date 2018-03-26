@@ -8,9 +8,9 @@ import org.slf4j.LoggerFactory;
 
 import com.excilys.java.formation.dto.ComputerDTO;
 import com.excilys.java.formation.mapper.ComputerDTOMapper;
-import com.excilys.java.formation.persistence.implementations.ConnectionException;
-import com.excilys.java.formation.persistence.implementations.DAOException;
+import com.excilys.java.formation.mapper.MapperException;
 import com.excilys.java.formation.service.ComputerService;
+import com.excilys.java.formation.service.ServiceException;
 import com.excilys.java.formation.validator.ValidatorException;
 
 public class ComputerDTOPage extends ComputerPage {
@@ -28,10 +28,15 @@ public class ComputerDTOPage extends ComputerPage {
     }
 
     @Override
-    public void updateList() throws ConnectionException, DAOException, ValidatorException {
+    public void updateList() throws ValidatorException, ServiceException {
         logger.info("Updating computer list : page number ="+pageNumber+", page size="+size);
-        this.DTOElements = ComputerDTOMapper.INSTANCE
-                .toDTOList(ComputerService.INSTANCE.getComputerList(pageNumber, size));
+        try {
+            this.DTOElements = ComputerDTOMapper.INSTANCE
+                    .toDTOList(ComputerService.INSTANCE.getComputerList(pageNumber, size));
+        }catch(MapperException e) {
+            logger.error("Exception in updateList()", e);
+            throw new ServiceException(e);
+        }
     }
 
 

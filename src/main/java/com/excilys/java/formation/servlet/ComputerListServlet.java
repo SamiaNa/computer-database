@@ -13,8 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.java.formation.page.ComputerDTOPage;
-import com.excilys.java.formation.persistence.implementations.ConnectionException;
-import com.excilys.java.formation.persistence.implementations.DAOException;
+import com.excilys.java.formation.service.ServiceException;
 import com.excilys.java.formation.validator.ValidatorException;
 
 /**
@@ -48,9 +47,9 @@ public class ComputerListServlet extends HttpServlet {
             try {
                 pageNumber = Integer.parseUnsignedInt(pageNumberStr);
                 pageSize = Integer.parseUnsignedInt(pageSizeStr);
-                logger.info("Page number = "+pageNumber+", page size = "+pageSize);
+                logger.info("Page number = " + pageNumber + ", page size = " + pageSize);
             } catch (NumberFormatException e) {
-                logger.error("Failed to parse "+pageNumberStr+" or "+pageSizeStr+" as an unsigned int");
+                logger.error("Failed to parse " + pageNumberStr + " or " + pageSizeStr + " as an unsigned int");
                 throw new ServletException(e);
             }
             ComputerDTOPage computerPage = (ComputerDTOPage) request.getAttribute("computerPage");
@@ -59,10 +58,11 @@ public class ComputerListServlet extends HttpServlet {
             }
 
             computerPage.getPage(pageNumber, pageSize);
-            logger.info("Successfully fetched page content (page number="+pageNumber+" page size="+pageSize+")");
+            logger.info(
+                    "Successfully fetched page content (page number=" + pageNumber + " page size=" + pageSize + ")");
             request.setAttribute("computerPage", computerPage);
             rd.forward(request, response);
-        } catch (ConnectionException | DAOException | ValidatorException e) {
+        } catch (ServiceException  | ValidatorException e) {
             logger.error("Exception in ComputerListServlet", e);
             throw new ServletException(e);
         }

@@ -3,12 +3,6 @@ package com.excilys.java.formation.entities;
 import java.time.LocalDate;
 import java.util.Objects;
 
-import com.excilys.java.formation.persistence.implementations.ConnectionException;
-import com.excilys.java.formation.persistence.implementations.DAOException;
-import com.excilys.java.formation.validator.CompanyValidator;
-import com.excilys.java.formation.validator.ComputerValidator;
-import com.excilys.java.formation.validator.ValidatorException;
-
 public class Computer  {
 
     private long id;
@@ -86,7 +80,7 @@ public class Computer  {
         .append(this.company);
         return str.toString();
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -102,7 +96,7 @@ public class Computer  {
                 this.discontinued.equals(computer.discontinued) &&
                 this.company.equals(computer.company));
     }
-    
+
     @Override
     public int hashCode() {
         return Objects.hash(id, name, introduced, discontinued, company);

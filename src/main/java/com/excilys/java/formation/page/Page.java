@@ -1,8 +1,7 @@
 package com.excilys.java.formation.page;
 
-import com.excilys.java.formation.persistence.implementations.ConnectionException;
-import com.excilys.java.formation.persistence.implementations.DAOException;
 import com.excilys.java.formation.service.ComputerService;
+import com.excilys.java.formation.service.ServiceException;
 import com.excilys.java.formation.validator.ValidatorException;
 
 public abstract class Page {
@@ -13,12 +12,11 @@ public abstract class Page {
 
     protected final static int DEFAULT_SIZE = 10;
 
-    public abstract void nextPage() throws ConnectionException, DAOException, ValidatorException;
+    public abstract void nextPage() throws ServiceException, ValidatorException;
 
-    public abstract void prevPage() throws  ConnectionException, DAOException, ValidatorException;
+    public abstract void prevPage() throws ServiceException, ValidatorException;
 
-    public abstract void getPage(int pageNumber, int pageSize) throws ConnectionException, DAOException, ValidatorException  ;
-
+    public abstract void getPage(int pageNumber, int pageSize) throws ServiceException, ValidatorException;
 
     public int offsetNextPage(int dbSize) {
         if (pageNumber + size <= dbSize) {
@@ -46,7 +44,7 @@ public abstract class Page {
         return pageNumber;
     }
 
-    protected int getOffset(int pageNumber, int pageSize) throws ConnectionException, DAOException {
+    protected int getOffset(int pageNumber, int pageSize) throws ServiceException {
         int dbSize = ComputerService.INSTANCE.count();
         int offset = 0;
         if ((pageNumber - 1) * pageSize <= dbSize) {
@@ -58,11 +56,8 @@ public abstract class Page {
         return offset;
     }
 
-
     public int getCount() {
         return count;
     }
-
-
 
 }

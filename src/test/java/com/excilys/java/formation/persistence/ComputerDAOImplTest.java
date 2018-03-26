@@ -4,7 +4,6 @@ package com.excilys.java.formation.persistence;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.Connection;
@@ -16,21 +15,18 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.persistence.implementations.ComputerDAOImpl;
-import com.excilys.java.formation.persistence.implementations.ConnectionException;
 import com.excilys.java.formation.persistence.implementations.ConnectionManager;
-import com.excilys.java.formation.persistence.implementations.DAOConstraintException;
 import com.excilys.java.formation.persistence.implementations.DAOException;
 
 public class ComputerDAOImplTest{
 
 
     @BeforeEach
-    void before() throws SQLException, InstantiationException, IllegalAccessException, ConnectionException, ClassNotFoundException {
+    void before() throws SQLException, InstantiationException, IllegalAccessException,  ClassNotFoundException {
         Class.forName("org.hsqldb.jdbcDriver").newInstance();
         destroyTables();
         createTableCompany();
@@ -40,7 +36,7 @@ public class ComputerDAOImplTest{
     }
 
 
-    void createTableCompany() throws ConnectionException, SQLException{
+    void createTableCompany() throws  SQLException, ClassNotFoundException{
         Connection conn = ConnectionManager.INSTANCE.open();
         String sql = "  create table computer (" +
                 "    id                        bigint not null identity," +
@@ -56,7 +52,7 @@ public class ComputerDAOImplTest{
     }
 
 
-    void createTableComputer() throws SQLException, ConnectionException {
+    void createTableComputer() throws SQLException, ClassNotFoundException {
         Connection conn = ConnectionManager.INSTANCE.open();
         String sql = "  create table company (" +
                 "    id bigint not null identity," +
@@ -69,7 +65,7 @@ public class ComputerDAOImplTest{
         conn.close();
     }
 
-    void populateTableComputer() throws SQLException, ConnectionException {
+    void populateTableComputer() throws SQLException, ClassNotFoundException {
         Connection conn = ConnectionManager.INSTANCE.open();
         PreparedStatement stmt = conn.prepareStatement("INSERT INTO computer (name, company_id, introduced, discontinued) VALUES ('HP1', 0, NULL, NULL);");
         stmt.executeUpdate();
@@ -80,7 +76,7 @@ public class ComputerDAOImplTest{
         conn.close();
     }
 
-    void populateTableCompany() throws SQLException, ConnectionException {
+    void populateTableCompany() throws SQLException, ClassNotFoundException {
         Connection conn = ConnectionManager.INSTANCE.open();
         PreparedStatement stmt = conn.prepareStatement("INSERT INTO company (name) VALUES ('HP');");
         stmt.executeUpdate();
@@ -92,7 +88,7 @@ public class ComputerDAOImplTest{
 
     }
 
-    void destroyTables() throws SQLException, ConnectionException {
+    void destroyTables() throws SQLException, ClassNotFoundException {
         Connection conn = ConnectionManager.INSTANCE.open();
         PreparedStatement stmt = conn.prepareStatement("drop table if exists computer;");
         stmt.executeUpdate();
@@ -103,7 +99,7 @@ public class ComputerDAOImplTest{
 
 
     @Test
-    void getAllTest() throws DAOException, InstantiationException, IllegalAccessException, ConnectionException {
+    void getAllTest() throws DAOException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
         List<Computer> computers = ComputerDAOImpl.INSTANCE.getAll();
         assertEquals(computers.size(), 3);
         Computer comp0 = computers.get(0);
@@ -117,7 +113,7 @@ public class ComputerDAOImplTest{
 
 
     @Test
-    void getComputerByIdTest() throws InstantiationException, IllegalAccessException, DAOException, SQLException, ConnectionException {
+    void getComputerByIdTest() throws InstantiationException, IllegalAccessException, DAOException, SQLException {
         Optional<Computer> computerOpt = ComputerDAOImpl.INSTANCE.getComputerById(-1);
         assertFalse(computerOpt.isPresent());
 
@@ -135,12 +131,12 @@ public class ComputerDAOImplTest{
 
 
     @Test
-    void createComputerTest () throws  DAOException, SQLException, DAOConstraintException, ConnectionException {
+    void createComputerTest () throws  DAOException, SQLException, ClassNotFoundException{
         Computer c0 = new Computer ("Ordi1", null, null, new Company(1, null));
-        long id = ComputerDAOImpl.INSTANCE.createComputer(c0);
+        Optional<Long> id = ComputerDAOImpl.INSTANCE.createComputer(c0);
         Connection conn = ConnectionManager.INSTANCE.open();
         PreparedStatement stmt = conn.prepareStatement("SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE id = ?");
-        stmt.setLong(1, id);
+        stmt.setLong(1, id.get());
         ResultSet res =	stmt.executeQuery();
         assertTrue(res.next());
         assertEquals(res.getLong(1), id);
@@ -149,9 +145,7 @@ public class ComputerDAOImplTest{
         assertEquals(res.getDate(4), c0.getDiscontinued());
         assertEquals(res.getLong(5), c0.getCompany().getId());
         assertEquals(res.getString(6), "Dell");
-        Computer c1 = new Computer ("Ordi1", null, null, new Company(6, null));
-        Executable create = () -> {ComputerDAOImpl.INSTANCE.createComputer(c1);};
-        assertThrows(DAOConstraintException.class, create);
+
     }
 
 }
