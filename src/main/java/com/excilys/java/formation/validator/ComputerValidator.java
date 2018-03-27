@@ -7,15 +7,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.java.formation.entities.Computer;
-import com.excilys.java.formation.persistence.ComputerDAO;
-import com.excilys.java.formation.persistence.ComputerDAOImpl;
-import com.excilys.java.formation.persistence.ConnectionException;
-import com.excilys.java.formation.persistence.DAOException;
+import com.excilys.java.formation.persistence.implementations.ComputerDAOImpl;
+import com.excilys.java.formation.persistence.implementations.DAOException;
 
 public enum ComputerValidator {
 
     INSTANCE;
+    private static final CompanyValidator companyValidator = CompanyValidator.INSTANCE;
     private static Logger logger = LoggerFactory.getLogger(ComputerValidator.class);
+
     public void checkName(String name) throws ValidatorException {
         if (name.trim().equals("") || name.equalsIgnoreCase("null")) {
             throw new ValidatorException("Name can't be an empty string or 'null' String");
@@ -30,8 +30,8 @@ public enum ComputerValidator {
             try {
                 date = LocalDate.parse(strDate);
             } catch (DateTimeParseException e) {
-                logger.error("Failed to parse "+strDate+" as a LocalDate in getDate")
-;                throw new ValidatorException("Date format must be YYYY-MM-DD");
+                logger.error("Failed to parse " + strDate + " as a LocalDate in getDate");
+                throw new ValidatorException("Date format must be YYYY-MM-DD");
             }
         }
         return date;
@@ -41,23 +41,29 @@ public enum ComputerValidator {
         LocalDate introduced = computer.getIntroduced();
         LocalDate discontinued = computer.getDiscontinued();
         if (introduced != null && discontinued != null && introduced.isAfter(discontinued)) {
-            logger.error("Validation error "+introduced+" is after "+discontinued+" in checkDates");
+            logger.error("Validation error " + introduced + " is after " + discontinued + " in checkDates");
             throw new ValidatorException("Date of introduction must be anterior to date of discontinuation");
         }
     }
 
-    public Long checkComputerId(String strId) throws DAOException, ValidatorException, ConnectionException {
+    public Long checkComputerId(String strId) throws ValidatorException {
         try {
             long id = Long.parseLong(strId);
-            ComputerDAO computerDAO = ComputerDAOImpl.INSTANCE;
-            computerDAO.getComputerById(id);
+            ComputerDAOImpl.INSTANCE.getComputerById(id);
             return id;
         } catch (NumberFormatException e) {
-            logger.error("Failed to parse "+strId+" as a Long in checkComputerId");
+            logger.error("Failed to parse " + strId + " as a Long in checkComputerId");
             throw new ValidatorException("Only numbers are accepted as id");
+        } catch (DAOException e) {
+            logger.error("Exception in checkComputerId({})", strId, e);
+            throw new ValidatorException(e);
         }
     }
-    
-   
+
+    public void checkComputer (Computer computer) throws ValidatorException {
+        checkDates(computer);
+        checkName(computer.getName());
+        companyValidator.checkCompanyOrNull(computer.getCompany());
+    }
 
 }

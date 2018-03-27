@@ -3,12 +3,6 @@ package com.excilys.java.formation.entities;
 import java.time.LocalDate;
 import java.util.Objects;
 
-import com.excilys.java.formation.persistence.ConnectionException;
-import com.excilys.java.formation.persistence.DAOException;
-import com.excilys.java.formation.validator.CompanyValidator;
-import com.excilys.java.formation.validator.ComputerValidator;
-import com.excilys.java.formation.validator.ValidatorException;
-
 public class Computer  {
 
     private long id;
@@ -17,11 +11,9 @@ public class Computer  {
     private LocalDate discontinued;
     private Company company;
 
-    public Computer(long id, String name) {
-        this.id = id;
-        this.name = name;
+    public Computer() {
+        
     }
-
     public Computer(long id, String name, LocalDate introduced, LocalDate discontinued, Company company) {
         this.id = id;
         this.name = name;
@@ -86,7 +78,7 @@ public class Computer  {
         .append(this.company);
         return str.toString();
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -102,10 +94,54 @@ public class Computer  {
                 this.discontinued.equals(computer.discontinued) &&
                 this.company.equals(computer.company));
     }
-    
+
     @Override
     public int hashCode() {
         return Objects.hash(id, name, introduced, discontinued, company);
+    }
+    
+    public static class ComputerBuilder{
+        private long id;
+        private String name;
+        private LocalDate introduced;
+        private LocalDate discontinued;
+        private Company company;
+        
+        public ComputerBuilder withId(long id) {
+            this.id = id;
+            return this;
+        }
+        
+        public ComputerBuilder withName(String name) {
+            this.name = name;
+            return this;
+        }
+        
+        public ComputerBuilder withIntroduced(LocalDate introduced) {
+            this.introduced = introduced;
+            return this;
+        }
+        
+        public ComputerBuilder withDiscontinued(LocalDate discontinued) {
+            this.discontinued = discontinued;
+            return this;
+        }
+        
+        public ComputerBuilder withCompany(Company company) {
+            this.company = company;
+            return this;
+        }
+        
+        public Computer build() {
+            Computer computer = new Computer();
+            computer.setId(id);
+            computer.setName(name);
+            computer.setIntroduced(introduced);
+            computer.setDiscontinued(discontinued);
+            computer.setCompany(company);
+            return computer;
+        }
+        
     }
 
 }

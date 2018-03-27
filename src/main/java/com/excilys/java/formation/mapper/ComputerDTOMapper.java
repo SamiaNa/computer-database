@@ -11,8 +11,6 @@ import com.excilys.java.formation.dto.ComputerDTO;
 import com.excilys.java.formation.dto.ComputerDTO.Builder;
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.entities.Computer;
-import com.excilys.java.formation.persistence.ConnectionException;
-import com.excilys.java.formation.persistence.DAOException;
 import com.excilys.java.formation.validator.CompanyValidator;
 import com.excilys.java.formation.validator.ComputerValidator;
 import com.excilys.java.formation.validator.ValidatorException;
@@ -21,7 +19,9 @@ public enum ComputerDTOMapper {
 
     INSTANCE;
     private static final String NULL = "";
-    private static Logger logger = LoggerFactory.getLogger(ComputerDTOMapper.class);
+    private static final Logger logger = LoggerFactory.getLogger(ComputerDTOMapper.class);
+    private static final CompanyValidator companyValidator = CompanyValidator.INSTANCE;
+    private static final ComputerValidator computerValidator = ComputerValidator.INSTANCE;
 
     public String dateToString(LocalDate date) {
         if (date == null) {
@@ -37,54 +37,57 @@ public enum ComputerDTOMapper {
         return LocalDate.parse(str);
     }
 
-    public ComputerDTO toDTO(Computer computer) throws ValidatorException, DAOException, ConnectionException {
+    public ComputerDTO toDTO(Computer computer) throws ValidatorException {
         Builder cDTO = new Builder();
-        cDTO.setName(computer.getName())
-        .setId(computer.getId())
-        .setIntroduced(dateToString(computer.getIntroduced()))
-        .setDiscontinued(dateToString(computer.getDiscontinued()));
+        cDTO.withName(computer.getName())
+            .withId(computer.getId())
+            .withIntroduced(dateToString(computer.getIntroduced()))
+            .withDiscontinued(dateToString(computer.getDiscontinued()));
         Company company = computer.getCompany();
         if (company == null) {
-            cDTO.setCompanyName(NULL);
-            cDTO.setCompanyId(NULL);
+            cDTO.withCompanyName(NULL);
+            cDTO.withCompanyId(NULL);
         } else {
-            cDTO.setCompanyName(computer.getCompany().getName());
-            cDTO.setCompanyId(String.valueOf(computer.getCompany().getId()));
+            cDTO.withCompanyName(computer.getCompany().getName());
+            cDTO.withCompanyId(String.valueOf(computer.getCompany().getId()));
         }
-        logger.debug(cDTO.toString());
-        logger.debug("Computer "+computer+" mapped to ComputerDTO "+cDTO);
+        logger.debug("Computer " + computer + " mapped to ComputerDTO " + cDTO);
         return cDTO.build();
     }
 
-    public Computer toComputer(ComputerDTO computerDTO) throws ValidatorException, DAOException, ConnectionException {
+    public Computer toComputer(ComputerDTO computerDTO) throws ValidatorException {
         Company company = new Company();
-        if (computerDTO.getCompanyId() == NULL) {
+        logger.debug("ComputerDTO"+ computerDTO.getCompanyId());
+        if (computerDTO.getCompanyId().equals(NULL)) {
             company = null;
-        }else {
-            CompanyValidator.INSTANCE.checkCompanyIdOrNull(computerDTO.getCompanyId());
+        } else {
+            companyValidator.checkCompanyIdOrNull(computerDTO.getCompanyId());
             company.setId(Long.parseLong(computerDTO.getCompanyId()));
             company.setName(computerDTO.getCompanyName());
         }
-
-        logger.debug("ComputerDTO "+computerDTO+" mapped to computer");
-        Computer computer = new Computer(computerDTO.getId(), computerDTO.getName(),
-                stringToLocalDate(computerDTO.getIntroduced()), stringToLocalDate(computerDTO.getDiscontinued()),
-                company);
-        ComputerValidator.INSTANCE.checkDates(computer);
-        ComputerValidator.INSTANCE.checkName(computer.getName());
+        logger.debug("ComputerDTO " + computerDTO + " mapped to computer");
+        Computer computer = new Computer.ComputerBuilder()
+                            .withId(computerDTO.getId())
+                            .withName(computerDTO.getName())
+                            .withIntroduced(stringToLocalDate(computerDTO.getIntroduced()))
+                            .withDiscontinued(stringToLocalDate(computerDTO.getDiscontinued()))
+                            .withCompany(company)
+                            .build();
+        computerValidator.checkDates(computer);
+        computerValidator.checkName(computer.getName());
         return computer;
     }
 
-    public List<ComputerDTO> toDTOList(List<Computer> computers) throws ValidatorException, DAOException, ConnectionException{
-        List<ComputerDTO> computersDTO = new ArrayList <>();
+    public List<ComputerDTO> toDTOList(List<Computer> computers) throws ValidatorException {
+        List<ComputerDTO> computersDTO = new ArrayList<>();
         for (Computer c : computers) {
             computersDTO.add(toDTO(c));
         }
         return computersDTO;
     }
 
-    public List<Computer> toComputerList(List<ComputerDTO> computersDTO) throws ValidatorException, DAOException, ConnectionException{
-        List<Computer> computers = new ArrayList <>();
+    public List<Computer> toComputerList(List<ComputerDTO> computersDTO) throws ValidatorException {
+        List<Computer> computers = new ArrayList<>();
         for (ComputerDTO c : computersDTO) {
             computers.add(toComputer(c));
         }
