@@ -34,7 +34,7 @@
 					<fieldset>
 						<div class="form-group">
 							<label for="computerName">Computer name</label> 
-							<input data-validation="custom" data-validation-regexp="^[\wÀ-ÿ]+[\wÀ-ÿ_\-'\+\* ]+$" type="text"
+							<input data-validation="custom" data-validation-regexp="^[\wÀ-ÿ]+[\wÀ-ÿ_\-'\+\* ]+$" 
 								type="text" class="form-control" name="name" id="computerName"
 								placeholder="Computer name">
 						</div>

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="mylib" uri="/WEB-INF/mylib.tld"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -97,42 +98,12 @@
 	<footer class="navbar-fixed-bottom">
 	<div class="container text-center">
 		<ul class="pagination">
-
-			<c:if test="${page.number > 1}">
-				<li>
-				<a href=<c:url value="/ComputerListServlet?pageNumber=${page.number-1}&pageSize=${requestScope.page.size}"/>
-					aria-label="Previous"> 
-						<span aria-hidden="true">&laquo;</span>
-				</a>
-				</li>
-			</c:if>
-
-			<c:forEach var="i" begin="0" end="4">
-				<c:if
-					test="${(page.number + i <= (page.count / requestScope.page.size) && requestScope.page.count % requestScope.page.size == 0)
-			|| (page.number+i <= (page.count / requestScope.page.size) + 1 && requestScope.page.count % requestScope.page.size != 0)}">
-					<li>
-					<a href=<c:url value="/ComputerListServlet?pageNumber=${page.number+i}&pageSize=${requestScope.page.size}" />
-						><c:out value ="${page.number+i}"/></a></li>
-				</c:if>
-			</c:forEach>
-			<c:if
-				test="${(page.number + 1 < (requestScope.page.count / requestScope.page.size) && requestScope.page.count % requestScope.page.size == 0)
-			|| (page.number + 1 <(requestScope.page.count / requestScope.page.size) + 1 && requestScope.page.count % requestScope.page.size != 0)}">
-				<li><a
-					href=<c:url
-					value="/ComputerListServlet?pageNumber=${page.number+1}&pageSize=${requestScope.page.size}" />
-					aria-label="Next"> <span aria-hidden="true">&raquo;</span>
-				</a></li>
-			</c:if>
-
-
+			<mylib:pagination page="${page}" target="ComputerListServlet" />
 		</ul>
-
 		<div class="btn-group btn-group-sm pull-right" role="group">
 
 			<form
-				action="ComputerListServlet?page.number=${page.number}&pageSize=10"
+				action="ComputerListServlet?pageNumber=${page.number}&pageSize=10"
 				method="post">
 				<button type="submit" class="btn btn-default">10</button>
 				<button type="submit" class="btn btn-default"
@@ -140,8 +111,8 @@
 				<button type="submit" class="btn btn-default"
 					formaction="ComputerListServlet?pageNumber=${page.number}&pageSize=100">100</button>
 			</form>
-
 		</div>
+	</div>
 	</footer>
 	<script src="static/js/jquery.min.js"></script>
 	<script src="static/js/bootstrap.min.js"></script>
