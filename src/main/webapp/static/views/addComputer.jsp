@@ -17,12 +17,12 @@
 
 	<header class="navbar navbar-inverse navbar-fixed-top">
 	<div class="container">
-		<a class="navbar-brand" href="dashboard.html"> Application -
+		<a class="navbar-brand" href="dashboard.jsp"> Application -
 			Computer Database </a>
 	</div>
 	</header>
 
-	<c:if test="${companyList == null }">
+	<c:if test="${companyList == null}">
 		<c:redirect url="/AddComputerServlet" />
 	</c:if>
 	<section id="main">
@@ -33,24 +33,30 @@
 				<form action="AddComputerServlet" method="POST">
 					<fieldset>
 						<div class="form-group">
-							<label for="computerName">Computer name</label> <input
+							<label for="computerName">Computer name</label> 
+							<input data-validation="custom" data-validation-regexp="^[\wÀ-ÿ]+[\wÀ-ÿ_\-'\+\* ]+$" type="text"
 								type="text" class="form-control" name="name" id="computerName"
 								placeholder="Computer name">
 						</div>
 						<div class="form-group">
-							<label for="introduced">Introduced date</label> <input
+							<label for="introduced">Introduced date</label> 
+							<input data-validation="date" data-validation-format="yyyy-mm-dd"
+								data-validation-optional="true"
 								type="date" class="form-control" name="introduced"
 								id="introduced" placeholder="Introduced date">
 						</div>
 						<div class="form-group">
-							<label for="discontinued">Discontinued date</label> <input
+							<label for="discontinued">Discontinued date</label> 
+							<input data-validation="date" data-validation-format="yyyy-mm-dd"
+								data-validation-optional="true"
 								type="date" class="form-control" name="discontinued"
 								id="discontinued" placeholder="Discontinued date">
 						</div>
 						<div class="form-group">
-							<label for="companyId">Company</label>
-							<select class="form-control" name="companyId" id="company">
-									<option value="null"></option>
+							<label for="companyId">Company</label> 
+							<select
+								class="form-control" name="companyId" id="company">
+								<option value="null"></option>
 								<c:forEach var="company" items="${companyList}">
 									<option value="${company.id}">${company.name}</option>
 								</c:forEach>
@@ -58,18 +64,23 @@
 						</div>
 					</fieldset>
 					<div class="actions pull-right">
-						<input type="submit" name="submit" value="Add" class="btn btn-primary">
-						or <a href="static/views/dashboard.jsp" class="btn btn-default">Cancel</a>
+						<input type="submit" name="submit" value="Add"
+							class="btn btn-primary"> or <a
+							href="ComputerListServlet" class="btn btn-default">Cancel</a>
 					</div>
 				</form>
+				${res}
 			</div>
 		</div>
 	</div>
 	</section>
-	
-	<div class="container">
-		${res}
-	</div>
-	
 </body>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
+<script>
+  $.validate({
+    lang: 'en',
+    modules:'html5'
+  });
+</script>
 </html>
