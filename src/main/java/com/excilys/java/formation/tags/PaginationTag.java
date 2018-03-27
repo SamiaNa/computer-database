@@ -14,7 +14,7 @@ public class PaginationTag extends SimpleTagSupport{
 
     private Page page;
     private String target;
-    private static Logger logger = LoggerFactory.getLogger(PrevPageTag.class);
+    private static Logger logger = LoggerFactory.getLogger(PaginationTag.class);
 
     public Page getPage() {
         return page;
