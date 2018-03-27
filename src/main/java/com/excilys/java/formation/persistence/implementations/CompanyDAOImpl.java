@@ -1,4 +1,4 @@
-package com.excilys.java.formation.persistence;
+package com.excilys.java.formation.persistence.implementations;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.mapper.CompanyMapper;
+import com.excilys.java.formation.persistence.interfaces.CompanyDAO;
 
 public enum CompanyDAOImpl implements CompanyDAO {
 
@@ -24,93 +25,82 @@ public enum CompanyDAOImpl implements CompanyDAO {
     private final String COUNT = "SELECT COUNT(id) FROM company;";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final ConnectionManager connectionManager = ConnectionManager.INSTANCE;
+    private final CompanyMapper companyMapper = CompanyMapper.INSTANCE;
 
     @Override
-    public List<Company> getAll() throws DAOException, ConnectionException {
-        CompanyMapper companyMapper = CompanyMapper.INSTANCE;
+    public List<Company> getAll() throws DAOException {
         List<Company> companies = new ArrayList<>();
-        try (Connection connection = ConnectionManager.INSTANCE.open();
+        try (Connection connection = connectionManager.open();
                 PreparedStatement stmt = connection.prepareStatement(SELECT);) {
-            logger.debug("(getAll) Query : "+stmt.toString());
+            logger.debug("(getAll) Query : " + stmt.toString());
             ResultSet res = stmt.executeQuery();
             companies = companyMapper.createCompanyListFromResultSet(res);
-        } catch (SQLException se) {
-            for (Throwable e : se) {
-                logger.error(e.toString());
-            }
-            throw new DAOException(se.getMessage());
+            return companies;
+        } catch (SQLException | ClassNotFoundException  e) {
+            logger.error("Exception in getAll()", e);
+            throw new DAOException(e);
         }
-        return companies;
     }
 
     @Override
-    public List<Company> get(int offset, int size) throws DAOException, ConnectionException {
-        CompanyMapper companyMapper = CompanyMapper.INSTANCE;
+    public List<Company> get(int offset, int size) throws DAOException {
         List<Company> companies = new ArrayList<>();
-        try (Connection connection = ConnectionManager.INSTANCE.open();
+        try (Connection connection = connectionManager.open();
                 PreparedStatement stmt = connection.prepareStatement(SELECT_LIMIT);) {
             stmt.setInt(1, size);
             stmt.setInt(2, offset);
-            logger.debug("(get) Query : "+stmt.toString());
+            logger.debug("(get) Query : " + stmt.toString());
             ResultSet res = stmt.executeQuery();
             companies = companyMapper.createCompanyListFromResultSet(res);
-        } catch (SQLException se) {
-            for (Throwable e : se) {
-                logger.error(e.toString());
-            }
-            throw new DAOException(se.getMessage());
+            return companies;
+        } catch (SQLException | ClassNotFoundException e) {
+            logger.error("Exception in get({}, {})", offset, size, e);
+            throw new DAOException(e);
         }
-        return companies;
     }
 
     @Override
-    public List<Company> getByName(String name) throws DAOException, ConnectionException {
-        CompanyMapper companyMapper = CompanyMapper.INSTANCE;
+    public List<Company> getByName(String name) throws DAOException {
         List<Company> companies = new ArrayList<>();
-        try (Connection connection = ConnectionManager.INSTANCE.open();
+        try (Connection connection = connectionManager.open();
                 PreparedStatement stmt = connection.prepareStatement(SELECT_BY_NAME);) {
             stmt.setString(1, "%" + name + "%");
-            logger.debug("(getByName) Query : "+stmt.toString());
+            logger.debug("(getByName) Query : " + stmt.toString());
             ResultSet res = stmt.executeQuery();
             companies = companyMapper.createCompanyListFromResultSet(res);
-        } catch (SQLException se) {
-            for (Throwable e : se) {
-                logger.error(e.toString());
-            }
-            throw new DAOException(se.getMessage());
+            return companies;
+        } catch (SQLException | ClassNotFoundException e) {
+            logger.error("Exception in getByName({})", name, e);
+            throw new DAOException(e);
         }
-        return companies;
     }
 
     @Override
-    public boolean checkCompanyById(long id) throws DAOException, ConnectionException {
-        try (Connection connection = ConnectionManager.INSTANCE.open();
+    public boolean checkCompanyById(long id) throws DAOException {
+        try (Connection connection = connectionManager.open();
                 PreparedStatement stmt = connection.prepareStatement(SELECT_BY_ID);) {
             stmt.setLong(1, id);
-            logger.debug("(checkCompanyById) Query : "+stmt.toString());
+            logger.debug("(checkCompanyById) Query : " + stmt.toString());
             ResultSet res = stmt.executeQuery();
             return res.next();
-        } catch (SQLException se) {
-            for (Throwable e : se) {
-                logger.error(e.toString());
-            }
-            throw new DAOException(se.getMessage());
+        } catch (SQLException | ClassNotFoundException e) {
+            logger.error("Exception in checkCompanyByID({})",id, e);
+            throw new DAOException(e);
         }
     }
 
     @Override
-    public int count() throws  DAOException, ConnectionException {
-        try (Connection connection = ConnectionManager.INSTANCE.open();
+    public int count() throws DAOException {
+        try (Connection connection = connectionManager.open();
                 PreparedStatement stmt = connection.prepareStatement(COUNT);) {
-            logger.debug("(count) Query : "+stmt.toString());
+            logger.debug("(count) Query : " + stmt.toString());
             ResultSet res = stmt.executeQuery();
             res.next();
             return res.getInt(1);
-        } catch (SQLException se) {
-            for (Throwable e : se) {
-                logger.error(e.toString());
-            }
-            throw new DAOException(se.getMessage());
+        }catch (SQLException | ClassNotFoundException e) {
+            logger.error("Exception in count()", e);
+            throw new DAOException(e);
         }
     }
 }

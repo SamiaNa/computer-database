@@ -2,8 +2,6 @@ package com.excilys.java.formation.entities;
 
 import java.util.Objects;
 
-import com.excilys.java.formation.dto.ComputerDTO;
-
 public class Company {
 
     private long id;
@@ -40,7 +38,7 @@ public class Company {
         str.append("Id=").append(this.id).append(", name=").append(this.name);
         return str.toString();
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -53,7 +51,7 @@ public class Company {
         return (this.id == company.id &&
                 this.name.equals(company.name));
     }
-    
+
     @Override
     public int hashCode() {
         return Objects.hash(id, name);
