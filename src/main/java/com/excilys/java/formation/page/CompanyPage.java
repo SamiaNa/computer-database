@@ -18,21 +18,21 @@ public class CompanyPage extends Page {
     private static final CompanyService companyService = CompanyService.INSTANCE;
 
     public CompanyPage() {
-        this.pageNumber = 0;
+        this.offset = 0;
         this.size = DEFAULT_SIZE;
         this.elements = new ArrayList<>();
     }
 
     public CompanyPage(int pageNumber, int size) {
-        this.pageNumber = pageNumber;
+        this.offset = pageNumber;
         this.size = size;
         this.elements = new ArrayList<>();
 
     }
 
     public void updateList() throws ServiceException  {
-        logger.debug("Updating company list, page number = "+pageNumber+", page size="+size);
-        this.elements = companyService.getCompanyList(pageNumber, size);
+        logger.debug("Updating company list, page number = "+offset+", page size="+size);
+        this.elements = companyService.getCompanyList(offset, size);
     }
 
     @Override
@@ -48,14 +48,14 @@ public class CompanyPage extends Page {
     public void nextPage() throws ServiceException  {
         this.count = companyService.count();
         super.offsetNextPage(count);
-        logger.debug("Getting page "+pageNumber+" with page size="+size);
+        logger.debug("Getting page "+offset+" with page size="+size);
         updateList();
     }
 
     @Override
     public void prevPage() throws ServiceException  {
         super.offsetPrevPage();
-        logger.debug("Getting page "+pageNumber+" with page size="+size);
+        logger.debug("Getting page "+offset+" with page size="+size);
         updateList();
 
     }

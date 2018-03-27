@@ -19,6 +19,7 @@ import com.excilys.java.formation.validator.ValidatorException;
 /**
  * Servlet implementation class ComputerListServlet
  */
+
 @WebServlet("/ComputerListServlet")
 public class ComputerListServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -44,25 +45,27 @@ public class ComputerListServlet extends HttpServlet {
             int pageNumber = 0;
             int pageSize = 0;
             RequestDispatcher rd = request.getRequestDispatcher("/static/views/dashboard.jsp");
-            try {
-                pageNumber = Integer.parseUnsignedInt(pageNumberStr);
-                pageSize = Integer.parseUnsignedInt(pageSizeStr);
-                logger.info("Page number = " + pageNumber + ", page size = " + pageSize);
-            } catch (NumberFormatException e) {
-                logger.error("Failed to parse " + pageNumberStr + " or " + pageSizeStr + " as an unsigned int");
-                throw new ServletException(e);
-            }
-            ComputerDTOPage computerPage = (ComputerDTOPage) request.getAttribute("computerPage");
-            if (computerPage == null) {
-                computerPage = new ComputerDTOPage();
-            }
+            if (pageNumberStr == null || pageSizeStr == null) {
+                pageNumber = 1;
+                pageSize = 10;
 
+            } else {
+                try {
+                    pageNumber = Integer.parseUnsignedInt(pageNumberStr);
+                    pageSize = Integer.parseUnsignedInt(pageSizeStr);
+                    logger.info("Page number = " + pageNumber + ", page size = " + pageSize);
+                } catch (NumberFormatException e) {
+                    logger.error("Failed to parse " + pageNumberStr + " or " + pageSizeStr + " as an unsigned int");
+                    throw new ServletException(e);
+                }
+            }
+            ComputerDTOPage computerPage = new ComputerDTOPage();
             computerPage.getPage(pageNumber, pageSize);
             logger.info(
                     "Successfully fetched page content (page number=" + pageNumber + " page size=" + pageSize + ")");
-            request.setAttribute("computerPage", computerPage);
+            request.setAttribute("page", computerPage);
             rd.forward(request, response);
-        } catch (ServiceException  | ValidatorException e) {
+        } catch (ServiceException | ValidatorException e) {
             logger.error("Exception in ComputerListServlet", e);
             throw new ServletException(e);
         }

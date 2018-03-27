@@ -28,12 +28,11 @@ public class ComputerDTOPage extends ComputerPage {
 
     @Override
     public void updateList() throws ValidatorException, ServiceException {
-        logger.info("Updating computer list : page number ="+pageNumber+", page size="+size);
+        logger.info("Updating computer list : page number ="+offset+", page size="+size);
         this.DTOElements = ComputerDTOMapper.INSTANCE
-                .toDTOList(ComputerService.INSTANCE.getComputerList(pageNumber, size));
+                .toDTOList(ComputerService.INSTANCE.getComputerList(offset, size));
 
     }
-
 
     public List<ComputerDTO> getDTOElements(){
         return this.DTOElements;

@@ -21,44 +21,19 @@
 	</div>
 	</header>
 
-	<c:choose>
-		<c:when test="${param.pageNumber == null}">
-			<c:set var="pageNumber" value="1" />
-		</c:when>
-		<c:otherwise>
-			<c:set var="pageNumber" value="${param.pageNumber}" />
-		</c:otherwise>
-	</c:choose>
-
-	<c:choose>
-		<c:when test="${param.pageSize == null}">
-			<c:set var="pageSize" value="10" />
-		</c:when>
-		<c:otherwise>
-			<c:set var="pageSize" value="${param.pageSize}" />
-		</c:otherwise>
-	</c:choose>
-
-	<c:choose>
-		<c:when test="${computerPage == null}">
-			<c:redirect
-				url="/ComputerListServlet?pageNumber=${pageNumber}&pageSize=${pageSize}" />
-		</c:when>
-	</c:choose>
-
-
 	<section id="main">
 	<div class="container">
 		<h1 id="homeTitle">
-			<c:out value="${computerPage.count} Computers found" />
+			<c:out value="${page.count} Computers found" />
 		</h1>
 		<div id="actions" class="form-horizontal">
 			<div class="pull-left">
-				<form id="searchForm" action="/ComputerListServlet" method="GET" class="form-inline">
+				<form id="searchForm" action="/ComputerListServlet" method="GET"
+					class="form-inline">
 					<input type="search" id="searchbox" name="search"
 						class="form-control" placeholder="Search name" /> <input
-						type="submit" id="searchsubmit" name="submit" value="Filter by name"
-						class="btn btn-primary" />
+						type="submit" id="searchsubmit" name="submit"
+						value="Filter by name" class="btn btn-primary" />
 				</form>
 			</div>
 			<div class="pull-right">
@@ -102,7 +77,7 @@
 			<!-- Browse attribute computers -->
 			<tbody id="results">
 
-				<c:forEach var="computer" items="${computerPage.DTOElements}">
+				<c:forEach var="computer" items="${requestScope.page.DTOElements}">
 					<tr>
 						<td class="editMode"><input type="checkbox" name="cb"
 							class="cb" value="0"></td>
@@ -123,29 +98,30 @@
 	<div class="container text-center">
 		<ul class="pagination">
 
-			<c:if test="${pageNumber > 1}">
-				<li><a
-					href=<c:url value="/ComputerListServlet?pageNumber=${pageNumber-1}&pageSize=${pageSize}"/>
-					aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
-				</a></li>
+			<c:if test="${page.number > 1}">
+				<li>
+				<a href=<c:url value="/ComputerListServlet?pageNumber=${page.number-1}&pageSize=${requestScope.page.size}"/>
+					aria-label="Previous"> 
+						<span aria-hidden="true">&laquo;</span>
+				</a>
+				</li>
 			</c:if>
 
 			<c:forEach var="i" begin="0" end="4">
 				<c:if
-					test="${(pageNumber+i <= (computerPage.count / pageSize) && computerPage.count % pageSize == 0)
-			|| (pageNumber+i <= (computerPage.count / pageSize) + 1 && computerPage.count % pageSize != 0)}">
-					<li><a
-						href=<c:url value="/ComputerListServlet?pageNumber=${pageNumber+i}&pageSize=${pageSize}"/>><c:out
-								value="${pageNumber+i}" /></a></li>
+					test="${(page.number + i <= (page.count / requestScope.page.size) && requestScope.page.count % requestScope.page.size == 0)
+			|| (page.number+i <= (page.count / requestScope.page.size) + 1 && requestScope.page.count % requestScope.page.size != 0)}">
+					<li>
+					<a href=<c:url value="/ComputerListServlet?pageNumber=${page.number+i}&pageSize=${requestScope.page.size}" />
+						><c:out value ="${page.number+i}"/></a></li>
 				</c:if>
 			</c:forEach>
-
 			<c:if
-				test="${(pageNumber + 1 < (computerPage.count / pageSize) && computerPage.count % pageSize == 0)
-			|| (pageNumber + 1 <(computerPage.count / pageSize) + 1 && computerPage.count % pageSize != 0)}">
+				test="${(page.number + 1 < (requestScope.page.count / requestScope.page.size) && requestScope.page.count % requestScope.page.size == 0)
+			|| (page.number + 1 <(requestScope.page.count / requestScope.page.size) + 1 && requestScope.page.count % requestScope.page.size != 0)}">
 				<li><a
 					href=<c:url
-					value="/ComputerListServlet?pageNumber=${pageNumber+1}&pageSize=${pageSize}" />
+					value="/ComputerListServlet?pageNumber=${page.number+1}&pageSize=${requestScope.page.size}" />
 					aria-label="Next"> <span aria-hidden="true">&raquo;</span>
 				</a></li>
 			</c:if>
@@ -156,13 +132,13 @@
 		<div class="btn-group btn-group-sm pull-right" role="group">
 
 			<form
-				action="ComputerListServlet?pageNumber=${pageNumber}&pageSize=10"
+				action="ComputerListServlet?page.number=${page.number}&pageSize=10"
 				method="post">
 				<button type="submit" class="btn btn-default">10</button>
 				<button type="submit" class="btn btn-default"
-					formaction="ComputerListServlet?pageNumber=${pageNumber}&pageSize=50">50</button>
+					formaction="ComputerListServlet?pageNumber=${page.number}&pageSize=50">50</button>
 				<button type="submit" class="btn btn-default"
-					formaction="ComputerListServlet?pageNumber=${pageNumber}&pageSize=100">100</button>
+					formaction="ComputerListServlet?pageNumber=${page.number}&pageSize=100">100</button>
 			</form>
 
 		</div>
