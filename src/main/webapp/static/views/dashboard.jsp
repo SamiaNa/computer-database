@@ -82,7 +82,7 @@
 					<tr>
 						<td class="editMode"><input type="checkbox" name="cb"
 							class="cb" value="0"></td>
-						<td><a href="editComputer.html" onclick=""> <c:out
+						<td><a href="EditComputerServlet?id=${computer.id}" onclick=""> <c:out
 									value="${computer.name}" /></a></td>
 						<td><c:out value="${computer.introduced}" /></td>
 						<td><c:out value="${computer.discontinued}" /></td>
@@ -103,7 +103,7 @@
 		<div class="btn-group btn-group-sm pull-right" role="group">
 
 			<form
-				action="ComputerListServlet?pageNumber=${page.number}&pageSize=10"
+				action="CmputerListServlet?pageNumber=${page.number}&pageSize=10"
 				method="post">
 				<button type="submit" class="btn btn-default">10</button>
 				<button type="submit" class="btn btn-default"
