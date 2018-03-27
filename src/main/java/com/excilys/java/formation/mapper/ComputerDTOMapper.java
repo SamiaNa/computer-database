@@ -18,20 +18,21 @@ import com.excilys.java.formation.validator.ValidatorException;
 public enum ComputerDTOMapper {
 
     INSTANCE;
-    private static final String NULL = "";
+    private static final String EMPTY = "";
+    private static final String NULL = "null";
     private static final Logger logger = LoggerFactory.getLogger(ComputerDTOMapper.class);
     private static final CompanyValidator companyValidator = CompanyValidator.INSTANCE;
     private static final ComputerValidator computerValidator = ComputerValidator.INSTANCE;
 
     public String dateToString(LocalDate date) {
         if (date == null) {
-            return NULL;
+            return EMPTY;
         }
         return date.toString();
     }
 
     public LocalDate stringToLocalDate(String str) {
-        if (str.equals(NULL)) {
+        if (str.equals(EMPTY)) {
             return null;
         }
         return LocalDate.parse(str);
@@ -40,13 +41,13 @@ public enum ComputerDTOMapper {
     public ComputerDTO toDTO(Computer computer) throws ValidatorException {
         Builder cDTO = new Builder();
         cDTO.withName(computer.getName())
-            .withId(computer.getId())
-            .withIntroduced(dateToString(computer.getIntroduced()))
-            .withDiscontinued(dateToString(computer.getDiscontinued()));
+        .withId(computer.getId())
+        .withIntroduced(dateToString(computer.getIntroduced()))
+        .withDiscontinued(dateToString(computer.getDiscontinued()));
         Company company = computer.getCompany();
         if (company == null) {
-            cDTO.withCompanyName(NULL);
-            cDTO.withCompanyId(NULL);
+            cDTO.withCompanyName(EMPTY);
+            cDTO.withCompanyId(EMPTY);
         } else {
             cDTO.withCompanyName(computer.getCompany().getName());
             cDTO.withCompanyId(String.valueOf(computer.getCompany().getId()));
@@ -58,7 +59,7 @@ public enum ComputerDTOMapper {
     public Computer toComputer(ComputerDTO computerDTO) throws ValidatorException {
         Company company = new Company();
         logger.debug("ComputerDTO"+ computerDTO.getCompanyId());
-        if (computerDTO.getCompanyId().equals(NULL)) {
+        if (computerDTO.getCompanyId().equals(EMPTY) || computerDTO.getCompanyId().equals(NULL)) {
             company = null;
         } else {
             companyValidator.checkCompanyIdOrNull(computerDTO.getCompanyId());
@@ -67,12 +68,12 @@ public enum ComputerDTOMapper {
         }
         logger.debug("ComputerDTO " + computerDTO + " mapped to computer");
         Computer computer = new Computer.ComputerBuilder()
-                            .withId(computerDTO.getId())
-                            .withName(computerDTO.getName())
-                            .withIntroduced(stringToLocalDate(computerDTO.getIntroduced()))
-                            .withDiscontinued(stringToLocalDate(computerDTO.getDiscontinued()))
-                            .withCompany(company)
-                            .build();
+                .withId(computerDTO.getId())
+                .withName(computerDTO.getName())
+                .withIntroduced(stringToLocalDate(computerDTO.getIntroduced()))
+                .withDiscontinued(stringToLocalDate(computerDTO.getDiscontinued()))
+                .withCompany(company)
+                .build();
         computerValidator.checkDates(computer);
         computerValidator.checkName(computer.getName());
         return computer;
