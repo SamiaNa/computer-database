@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <packaging>war</packaging>
@@ -31,6 +30,8 @@
         <!-- runtime -->
         <mysql.version>5.1.38</mysql.version>
         <myqsl-jdbc.version>8.0.8-dmr</myqsl-jdbc.version>
+        <hikariCP.version>2.7.8</hikariCP.version>
+        
         <tomcat7.version>2.2</tomcat7.version>
         <tomcat-catalina.version>8.0.1</tomcat-catalina.version>
         <javax.servlet.version>2.5</javax.servlet.version>
@@ -132,7 +133,7 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>${jacoco.version}</version>
-                    <executions>
+                <executions>
                     <execution>
                         <id>prepare-agent</id>
                         <goals>
@@ -153,15 +154,17 @@
                             <goal>report</goal>
                         </goals>
                         <configuration>
-                            <!-- Sets the path to the file which contains the execution data. -->
+                            <!-- Sets the path to the file which contains 
+                                the execution data. -->
 
                             <dataFile>target/jacoco.exec</dataFile>
-                            <!-- Sets the output directory for the code coverage report. -->
+                            <!-- Sets the output directory for the code coverage 
+                                report. -->
                             <outputDirectory>target/jacoco-ut</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
-                    <configuration>
+                <configuration>
                     <systemPropertyVariables>
                         <jacoco-agent.destfile>target/jacoco.exec</jacoco-agent.destfile>
                     </systemPropertyVariables>
@@ -180,6 +183,12 @@
             <version>${myqsl-jdbc.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>${hikariCP.version}</version>
+        </dependency>
+        
         <dependency>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-war-plugin</artifactId>
@@ -250,23 +259,23 @@
         </dependency>
 
         <dependency>
-           <groupId>org.slf4j</groupId>
-           <artifactId>slf4j-simple</artifactId>
-           <version>${slf4j.version}</version>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
             <version>${logback.version}</version>
         </dependency>
-        
+
         <dependency>
-           <groupId>org.webjars.bower</groupId>
-           <artifactId>jquery</artifactId>
-           <version>${jquery.version}</version>
+            <groupId>org.webjars.bower</groupId>
+            <artifactId>jquery</artifactId>
+            <version>${jquery.version}</version>
         </dependency>
-        
+
 
     </dependencies>
 

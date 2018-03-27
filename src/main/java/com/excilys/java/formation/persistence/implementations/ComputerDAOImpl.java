@@ -117,15 +117,19 @@ public enum ComputerDAOImpl implements ComputerDAO {
     }
 
     @Override
-    public Optional<Long> createComputer(Computer c) throws DAOException {
+    public Optional<Long> createComputer(Computer c) throws DAOException{
         try (Connection connection = connectionManager.open();
-                PreparedStatement stmt = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);) {
+                AutoSetAutoCommit autoCommit = new AutoSetAutoCommit(connection ,false);
+                AutoRollback autoRollback = new AutoRollback(connection);
+                PreparedStatement stmt = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)) {
+            connection.setAutoCommit(false);
             stmt.setString(1, c.getName());
             setCompanyIdOrNull(c.getCompany(), stmt, 2);
             setDateOrNull(c.getIntroduced(), stmt, 3);
             setDateOrNull(c.getDiscontinued(), stmt, 4);
             logger.debug("(createComputer) Query : " + stmt.toString());
             stmt.executeUpdate();
+            autoRollback.commit();
             ResultSet res = stmt.getGeneratedKeys();
             if (res.next()) {
                 return Optional.of(res.getLong(1));
@@ -141,7 +145,10 @@ public enum ComputerDAOImpl implements ComputerDAO {
     @Override
     public boolean update(Computer c) throws DAOException {
         try (Connection connection = connectionManager.open();
+                AutoSetAutoCommit autoCommit = new AutoSetAutoCommit(connection ,false);
+                AutoRollback autoRollback = new AutoRollback(connection);
                 PreparedStatement stmt = connection.prepareStatement(UPDATE);) {
+            connection.setAutoCommit(false);
             stmt.setString(1, c.getName());
             setDateOrNull(c.getIntroduced(), stmt, 2);
             setDateOrNull(c.getDiscontinued(), stmt, 3);
@@ -149,6 +156,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
             stmt.setLong(5, c.getId());
             logger.debug("(update) Query : " + stmt.toString());
             int res = stmt.executeUpdate();
+            autoRollback.commit();
             return res == 1;
         } catch (SQLException | ClassNotFoundException e) {
             logger.error("Exception in update({c})", c, e);
@@ -159,10 +167,14 @@ public enum ComputerDAOImpl implements ComputerDAO {
     @Override
     public boolean delete(long id) throws DAOException {
         try (Connection connection = connectionManager.open();
-                PreparedStatement stmt = connection.prepareStatement(DELETE);) {
+                AutoSetAutoCommit autoCommit = new AutoSetAutoCommit(connection ,false);
+                AutoRollback autoRollback = new AutoRollback(connection);
+                PreparedStatement stmt = connection.prepareStatement(DELETE);
+                ) {
             stmt.setLong(1, id);
             logger.debug("(delete) Query : " + stmt.toString());
             int res = stmt.executeUpdate();
+            autoRollback.commit();
             return res == 1;
         } catch (SQLException | ClassNotFoundException e) {
             logger.error("Exception in delete({})", id, e);
