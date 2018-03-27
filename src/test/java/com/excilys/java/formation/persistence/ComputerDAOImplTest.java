@@ -139,7 +139,7 @@ public class ComputerDAOImplTest{
         stmt.setLong(1, id.get());
         ResultSet res =	stmt.executeQuery();
         assertTrue(res.next());
-        assertEquals(res.getLong(1), id);
+        assertEquals(Optional.of(res.getLong(1)), id);
         assertEquals(res.getString(2), c0.getName());
         assertEquals(res.getDate(3), c0.getIntroduced());
         assertEquals(res.getDate(4), c0.getDiscontinued());
