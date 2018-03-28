@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
+import com.excilys.java.formation.dto.CompanyDTO;
 import com.excilys.java.formation.dto.ComputerDTO;
 import com.excilys.java.formation.dto.ComputerDTO.Builder;
 import com.excilys.java.formation.entities.Company;
@@ -124,11 +125,17 @@ public class UserInterface {
         System.out.println("Enter company id (or null)");
         String companyIdStr = scanner.nextLine();
         try {
+            CompanyDTO companyDTO = new CompanyDTO();
+            try {
+                companyDTO.setId(Long.parseUnsignedLong(companyIdStr));
+            }catch (NumberFormatException e) {
+                companyDTO = null;
+            }
             Builder computerDTOBuilder = new Builder();
             computerDTOBuilder.withName(name)
             .withIntroduced(introducedStr)
             .withDiscontinued(discontinuedStr)
-            .withCompanyId(companyIdStr);
+            .withCompany(companyDTO);
             Optional<Computer> optComp = computerService.createComputer(ComputerDTOMapper.INSTANCE.toComputer(computerDTOBuilder.build()));
             if (optComp.isPresent()) {
                 System.out.println("Successful creation with id " + optComp.get().getId());
@@ -167,9 +174,18 @@ public class UserInterface {
                 System.out.println("Enter new date of discontinuation");
                 computerDTO.setDiscontinued(scanner.nextLine());
             }
-            if (updateAttribute("company id", computerDTO.getCompanyId(), scanner)) {
+            if (updateAttribute("company id", String.valueOf(computerDTO.getCompany().getId()), scanner)) {
                 System.out.println("Enter company id");
-                computerDTO.setCompanyId(scanner.nextLine());
+                String companyIdStr = scanner.nextLine();
+                CompanyDTO companyDTO = computerDTO.getCompany();
+
+                try {
+                    companyDTO.setId(Long.parseUnsignedLong(companyIdStr));
+                }catch (NumberFormatException e) {
+                    companyDTO = null;
+                }
+                companyDTO.setId(scanner.nextLong());
+                computerDTO.setCompany(companyDTO);
             }
             if (computerService.updateComputer(ComputerDTOMapper.INSTANCE.toComputer(computerDTO))) {
                 System.out.println("Successful update");

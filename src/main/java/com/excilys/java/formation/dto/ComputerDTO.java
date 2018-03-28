@@ -2,26 +2,20 @@ package com.excilys.java.formation.dto;
 
 import java.util.Objects;
 
-import com.excilys.java.formation.validator.CompanyValidator;
-import com.excilys.java.formation.validator.ComputerValidator;
-import com.excilys.java.formation.validator.ValidatorException;
-
 public class ComputerDTO {
 
     private long id;
     private String name;
     private String introduced;
     private String discontinued;
-    private String companyId;
-    private String companyName;
+    private CompanyDTO company;
 
     private ComputerDTO(Builder builder) {
         this.id = builder.id;
         this.name = builder.name;
         this.introduced = builder.introduced;
         this.discontinued = builder.discontinued;
-        this.companyId = builder.companyId;
-        this.companyName = builder.companyName;
+        this.company = builder.company;
     }
 
     public long getId() {
@@ -44,22 +38,13 @@ public class ComputerDTO {
         this.discontinued = discontinued;
     }
 
-    public String getCompanyId() {
-        return companyId;
+    public CompanyDTO getCompany() {
+        return this.company;
     }
 
-    public void setCompanyId(String companyId) {
-        this.companyId = companyId;
+    public void setCompany (CompanyDTO company) {
+        this.company = company;
     }
-
-    public String getCompanyName() {
-        return companyName;
-    }
-
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
-    }
-
     public void setId(long id) {
         this.id = id;
     }
@@ -82,21 +67,20 @@ public class ComputerDTO {
         }
         ComputerDTO computer = (ComputerDTO) o;
         return (this.id == computer.id && this.name.equals(computer.name) && this.introduced.equals(computer.introduced)
-                && this.discontinued.equals(computer.discontinued) && this.companyId.equals(computer.companyId)
-                && this.companyName.equals(computer.companyName));
+                && this.discontinued.equals(computer.discontinued) && this.company.equals(computer.company));
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, introduced, discontinued, companyId, companyName);
+        return Objects.hash(id, name, introduced, discontinued, company);
     }
 
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
         str.append("Id=").append(this.id).append(", name=").append(this.name).append(", introduced=")
-                .append(this.introduced).append(", discontinued=").append(this.discontinued).append(", company= ")
-                .append(this.companyId).append(" ").append(this.companyName);
+        .append(this.introduced).append(", discontinued=").append(this.discontinued).append(", company= ")
+        .append(this.company==null?"null":this.company.toString());
         return str.toString();
     }
 
@@ -106,11 +90,9 @@ public class ComputerDTO {
         private String name;
         private String introduced;
         private String discontinued;
-        private String companyId;
-        private String companyName;
+        private CompanyDTO company;
 
-        public Builder withName(String name) throws ValidatorException {
-            ComputerValidator.INSTANCE.checkName(name);
+        public Builder withName(String name)  {
             this.name = name;
             return this;
         }
@@ -125,13 +107,8 @@ public class ComputerDTO {
             return this;
         }
 
-        public Builder withCompanyId(String strId) {
-            this.companyId = strId;
-            return this;
-        }
-
-        public Builder withCompanyName(String name) {
-            this.companyName = name;
+        public Builder withCompany(CompanyDTO company) {
+            this.company = company;
             return this;
         }
 
@@ -153,8 +130,8 @@ public class ComputerDTO {
         public String toString() {
             StringBuilder str = new StringBuilder();
             str.append("Id=").append(this.id).append(", name=").append(this.name).append(", introduced=")
-                    .append(this.introduced).append(", discontinued=").append(this.discontinued).append(", company= ")
-                    .append(this.companyId).append(" ").append(this.companyName);
+            .append(this.introduced).append(", discontinued=").append(this.discontinued).append(", company= ")
+            .append(this.company==null?"null":this.company.toString());
             return str.toString();
         }
 

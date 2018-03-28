@@ -39,8 +39,9 @@ public enum CompanyValidator {
         }
         return id;
     }
-    
+
     public void checkCompanyOrNull(Company company) throws ValidatorException {
+        logger.info("Check company or null {}", company);
         if (company != null) {
             long id = company.getId();
             try {

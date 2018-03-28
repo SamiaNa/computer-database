@@ -9,9 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.excilys.java.formation.dto.ComputerDTO;
 import com.excilys.java.formation.dto.ComputerDTO.Builder;
-import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.entities.Computer;
-import com.excilys.java.formation.validator.CompanyValidator;
 import com.excilys.java.formation.validator.ComputerValidator;
 import com.excilys.java.formation.validator.ValidatorException;
 
@@ -19,9 +17,7 @@ public enum ComputerDTOMapper {
 
     INSTANCE;
     private static final String EMPTY = "";
-    private static final String NULL = "null";
     private static final Logger logger = LoggerFactory.getLogger(ComputerDTOMapper.class);
-    private static final CompanyValidator companyValidator = CompanyValidator.INSTANCE;
     private static final ComputerValidator computerValidator = ComputerValidator.INSTANCE;
 
     public String dateToString(LocalDate date) {
@@ -38,41 +34,25 @@ public enum ComputerDTOMapper {
         return LocalDate.parse(str);
     }
 
-    public ComputerDTO toDTO(Computer computer) throws ValidatorException {
+    public ComputerDTO toDTO(Computer computer) {
         Builder cDTO = new Builder();
         cDTO.withName(computer.getName())
         .withId(computer.getId())
         .withIntroduced(dateToString(computer.getIntroduced()))
-        .withDiscontinued(dateToString(computer.getDiscontinued()));
-        Company company = computer.getCompany();
-        if (company == null) {
-            cDTO.withCompanyName(EMPTY);
-            cDTO.withCompanyId(EMPTY);
-        } else {
-            cDTO.withCompanyName(computer.getCompany().getName());
-            cDTO.withCompanyId(String.valueOf(computer.getCompany().getId()));
-        }
+        .withDiscontinued(dateToString(computer.getDiscontinued()))
+        .withCompany(CompanyDTOMapper.INSTANCE.toDTO(computer.getCompany()));
         logger.debug("Computer " + computer + " mapped to ComputerDTO " + cDTO);
         return cDTO.build();
     }
 
     public Computer toComputer(ComputerDTO computerDTO) throws ValidatorException {
-        Company company = new Company();
-        logger.debug("ComputerDTO"+ computerDTO.getCompanyId());
-        if (computerDTO.getCompanyId().equals(EMPTY) || computerDTO.getCompanyId().equals(NULL)) {
-            company = null;
-        } else {
-            companyValidator.checkCompanyIdOrNull(computerDTO.getCompanyId());
-            company.setId(Long.parseLong(computerDTO.getCompanyId()));
-            company.setName(computerDTO.getCompanyName());
-        }
         logger.debug("ComputerDTO " + computerDTO + " mapped to computer");
         Computer computer = new Computer.ComputerBuilder()
                 .withId(computerDTO.getId())
                 .withName(computerDTO.getName())
                 .withIntroduced(stringToLocalDate(computerDTO.getIntroduced()))
                 .withDiscontinued(stringToLocalDate(computerDTO.getDiscontinued()))
-                .withCompany(company)
+                .withCompany(CompanyDTOMapper.INSTANCE.toCompany(computerDTO.getCompany()))
                 .build();
         computerValidator.checkDates(computer);
         computerValidator.checkName(computer.getName());
