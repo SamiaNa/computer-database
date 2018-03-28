@@ -23,42 +23,6 @@
             <fragment>true</fragment>
 		</attribute>
 	</tag>
-    <tag>
-        <name>getpage</name>
-        <tag-class>com.excilys.java.formation.tags.GetPageTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <name>page</name>
-            <required>true</required>
-            <type>com.excilys.java.formation.page.Page</type>
-            <fragment>true</fragment>
-        </attribute>
-        <attribute>
-            <name>pageToGet</name>
-            <required>true</required>
-            <type>java.lang.Integer</type>
-            <fragment>true</fragment>
-        </attribute>
-        <attribute>
-            <name>target</name>
-            <required>true</required>
-        </attribute>
-    </tag>
-   <tag>
-        <name>prevpage</name>
-        <tag-class>com.excilys.java.formation.tags.PrevPageTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <name>page</name>
-            <required>true</required>
-            <type>com.excilys.java.formation.page.Page</type>
-            <fragment>true</fragment>
-        </attribute>
-        <attribute>
-            <name>target</name>
-            <required>true</required>
-        </attribute>
-   </tag>
    
    <tag>
         <name>pagination</name>
@@ -73,6 +37,10 @@
         <attribute>
             <name>target</name>
             <required>true</required>
+        </attribute>
+         <attribute>
+            <name>search</name>
+            <fragment>true</fragment>
         </attribute>
    </tag>
 </taglib>

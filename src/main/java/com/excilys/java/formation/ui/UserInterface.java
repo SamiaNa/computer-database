@@ -187,13 +187,11 @@ public class UserInterface {
                 companyDTO.setId(scanner.nextLong());
                 computerDTO.setCompany(companyDTO);
             }
-            if (computerService.updateComputer(ComputerDTOMapper.INSTANCE.toComputer(computerDTO))) {
-                System.out.println("Successful update");
-            } else {
-                System.out.println("Error : update not taken into account");
-            }}catch (ValidatorException e) {
-                System.out.println(e.getMessage());
-            }
+            computerService.updateComputer(ComputerDTOMapper.INSTANCE.toComputer(computerDTO));
+
+        }catch (ValidatorException e) {
+            System.out.println(e.getMessage());
+        }
 
     }
 
@@ -212,12 +210,8 @@ public class UserInterface {
         System.out.println("Enter id of computer : ");
         try {
             Long computerId = scanner.nextLong();
-            boolean deleted = computerService.deleteComputer(computerId);
-            if (deleted) {
-                System.out.println("Successful deletion");
-            } else {
-                System.out.println("No computer found with id " + computerId);
-            }
+            computerService.deleteComputer(computerId);
+
         } catch (InputMismatchException e) {
             System.out.println("Only numbers are excepted as id");
         }

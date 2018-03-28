@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.service.CompanyService;
 import com.excilys.java.formation.service.ServiceException;
+import com.excilys.java.formation.validator.ValidatorException;
 
 public class CompanyPage extends Page {
 
@@ -62,6 +63,12 @@ public class CompanyPage extends Page {
 
     public List<Company> getElements(){
         return this.elements;
+    }
+
+    @Override
+    public void getPage(String name, int pageNumber, int pageSize) throws ServiceException, ValidatorException {
+        // TODO Auto-generated method stub
+
     }
 
 

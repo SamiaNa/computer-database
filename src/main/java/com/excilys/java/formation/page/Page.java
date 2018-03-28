@@ -18,6 +18,8 @@ public abstract class Page {
 
     public abstract void getPage(int pageNumber, int pageSize) throws ServiceException, ValidatorException;
 
+    public abstract void getPage(String name, int pageNumber, int pageSize) throws ServiceException, ValidatorException;
+
     public int getSize() {
         return size;
     }

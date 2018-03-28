@@ -27,15 +27,15 @@ import com.excilys.java.formation.validator.ValidatorException;
 /**
  * Servlet implementation class EditComptuer
  */
-@WebServlet("/EditComputerServlet")
-public class EditComputerServlet extends HttpServlet {
+@WebServlet("/EditComputer")
+public class EditComputer extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
-    private static final Logger logger = LoggerFactory.getLogger(EditComputerServlet.class);
+    private static final Logger logger = LoggerFactory.getLogger(EditComputer.class);
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public EditComputerServlet() {
+    public EditComputer() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -101,12 +101,7 @@ public class EditComputerServlet extends HttpServlet {
                 .withIntroduced(introducedStr)
                 .withDiscontinued(discontinuedStr)
                 .withCompany(companyDTO);
-                boolean updated = ComputerService.INSTANCE.updateComputer(ComputerDTOMapper.INSTANCE.toComputer(computerDTOBuilder.build()));
-                if (updated) {
-                    request.setAttribute("res", "Computer updated ");
-                } else {
-                    request.setAttribute("res", "Error");
-                }
+                ComputerService.INSTANCE.updateComputer(ComputerDTOMapper.INSTANCE.toComputer(computerDTOBuilder.build()));
 
             }
             rd.forward(request, response);

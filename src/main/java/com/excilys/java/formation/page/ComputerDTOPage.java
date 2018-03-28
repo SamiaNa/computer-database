@@ -31,9 +31,13 @@ public class ComputerDTOPage extends ComputerPage {
         logger.info("Updating computer list : page number ="+offset+", page size="+size);
         this.DTOElements = ComputerDTOMapper.INSTANCE
                 .toDTOList(ComputerService.INSTANCE.getComputerList(offset, size));
-
     }
 
+    public void updateList(String name) throws ValidatorException, ServiceException {
+        logger.info("Updating computer list (search : {}) page number = {}", name, offset, size);
+        this.DTOElements = ComputerDTOMapper.INSTANCE
+                .toDTOList(ComputerService.INSTANCE.getByName(name, offset, size));
+    }
     public List<ComputerDTO> getDTOElements(){
         return this.DTOElements;
     }

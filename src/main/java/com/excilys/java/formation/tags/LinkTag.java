@@ -13,6 +13,7 @@ public class LinkTag extends SimpleTagSupport {
     private String target;
     private int pageNumber;
     private int pageSize;
+    private String search;
     private static Logger logger = LoggerFactory.getLogger(LinkTag.class);
 
 
@@ -36,10 +37,12 @@ public class LinkTag extends SimpleTagSupport {
         return this.pageSize;
     }
 
+
+
     @Override
     public void doTag() throws IOException {
         JspWriter out = getJspContext().getOut();
-        String href = "\""+this.target + "?pageNumber=" + this.pageNumber + "&pageSize="+ this.pageSize +"\"";
+        String href = "\""+this.target + "?pageNumber=" + this.pageNumber +  "&pageSize="+ this.pageSize +"\"";
         logger.info(href);
         out.write(href);
     }

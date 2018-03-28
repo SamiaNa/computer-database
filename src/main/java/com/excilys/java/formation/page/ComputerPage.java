@@ -34,14 +34,31 @@ public class ComputerPage extends Page {
         this.elements = computerService.getComputerList(offset, size);
     }
 
-    @Override
-    public void getPage(int pageNumber, int pageSize) throws ValidatorException, ServiceException {
-        this.count = computerService.count();
+    public void updateList(String name) throws ValidatorException, ServiceException {
+        logger.debug("Updating computer list, page number = " + offset + ", page size=" + size);
+        this.elements = computerService.getByName(name, offset, size);
+    }
+
+    public void getPageHelper(int pageNumber, int pageSize) throws ServiceException   {
         this.size = pageSize;
         this.offset = super.offsetGetPage(pageNumber, count);
         this.number = pageNumber;
         logger.debug("Getting page " + pageNumber + " with page size=" + size);
+
+    }
+    @Override
+    public void getPage(int pageNumber, int pageSize) throws ValidatorException, ServiceException {
+        this.count = computerService.count();
+        getPageHelper(pageNumber, pageSize);
         updateList();
+    }
+
+    @Override
+    public void getPage(String name, int pageNumber, int pageSize) throws ValidatorException, ServiceException {
+        this.count = computerService.count(name);
+        getPageHelper(pageNumber, pageSize);
+        updateList(name);
+        logger.info("List size {}", this.elements.size());
     }
 
     @Override

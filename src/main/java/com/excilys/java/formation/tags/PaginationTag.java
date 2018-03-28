@@ -14,6 +14,7 @@ public class PaginationTag extends SimpleTagSupport{
 
     private Page page;
     private String target;
+    private String search;
     private static Logger logger = LoggerFactory.getLogger(PaginationTag.class);
 
     public Page getPage() {
@@ -32,8 +33,16 @@ public class PaginationTag extends SimpleTagSupport{
         this.target = target;
     }
 
+    public String getSearch() {
+        return this.search;
+    }
+
+    public void setSearch(String search) {
+        this.search = search;
+    }
+
     public String getHref(int pageNumber, int pageSize) {
-        return "\"" + this.target + "?pageNumber=" + pageNumber + "&pageSize="+ pageSize +"\"";
+        return "\"" + this.target + "?pageNumber=" + pageNumber + "&search=" + this.search +"&pageSize="+ pageSize +"\"";
     }
     public void getPrev (JspWriter out) throws IOException {
         if (page.getNumber() > 1) {

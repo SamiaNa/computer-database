@@ -25,11 +25,12 @@ public enum ComputerDAOImpl implements ComputerDAO {
     private static String SELECT_ALL_JOIN = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id;";
     private static String SELECT_LIMIT = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id LIMIT ? OFFSET ?;";
     private static String SELECT_BY_ID_JOIN = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id = ? ;";
-    private static String SELECT_BY_NAME = "SELECT id, name FROM computer WHERE name LIKE ?;";
+    private static String SELECT_BY_NAME = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE (computer.name LIKE ? OR company.name LIKE ?) LIMIT ? OFFSET ?;";
     private static String INSERT = "INSERT INTO computer (name, company_id, introduced, discontinued) VALUES (?, ?, ?, ?);";
     private static String UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?;";
     private static String DELETE = "DELETE FROM computer WHERE id = ?;";
     private static String COUNT = "SELECT COUNT(id) FROM computer";
+    private static String COUNT_NAME = "SELECT COUNT(computer.id) FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name LIKE ? OR company.name LIKE ?;";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ComputerMapper computerMapper = ComputerMapper.INSTANCE;
@@ -77,10 +78,14 @@ public enum ComputerDAOImpl implements ComputerDAO {
         }
     }
 
-    public List<Computer> getByName(String name) throws DAOException {
+    @Override
+    public List<Computer> getByName(String name, int offset, int limit) throws DAOException {
         try (Connection connection = connectionManager.open();
                 PreparedStatement stmt = connection.prepareStatement(SELECT_BY_NAME);) {
             stmt.setString(1, "%" + name + "%");
+            stmt.setString(2, "%" + name + "%");
+            stmt.setInt(3, limit);
+            stmt.setInt(4, offset);
             logger.debug("(getByName) Query : " + stmt.toString());
             ResultSet res = stmt.executeQuery();
             return computerMapper.createComputerListFromResultSet(res);
@@ -143,21 +148,19 @@ public enum ComputerDAOImpl implements ComputerDAO {
     }
 
     @Override
-    public boolean update(Computer c) throws DAOException {
+    public void update(Computer c) throws DAOException {
         try (Connection connection = connectionManager.open();
                 AutoSetAutoCommit autoCommit = new AutoSetAutoCommit(connection ,false);
                 AutoRollback autoRollback = new AutoRollback(connection);
                 PreparedStatement stmt = connection.prepareStatement(UPDATE);) {
-            connection.setAutoCommit(false);
             stmt.setString(1, c.getName());
             setDateOrNull(c.getIntroduced(), stmt, 2);
             setDateOrNull(c.getDiscontinued(), stmt, 3);
             setCompanyIdOrNull(c.getCompany(), stmt, 4);
             stmt.setLong(5, c.getId());
             logger.debug("(update) Query : " + stmt.toString());
-            int res = stmt.executeUpdate();
+            stmt.executeUpdate();
             autoRollback.commit();
-            return res == 1;
         } catch (SQLException | ClassNotFoundException e) {
             logger.error("Exception in update({c})", c, e);
             throw new DAOException(e);
@@ -165,19 +168,34 @@ public enum ComputerDAOImpl implements ComputerDAO {
     }
 
     @Override
-    public boolean delete(long id) throws DAOException {
+    public void delete(long id) throws DAOException {
         try (Connection connection = connectionManager.open();
                 AutoSetAutoCommit autoCommit = new AutoSetAutoCommit(connection ,false);
                 AutoRollback autoRollback = new AutoRollback(connection);
-                PreparedStatement stmt = connection.prepareStatement(DELETE);
-                ) {
+                PreparedStatement stmt = connection.prepareStatement(DELETE);){
             stmt.setLong(1, id);
             logger.debug("(delete) Query : " + stmt.toString());
-            int res = stmt.executeUpdate();
+            stmt.executeUpdate();
             autoRollback.commit();
-            return res == 1;
         } catch (SQLException | ClassNotFoundException e) {
             logger.error("Exception in delete({})", id, e);
+            throw new DAOException(e);
+        }
+    }
+
+    public void delete(List<Long> ids) throws DAOException{
+        try (Connection connection = connectionManager.open();
+                AutoSetAutoCommit autoCommit = new AutoSetAutoCommit(connection ,false);
+                AutoRollback autoRollback = new AutoRollback(connection);
+                PreparedStatement stmt = connection.prepareStatement(DELETE)){
+            for (long id : ids) {
+                stmt.setLong(1, id);
+                logger.debug("(delete) Query : " + stmt.toString());
+                stmt.executeUpdate();
+            }
+            autoRollback.commit();
+        } catch (SQLException | ClassNotFoundException e) {
+            logger.error("Exception in delete({})", ids.toString(), e);
             throw new DAOException(e);
         }
     }
@@ -197,5 +215,24 @@ public enum ComputerDAOImpl implements ComputerDAO {
             throw new DAOException(e);
         }
     }
+
+    @Override
+    public int count(String name) throws DAOException {
+        try (Connection connection = connectionManager.open();
+                PreparedStatement stmt = connection.prepareStatement(COUNT_NAME);) {
+            stmt.setString(1, "%" + name + "%");
+            stmt.setString(2, "%" + name + "%");
+            logger.debug("(count) Query : " + stmt.toString());
+            ResultSet rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getInt(1);
+            }
+            return -1;
+        } catch (SQLException | ClassNotFoundException e) {
+            logger.error("Exception in count()", e);
+            throw new DAOException(e);
+        }
+    }
+
 
 }

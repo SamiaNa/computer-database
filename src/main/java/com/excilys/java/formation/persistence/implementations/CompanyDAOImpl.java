@@ -66,6 +66,7 @@ public enum CompanyDAOImpl implements CompanyDAO {
         try (Connection connection = connectionManager.open();
                 PreparedStatement stmt = connection.prepareStatement(SELECT_BY_NAME);) {
             stmt.setString(1, "%" + name + "%");
+            stmt.setString(2, "%" + name + "%");
             logger.debug("(getByName) Query : " + stmt.toString());
             ResultSet res = stmt.executeQuery();
             companies = companyMapper.createCompanyListFromResultSet(res);
