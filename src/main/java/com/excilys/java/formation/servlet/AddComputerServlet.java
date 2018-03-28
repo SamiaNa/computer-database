@@ -14,9 +14,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.excilys.java.formation.dto.CompanyDTO;
 import com.excilys.java.formation.dto.ComputerDTO.Builder;
-import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.entities.Computer;
+import com.excilys.java.formation.mapper.CompanyDTOMapper;
 import com.excilys.java.formation.mapper.ComputerDTOMapper;
 import com.excilys.java.formation.service.CompanyService;
 import com.excilys.java.formation.service.ComputerService;
@@ -56,14 +57,12 @@ public class AddComputerServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher rd = request.getRequestDispatcher("/static/views/addComputer.jsp");
-
         try {
-            List<Company> companyList = CompanyService.INSTANCE.getCompanyList();
+            List<CompanyDTO> companyList = CompanyDTOMapper.INSTANCE.toDTOList(CompanyService.INSTANCE.getCompanyList());
             request.setAttribute("companyList", companyList);
         } catch (ServiceException e) {
             logger.error("Exception in addComputerServlet", e);
         }
-
         String submit = request.getParameter("submit");
         if (submit != null) {
             try {
@@ -71,9 +70,26 @@ public class AddComputerServlet extends HttpServlet {
                 String introducedStr = request.getParameter("introduced");
                 String discontinuedStr = request.getParameter("discontinued");
                 String companyIdStr = request.getParameter("companyId");
+                CompanyDTO companyDTO = new CompanyDTO();
+                logger.info("Add computer servlet");
+                try {
+                    long id = Long.parseUnsignedLong(companyIdStr);
+                    logger.info("Add computer valeur id : {}", id);
+                    if (id != 0) {
+                        companyDTO.setId(id);
+                    }else {
+                        companyDTO = null;
+                    }
+                }catch (NumberFormatException e) {
+
+                    logger.info("companydto null");
+                    companyDTO = null;
+                }
                 Builder computerDTOBuilder = new Builder();
-                computerDTOBuilder.withName(name).withIntroduced(introducedStr).withDiscontinued(discontinuedStr)
-                .withCompanyId(companyIdStr);
+                computerDTOBuilder.withName(name)
+                .withIntroduced(introducedStr)
+                .withDiscontinued(discontinuedStr)
+                .withCompany(companyDTO);
                 Optional<Computer> optComp = ComputerService.INSTANCE
                         .createComputer(ComputerDTOMapper.INSTANCE.toComputer(computerDTOBuilder.build()));
                 if (optComp.isPresent()) {
