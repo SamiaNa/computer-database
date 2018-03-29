@@ -22,7 +22,8 @@ public enum ComputerDAOImpl implements ComputerDAO {
 
     INSTANCE;
 
-    private static String SELECT_ALL_JOIN = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id;";
+    private static String SELECT_ALL = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id;";
+    private static String SELECT_ORDER = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id";
     private static String SELECT_LIMIT = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id LIMIT ? OFFSET ?;";
     private static String SELECT_BY_ID_JOIN = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id = ? ;";
     private static String SELECT_BY_NAME = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE (computer.name LIKE ? OR company.name LIKE ?) LIMIT ? OFFSET ?;";
@@ -39,7 +40,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
     @Override
     public List<Computer> getAll() throws DAOException {
         try (Connection connection = connectionManager.open();
-                PreparedStatement stmt = connection.prepareStatement(SELECT_ALL_JOIN);) {
+                PreparedStatement stmt = connection.prepareStatement(SELECT_ALL);) {
             logger.debug("(getAll) Query : " + stmt.toString());
             ResultSet res = stmt.executeQuery();
             return computerMapper.createComputerListFromResultSet(res);
@@ -90,11 +91,45 @@ public enum ComputerDAOImpl implements ComputerDAO {
             ResultSet res = stmt.executeQuery();
             return computerMapper.createComputerListFromResultSet(res);
         } catch (SQLException | ClassNotFoundException e) {
-            logger.error("Exception in getByName({})", name, e);
+            logger.error("Exception in getByName({}, {}, {})", name, offset, limit, e);
             throw new DAOException(e);
         }
+
     }
 
+    @Override
+    public List<Computer> getByOrder(String orderCriteria, String order, int offset, int limit) throws DAOException {
+        try (Connection connection = connectionManager.open();
+                PreparedStatement stmt = connection.prepareStatement(SELECT_ORDER+" ORDER BY "+orderCriteria+" "+order+" LIMIT ? OFFSET ?;");) {
+            stmt.setInt(1, limit);
+            stmt.setInt(2, offset);
+            logger.info("(getByName) Query : " + stmt.toString());
+            ResultSet res = stmt.executeQuery();
+            return computerMapper.createComputerListFromResultSet(res);
+        } catch (SQLException | ClassNotFoundException e) {
+            logger.error("Exception in getByOrder({}, {}, {})", orderCriteria, offset, limit, e);
+            throw new DAOException(e);
+        }
+
+    }
+
+    @Override
+    public List<Computer> getByOrder(String orderCriteria, String order, String search, int offset, int limit) throws DAOException {
+        try (Connection connection = connectionManager.open();
+                PreparedStatement stmt = connection.prepareStatement(SELECT_ORDER + " WHERE (computer.name LIKE ? OR company.name LIKE ?) ORDER BY "+orderCriteria+" "+order+" LIMIT ? OFFSET ?;");) {
+            stmt.setString(1, "%" + search + "%");
+            stmt.setString(2, "%" + search + "%");
+            stmt.setInt(3, limit);
+            stmt.setInt(4, offset);
+            logger.info("(getByName) Query : " + stmt.toString());
+            ResultSet res = stmt.executeQuery();
+            return computerMapper.createComputerListFromResultSet(res);
+        } catch (SQLException | ClassNotFoundException e) {
+            logger.error("Exception in getByOrder({}, {}, {})", orderCriteria, offset, limit, e);
+            throw new DAOException(e);
+        }
+
+    }
     private void setDateOrNull(LocalDate d, PreparedStatement stmt, int position) throws DAOException {
         try {
             if (d == null) {
@@ -233,6 +268,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
             throw new DAOException(e);
         }
     }
+
 
 
 }

@@ -32,10 +32,9 @@
 				<form id="searchForm" action="Dashboard" method="GET"
 					class="form-inline">
 					<input type="search" id="searchbox" name="search"
-						class="form-control" placeholder="Search name" /> 
-						<input
-							type="submit" id="searchsubmit" name="submit"
-							value="Filter by name" class="btn btn-primary" />
+						class="form-control" placeholder="Search name" /> <input
+						type="submit" id="searchsubmit" name="submit"
+						value="Filter by name" class="btn btn-primary" />
 				</form>
 			</div>
 			<div class="pull-right">
@@ -65,12 +64,20 @@
 								class="fa fa-trash-o fa-lg"></i>
 						</a>
 					</span></th>
-					<th>Computer name</th>
-					<th>Introduced date</th>
+					<th>Computer name <mylib:orderBy page="${page}"
+							target="Dashboard" by="computer.name" search="${search}" />
+					</th>
+					<th>Introduced date 
+					<mylib:orderBy page="${page}"
+							target="Dashboard" by="computer.introduced" search="${search}" /></th>
 					<!-- Table header for Discontinued Date -->
-					<th>Discontinued date</th>
+					<th>Discontinued date
+					<mylib:orderBy page="${page}"
+							target="Dashboard" by="computer.discontinued" search="${search}" /></th>
 					<!-- Table header for Company -->
-					<th>Company</th>
+					<th>Company
+					<mylib:orderBy page="${page}"
+							target="Dashboard" by="company.name" search="${search}" /></th>
 
 				</tr>
 			</thead>
@@ -81,10 +88,8 @@
 
 				<c:forEach var="computer" items="${requestScope.page.DTOElements}">
 					<tr>
-						<td class="editMode">
-							<input type="checkbox" name="cb"
-								class="cb" value="${computer.id}"/>
-						</td>
+						<td class="editMode"><input type="checkbox" name="cb"
+							class="cb" value="${computer.id}" /></td>
 						<td><a href="EditComputer?id=${computer.id}" onclick="">
 								<c:out value="${computer.name}" />
 						</a></td>
@@ -102,17 +107,19 @@
 	<footer class="navbar-fixed-bottom">
 	<div class="container text-center">
 		<ul class="pagination">
-			<mylib:pagination page="${page}" search="${search}" target="Dashboard" />
+			<mylib:pagination page="${page}" search="${search}" by="${by}"
+				order="${order}" target="Dashboard" />
 		</ul>
 		<div class="btn-group btn-group-sm pull-right" role="group">
 
-			<form action="Dashboard?pageNumber=${page.number}&pageSize=10&search=${search}"
+			<form
+				action="Dashboard?pageNumber=${page.number}&pageSize=10&search=${search}&by=${by}&order=${order}"
 				method="post">
 				<button type="submit" class="btn btn-default">10</button>
 				<button type="submit" class="btn btn-default"
-					formaction="Dashboard?pageNumber=${page.number}&pageSize=50&search=${search}">50</button>
+					formaction="Dashboard?pageNumber=${page.number}&pageSize=50&search=${search}&by=${by}&order=${order}">50</button>
 				<button type="submit" class="btn btn-default"
-					formaction="Dashboard?pageNumber=${page.number}&pageSize=100&search=${search}">100</button>
+					formaction="Dashboard?pageNumber=${page.number}&pageSize=100&search=${search}&by=${by}&order=${order}">100</button>
 			</form>
 		</div>
 	</div>

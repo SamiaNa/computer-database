@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +40,7 @@ public class Dashboard extends HttpServlet {
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
      *      response)
      */
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -60,15 +62,35 @@ public class Dashboard extends HttpServlet {
                     logger.info("Page number = " + pageNumber + ", page size = " + pageSize);
                 } catch (NumberFormatException e) {
                     logger.error("Failed to parse " + pageNumberStr + " or " + pageSizeStr + " as an unsigned int");
-                    throw new ServletException(e);
+                    response.sendRedirect("static/views/404.jsp");
+                    return;
                 }
             }
             ComputerDTOPage computerPage = new ComputerDTOPage();
-            computerPage.getPage(pageNumber, pageSize);
+
             String search = request.getParameter("search");
-            if (search != null) {
+            String by = request.getParameter("by");
+            String order = request.getParameter("order");
+            if (StringUtils.isBlank(search)) {
+                if (StringUtils.isBlank(order)) {
+                    computerPage.getPage(pageNumber, pageSize);
+                }else {
+                    computerPage.getPageOrder(by, order, pageNumber, pageSize);
+                    request.setAttribute("order", order);
+                    request.setAttribute("search", search);
+                    request.setAttribute("by", by);
+                }
+            }else {
                 request.setAttribute("search", search);
-                computerPage.getPage(search, pageNumber, pageSize);
+                if (StringUtils.isBlank(order)) {
+                    computerPage.getPage(search, pageNumber, pageSize);
+                }else {
+                    computerPage.getPageOrder(by, order, search, pageNumber, pageSize);
+                    logger.info("page size : {}", computerPage.getDTOElements().size());;
+                    request.setAttribute("order", order);
+                    request.setAttribute("search", search);
+                    request.setAttribute("by", by);
+                }
             }
             logger.info(
                     "Successfully fetched page content (page number=" + pageNumber + " page size=" + pageSize + ")");

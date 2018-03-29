@@ -51,4 +51,10 @@ public interface ComputerDAO {
 
     List <Computer> getByName(String s, int offset, int limit) throws DAOException;
 
+
+    List<Computer> getByOrder(String orderCriteria, String order, int offset, int limit ) throws DAOException;
+
+    List<Computer> getByOrder(String orderCriteria, String order, String search, int offset, int limit)
+            throws DAOException;
+
 }

@@ -22,7 +22,7 @@ public enum ComputerService {
     public List<Computer> getComputerList() throws ServiceException {
         try {
             return computerDAO.getAll();
-        }catch(DAOException e) {
+        } catch (DAOException e) {
             logger.error("Exception in getComputerList()", e);
             throw new ServiceException(e);
         }
@@ -31,16 +31,33 @@ public enum ComputerService {
     public List<Computer> getComputerList(int offset, int size) throws ServiceException {
         try {
             return computerDAO.get(offset, size);
-        }catch(DAOException e) {
+        } catch (DAOException e) {
             logger.error("Exception in getComputerList({}, {})", offset, size, e);
             throw new ServiceException(e);
         }
     }
 
+    public List<Computer> getByOrder(String orderBy, String by, int offset, int size) throws ServiceException {
+        try {
+            return computerDAO.getByOrder(orderBy, by, offset, size);
+        } catch (DAOException e) {
+            logger.error("Exception in getByOrder({}, {})", orderBy, by,  e);
+            throw new ServiceException(e);
+        }
+    }
+
+    public List<Computer> getByOrder(String orderBy, String by, String search, int offset, int size) throws ServiceException {
+        try {
+            return computerDAO.getByOrder(orderBy, by, search, offset, size);
+        } catch (DAOException e) {
+            logger.error("Exception in getByOrder({}, {}, {})", orderBy, by, search, e);
+            throw new ServiceException(e);
+        }
+    }
     public List<Computer> getByName(String name, int offset, int size) throws ServiceException {
         try {
             return computerDAO.getByName(name, offset, size);
-        }catch(DAOException e) {
+        } catch (DAOException e) {
             logger.error("Exception in getComputerListByName({})", name, e);
             throw new ServiceException(e);
         }
@@ -49,7 +66,7 @@ public enum ComputerService {
     public Optional<Computer> getComputerById(Long computerId) throws ServiceException {
         try {
             return computerDAO.getComputerById(computerId);
-        }catch(DAOException e) {
+        } catch (DAOException e) {
             logger.error("Exception in getComptuerById({})", computerId, e);
             throw new ServiceException(e);
         }
@@ -62,7 +79,7 @@ public enum ComputerService {
             if (computerId.isPresent()) {
                 computer.setId(computerId.get());
                 return Optional.of(computer);
-            }else {
+            } else {
                 return Optional.empty();
             }
         } catch (DAOException e) {
@@ -71,11 +88,11 @@ public enum ComputerService {
         }
     }
 
-    public void updateComputer(Computer computer) throws ServiceException, ValidatorException   {
+    public void updateComputer(Computer computer) throws ServiceException, ValidatorException {
         computerValidator.checkComputer(computer);
         try {
             computerDAO.update(computer);
-        }catch (DAOException e) {
+        } catch (DAOException e) {
             logger.error("Exception in updateComputer({})", computer, e);
             throw new ServiceException(e);
         }
@@ -84,25 +101,26 @@ public enum ComputerService {
     public void deleteComputer(Long computerId) throws ServiceException {
         try {
             computerDAO.delete(computerId);
-        }catch(DAOException e) {
+        } catch (DAOException e) {
             logger.error("Exception in deleteComputer({})", computerId, e);
             throw new ServiceException(e);
         }
     }
 
-    public void deleteComputer (List<Long> computerIds) throws ServiceException {
+    public void deleteComputer(List<Long> computerIds) throws ServiceException {
         try {
             computerDAO.delete(computerIds);
-        }catch(DAOException e) {
+        } catch (DAOException e) {
             logger.error("Exception in deleteComputer({})", computerIds.toString());
             throw new ServiceException(e);
         }
 
     }
+
     public int count() throws ServiceException {
         try {
             return computerDAO.count();
-        }catch(DAOException e) {
+        } catch (DAOException e) {
             logger.error("Exception in count()", e);
             throw new ServiceException(e);
         }
@@ -111,7 +129,7 @@ public enum ComputerService {
     public int count(String name) throws ServiceException {
         try {
             return computerDAO.count(name);
-        }catch(DAOException e) {
+        } catch (DAOException e) {
             logger.error("Exception in count()", e);
             throw new ServiceException(e);
         }
