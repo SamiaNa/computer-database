@@ -23,6 +23,9 @@ public enum CompanyDAOImpl implements CompanyDAO {
     private final String SELECT_BY_NAME = "SELECT id, name FROM company WHERE name LIKE ?;";
     private final String SELECT_BY_ID = "SELECT id, name FROM company WHERE id = ?;";
     private final String COUNT = "SELECT COUNT(id) FROM company;";
+    private final String DELETE = "DELETE FROM company WHERE id = ?;";
+    private final String DELETE_COMPUTER = "DELETE FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE company.id = ?;";
+
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ConnectionManager connectionManager = ConnectionManager.INSTANCE;
@@ -104,4 +107,20 @@ public enum CompanyDAOImpl implements CompanyDAO {
             throw new DAOException(e);
         }
     }
+
+    /*public void delete(long id) throws DAOException{
+        try (Connection connection = connectionManager.open();
+                PreparedStatement stmt = connection.prepareStatement(COUNT);
+                AutoSetAutoCommit autoCommit = new AutoSetAutoCommit(connection, false);
+
+                ) {
+            logger.debug("(count) Query : " + stmt.toString());
+            ResultSet res = stmt.executeQuery();
+            res.next();
+            return res.getInt(1);
+        }catch (SQLException | ClassNotFoundException e) {
+            logger.error("Exception in count()", e);
+            throw new DAOException(e);
+        }
+    }*/
 }

@@ -268,7 +268,6 @@ public class UserInterface {
         Scanner scanner = new Scanner(System.in);
         startUI(scanner);
         scanner.close();
-
     }
 
 }

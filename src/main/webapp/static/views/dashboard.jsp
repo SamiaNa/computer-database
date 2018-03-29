@@ -21,7 +21,6 @@
 			Computer Database </a>
 	</div>
 	</header>
-
 	<section id="main">
 	<div class="container">
 		<h1 id="homeTitle">
@@ -29,7 +28,7 @@
 		</h1>
 		<div id="actions" class="form-horizontal">
 			<div class="pull-left">
-				<form id="searchForm" action="Dashboard" method="GET"
+				<form id="searchForm" action="Dashboard?pageNumber=${page.number}&pageSize=${page.size}search=${search}&by=${by}&order=${order}" method="GET"
 					class="form-inline">
 					<input type="search" id="searchbox" name="search"
 						class="form-control" placeholder="Search name" /> <input
@@ -78,7 +77,6 @@
 					<th>Company
 					<mylib:orderBy page="${page}"
 							target="Dashboard" by="company.name" search="${search}" /></th>
-
 				</tr>
 			</thead>
 
@@ -111,7 +109,6 @@
 				order="${order}" target="Dashboard" />
 		</ul>
 		<div class="btn-group btn-group-sm pull-right" role="group">
-
 			<form
 				action="Dashboard?pageNumber=${page.number}&pageSize=10&search=${search}&by=${by}&order=${order}"
 				method="post">
