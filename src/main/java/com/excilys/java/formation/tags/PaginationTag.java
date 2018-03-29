@@ -15,6 +15,8 @@ public class PaginationTag extends SimpleTagSupport{
     private Page page;
     private String target;
     private String search;
+    private String by;
+    private String order;
     private static Logger logger = LoggerFactory.getLogger(PaginationTag.class);
 
     public Page getPage() {
@@ -42,7 +44,7 @@ public class PaginationTag extends SimpleTagSupport{
     }
 
     public String getHref(int pageNumber, int pageSize) {
-        return "\"" + this.target + "?pageNumber=" + pageNumber + "&search=" + this.search +"&pageSize="+ pageSize +"\"";
+        return "\"" + this.target + "?pageNumber=" + pageNumber + "&by="+ this.by + "&order=" + this.order + "&search=" + this.search +"&pageSize="+ pageSize +"\"";
     }
     public void getPrev (JspWriter out) throws IOException {
         if (page.getNumber() > 1) {
@@ -55,13 +57,16 @@ public class PaginationTag extends SimpleTagSupport{
     }
 
     public void getPages(JspWriter out) throws IOException {
-        for (int i = 0; i < 4 ; i++) {
-            if (((page.getNumber() + i  <= page.getCount() / page.getSize()) && page.getCount() % page.getSize() == 0)
-                    || (page.getNumber() + i <= (page.getCount() /page.getSize()) + 1 && page.getCount() % page.getSize() != 0)){
+        logger.info("Number of pages  "+page.getNumberOfPages());
+        logger.info("page number "+page.getNumber());
+        logger.info("Page Size "+page.getSize());
+        for (int i = Math.max(1, page.getNumber() - 3); i <= Math.min(page.getNumber() + 3, page.getNumberOfPages()) ; i++) {
+            if ((( i  <= page.getCount() / page.getSize()) && page.getCount() % page.getSize() == 0)
+                    || ( i <= (page.getCount() /page.getSize()) + 1 && page.getCount() % page.getSize() != 0)){
                 out.write(new StringBuilder()
                         .append("<li><a href=")
-                        .append(getHref(page.getNumber() + i, page.getSize())+">")
-                        .append((i + page.getNumber())+" </a></li>")
+                        .append(getHref(i, page.getSize())+">")
+                        .append(i +" </a></li>")
                         .toString());
             }
         }
@@ -84,6 +89,22 @@ public class PaginationTag extends SimpleTagSupport{
         getPrev(out);
         getPages(out);
         getNext(out);
+    }
+
+    public String getBy() {
+        return by;
+    }
+
+    public void setBy(String by) {
+        this.by = by;
+    }
+
+    public String getOrder() {
+        return order;
+    }
+
+    public void setOrder(String order) {
+        this.order = order;
     }
 
 }

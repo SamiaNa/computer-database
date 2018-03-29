@@ -1,32 +1,39 @@
 <taglib>
-	<tlib-version>1.0</tlib-version>
-	<jsp-version>2.0</jsp-version>
-	<short-name>mylib</short-name>
-	<tag>
-		<name>link</name>
-		<tag-class>com.excilys.java.formation.tags.LinkTag</tag-class>
-		<body-content>empty</body-content>
-		<attribute>
-			<name>target</name>
-			<required>true</required>
-		</attribute>
-		<attribute>
-			<name>pageNumber</name>
-			<required>true</required>
-            <type>java.lang.Integer</type>
+    <tlib-version>1.0</tlib-version>
+    <jsp-version>2.0</jsp-version>
+    <short-name>mylib</short-name>
+    <tag>
+        <name>link</name>
+        <tag-class>com.excilys.java.formation.tags.LinkTag</tag-class>
+        <body-content>scriptless</body-content>
+        <attribute>
+            <name>target</name>
+            <required>true</required>
+        </attribute>
+        <attribute>
+            <name>page</name>
+            <required>true</required>
+            <type>com.excilys.java.formation.page.Page</type>
             <fragment>true</fragment>
-		</attribute>
-		<attribute>
-			<name>pageSize</name>
-			<required>true</required>
-            <type>java.lang.Integer</type>
+        </attribute>
+        <attribute>
+            <name>search</name>
             <fragment>true</fragment>
-		</attribute>
-	</tag>
-   
-   <tag>
+        </attribute>
+        <attribute>
+            <name>by</name>
+            <fragment>true</fragment>
+        </attribute>
+        <attribute>
+            <name>order</name>
+            <fragment>true</fragment>
+        </attribute>
+    </tag>
+
+    <tag>
         <name>pagination</name>
-        <tag-class>com.excilys.java.formation.tags.PaginationTag</tag-class>
+        <tag-class>com.excilys.java.formation.tags.PaginationTag
+        </tag-class>
         <body-content>empty</body-content>
         <attribute>
             <name>page</name>
@@ -38,9 +45,42 @@
             <name>target</name>
             <required>true</required>
         </attribute>
-         <attribute>
+        <attribute>
             <name>search</name>
             <fragment>true</fragment>
         </attribute>
-   </tag>
+        <attribute>
+            <name>by</name>
+            <fragment>true</fragment>
+        </attribute>
+        <attribute>
+            <name>order</name>
+            <fragment>true</fragment>
+        </attribute>
+    </tag>
+    
+    <tag>
+        <name>orderBy</name>
+            <tag-class>com.excilys.java.formation.tags.OrderByTag
+        </tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>page</name>
+            <required>true</required>
+            <type>com.excilys.java.formation.page.Page</type>
+            <fragment>true</fragment>
+        </attribute>
+        <attribute>
+            <name>target</name>
+            <required>true</required>
+        </attribute>
+        <attribute>
+            <name>search</name>
+            <fragment>true</fragment>
+        </attribute>
+        <attribute>
+            <name>by</name>
+            <fragment>true</fragment>
+        </attribute>
+    </tag>
 </taglib>

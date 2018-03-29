@@ -10,13 +10,12 @@ import org.slf4j.LoggerFactory;
 
 import com.excilys.java.formation.page.Page;
 
-public class LinkTag extends SimpleTagSupport {
+public class OrderByTag extends SimpleTagSupport {
 
     private String target;
     private String search;
     private Page page;
     private String by;
-    private String order;
     private static Logger logger = LoggerFactory.getLogger(LinkTag.class);
 
     public void setTarget(String target) {
@@ -39,15 +38,6 @@ public class LinkTag extends SimpleTagSupport {
         this.search = search;
     }
 
-    @Override
-    public void doTag() throws IOException {
-        JspWriter out = getJspContext().getOut();
-        String href = "\"" + this.target + "?pageNumber=" + this.page.getNumber() + "&by=" + this.by + "&order="+ this.order + "&search=" + this.search + "&pageSize="
-                + this.page.getSize() + "\"";
-        logger.info(href);
-        out.write(href);
-    }
-
     public String getBy() {
         return by;
     }
@@ -56,14 +46,17 @@ public class LinkTag extends SimpleTagSupport {
         this.by = by;
     }
 
-    public String getOrder() {
-        return order;
+    @Override
+    public void doTag() throws IOException {
+        JspWriter out = getJspContext().getOut();
+        String href = "<a href=\"" + this.target + "?pageNumber=" + this.page.getNumber() + "&by=" + this.by
+                + "&search=" + this.search;
+        String ascending = href + "&order=ASC&pageSize=" + this.page.getSize()
+        + "\"> <i class=\"fa fa-angle-up fa-lg\"></i></a>";
+        String descending = href + "&order=DESC&pageSize=" + this.page.getSize()
+        + "\"> <i class=\"fa fa-angle-down fa-lg\"></i></a>";
+        logger.info("{}, {}", ascending, descending);
+        out.write(ascending + descending);
     }
-
-    public void setOrder(String order) {
-        this.order = order;
-    }
-
-
 
 }
