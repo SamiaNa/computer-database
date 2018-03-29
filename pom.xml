@@ -26,13 +26,13 @@
         <log4j.version>1.2.17</log4j.version>
         <slf4j.version>1.7.25</slf4j.version>
         <logback.version>1.2.3</logback.version>
-        
+
 
         <!-- runtime -->
         <mysql.version>5.1.38</mysql.version>
         <myqsl-jdbc.version>8.0.8-dmr</myqsl-jdbc.version>
         <hikariCP.version>2.7.8</hikariCP.version>
-        
+
         <tomcat7.version>2.2</tomcat7.version>
         <tomcat-catalina.version>8.0.1</tomcat-catalina.version>
         <javax.servlet.version>2.5</javax.servlet.version>
@@ -41,7 +41,7 @@
         <javaee.version>8.0</javaee.version>
         <mojo.version>1.2.1</mojo.version>
         <sonar.version>7.0</sonar.version>
-
+        <apache-commons.version>3.7</apache-commons.version>
         <jacoco.version>0.8.1</jacoco.version>
         <jquery.version>3.3.1</jquery.version>
         <!-- maven -->
@@ -189,7 +189,7 @@
             <artifactId>HikariCP</artifactId>
             <version>${hikariCP.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-war-plugin</artifactId>
@@ -210,6 +210,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${apache-commons.version}</version>
+        </dependency>
+        <dependency>
+        
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
