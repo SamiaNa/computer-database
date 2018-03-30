@@ -30,6 +30,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
     private static String INSERT = "INSERT INTO computer (name, company_id, introduced, discontinued) VALUES (?, ?, ?, ?);";
     private static String UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?;";
     private static String DELETE = "DELETE FROM computer WHERE id = ?;";
+    private static String DELETE_BY_COMPANY = "DELETE FROM computer WHERE company_id = ?;";
     private static String COUNT = "SELECT COUNT(id) FROM computer";
     private static String COUNT_NAME = "SELECT COUNT(computer.id) FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name LIKE ? OR company.name LIKE ?;";
 
@@ -100,7 +101,8 @@ public enum ComputerDAOImpl implements ComputerDAO {
     @Override
     public List<Computer> getByOrder(String orderCriteria, String order, int offset, int limit) throws DAOException {
         try (Connection connection = connectionManager.open();
-                PreparedStatement stmt = connection.prepareStatement(SELECT_ORDER+" ORDER BY "+orderCriteria+" "+order+" LIMIT ? OFFSET ?;");) {
+                PreparedStatement stmt = connection.prepareStatement(
+                        SELECT_ORDER + " ORDER BY " + orderCriteria + " " + order + " LIMIT ? OFFSET ?;");) {
             stmt.setInt(1, limit);
             stmt.setInt(2, offset);
             logger.info("(getByName) Query : " + stmt.toString());
@@ -114,9 +116,12 @@ public enum ComputerDAOImpl implements ComputerDAO {
     }
 
     @Override
-    public List<Computer> getByOrder(String orderCriteria, String order, String search, int offset, int limit) throws DAOException {
+    public List<Computer> getByOrder(String orderCriteria, String order, String search, int offset, int limit)
+            throws DAOException {
         try (Connection connection = connectionManager.open();
-                PreparedStatement stmt = connection.prepareStatement(SELECT_ORDER + " WHERE (computer.name LIKE ? OR company.name LIKE ?) ORDER BY "+orderCriteria+" "+order+" LIMIT ? OFFSET ?;");) {
+                PreparedStatement stmt = connection.prepareStatement(
+                        SELECT_ORDER + " WHERE (computer.name LIKE ? OR company.name LIKE ?) ORDER BY " + orderCriteria
+                        + " " + order + " LIMIT ? OFFSET ?;");) {
             stmt.setString(1, "%" + search + "%");
             stmt.setString(2, "%" + search + "%");
             stmt.setInt(3, limit);
@@ -130,6 +135,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
         }
 
     }
+
     private void setDateOrNull(LocalDate d, PreparedStatement stmt, int position) throws DAOException {
         try {
             if (d == null) {
@@ -157,9 +163,9 @@ public enum ComputerDAOImpl implements ComputerDAO {
     }
 
     @Override
-    public Optional<Long> createComputer(Computer c) throws DAOException{
+    public Optional<Long> createComputer(Computer c) throws DAOException {
         try (Connection connection = connectionManager.open();
-                AutoSetAutoCommit autoCommit = new AutoSetAutoCommit(connection ,false);
+                AutoSetAutoCommit autoCommit = new AutoSetAutoCommit(connection, false);
                 AutoRollback autoRollback = new AutoRollback(connection);
                 PreparedStatement stmt = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)) {
             connection.setAutoCommit(false);
@@ -173,7 +179,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
             ResultSet res = stmt.getGeneratedKeys();
             if (res.next()) {
                 return Optional.of(res.getLong(1));
-            }else {
+            } else {
                 return Optional.empty();
             }
         } catch (SQLException | ClassNotFoundException e) {
@@ -185,7 +191,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
     @Override
     public void update(Computer c) throws DAOException {
         try (Connection connection = connectionManager.open();
-                AutoSetAutoCommit autoCommit = new AutoSetAutoCommit(connection ,false);
+                AutoSetAutoCommit autoCommit = new AutoSetAutoCommit(connection, false);
                 AutoRollback autoRollback = new AutoRollback(connection);
                 PreparedStatement stmt = connection.prepareStatement(UPDATE);) {
             stmt.setString(1, c.getName());
@@ -205,9 +211,9 @@ public enum ComputerDAOImpl implements ComputerDAO {
     @Override
     public void delete(long id) throws DAOException {
         try (Connection connection = connectionManager.open();
-                AutoSetAutoCommit autoCommit = new AutoSetAutoCommit(connection ,false);
+                AutoSetAutoCommit autoCommit = new AutoSetAutoCommit(connection, false);
                 AutoRollback autoRollback = new AutoRollback(connection);
-                PreparedStatement stmt = connection.prepareStatement(DELETE);){
+                PreparedStatement stmt = connection.prepareStatement(DELETE);) {
             stmt.setLong(1, id);
             logger.debug("(delete) Query : " + stmt.toString());
             stmt.executeUpdate();
@@ -218,11 +224,23 @@ public enum ComputerDAOImpl implements ComputerDAO {
         }
     }
 
-    public void delete(List<Long> ids) throws DAOException{
+    public void delete(Connection connection, long id) throws DAOException {
+        try (PreparedStatement stmt = connection.prepareStatement(DELETE_BY_COMPANY);) {
+            stmt.setLong(1, id);
+            logger.debug("(delete) Query : " + stmt.toString());
+            stmt.executeUpdate();
+        }catch (SQLException e) {
+            logger.error("Exception in delete({}, {})", connection, id);
+            throw new DAOException(e);
+        }
+
+    }
+
+    public void delete(List<Long> ids) throws DAOException {
         try (Connection connection = connectionManager.open();
-                AutoSetAutoCommit autoCommit = new AutoSetAutoCommit(connection ,false);
+                AutoSetAutoCommit autoCommit = new AutoSetAutoCommit(connection, false);
                 AutoRollback autoRollback = new AutoRollback(connection);
-                PreparedStatement stmt = connection.prepareStatement(DELETE)){
+                PreparedStatement stmt = connection.prepareStatement(DELETE)) {
             for (long id : ids) {
                 stmt.setLong(1, id);
                 logger.debug("(delete) Query : " + stmt.toString());
@@ -268,7 +286,5 @@ public enum ComputerDAOImpl implements ComputerDAO {
             throw new DAOException(e);
         }
     }
-
-
 
 }

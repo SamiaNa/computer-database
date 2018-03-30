@@ -14,6 +14,7 @@ import com.excilys.java.formation.mapper.ComputerDTOMapper;
 import com.excilys.java.formation.page.CompanyPage;
 import com.excilys.java.formation.page.ComputerPage;
 import com.excilys.java.formation.page.Page;
+import com.excilys.java.formation.page.PageException;
 import com.excilys.java.formation.persistence.implementations.DAOException;
 import com.excilys.java.formation.service.CompanyService;
 import com.excilys.java.formation.service.ComputerService;
@@ -39,7 +40,7 @@ public class UserInterface {
             }
         }
     }
-    private static void printPagedList(Scanner scanner, Page page) throws ValidatorException, ServiceException {
+    private static void printPagedList(Scanner scanner, Page page) throws ValidatorException, ServiceException, PageException {
         scanner.nextLine();
         page.getPage(1, PAGE_SIZE);
         while (true) {
@@ -65,8 +66,7 @@ public class UserInterface {
         }
     }
 
-    private static void findCompanyByName(Scanner scanner) throws ServiceException   {
-        CompanyService companyService = CompanyService.INSTANCE;
+    private static void findCompanyByName(Scanner scanner, CompanyService companyService ) throws ServiceException   {
         System.out.println("Enter name :");
         scanner.nextLine();
         List<Company> companies = companyService.getCompaniesByName(scanner.nextLine());
@@ -213,17 +213,30 @@ public class UserInterface {
             computerService.deleteComputer(computerId);
 
         } catch (InputMismatchException e) {
-            System.out.println("Only numbers are excepted as id");
+            System.out.println("Only numbers are accepted as id");
         }
     }
 
-    public static void startUI(Scanner scanner) throws ServiceException,  ValidatorException {
+    private static void deleteCompany(Scanner scanner, CompanyService companyService) throws ServiceException{
+        System.out.println("Enter id of company to delete :");
+        try {
+            Long companyId = scanner.nextLong();
+            companyService.delete(companyId);
+        }catch(InputMismatchException e) {
+            System.out.println("Only numbers are accepted as id");
+        }
+    }
+
+    public static void startUI(Scanner scanner) throws ServiceException,  ValidatorException, PageException {
         while (true) {
             System.out.println("Computer database application\n" + "Select operation:\n" + "1. List computers\n"
                     + "2. List companies\n" + "3. Show computer details (by id)\n" + "4. Create a computer\n"
-                    + "5. Update a computer\n" + "6. Delete a computer\n" + "7. Find company by name\n" + "8. Quit");
+                    + "5. Update a computer\n" + "6. Delete a computer\n" + "7. Find company by name\n"
+                    + "8. Delete company by id\n" + "9. Quit"
+                    );
 
             ComputerService computerService = ComputerService.INSTANCE;
+            CompanyService companyService = CompanyService.INSTANCE;
             int featureChoice = 0;
             try {
                 featureChoice = scanner.nextInt();
@@ -249,7 +262,10 @@ public class UserInterface {
                 deleteComputer(scanner, computerService);
                 break;
             case COMPANY_BY_NAME:
-                findCompanyByName(scanner);
+                findCompanyByName(scanner, companyService);
+                break;
+            case DELETE_COMPANY:
+                deleteCompany(scanner, companyService);
                 break;
             case EXIT:
                 System.out.println("Bye!");
@@ -264,7 +280,7 @@ public class UserInterface {
 
     }
 
-    public static void main(String[] args) throws ValidatorException, ServiceException {
+    public static void main(String[] args) throws ValidatorException, ServiceException, PageException {
         Scanner scanner = new Scanner(System.in);
         startUI(scanner);
         scanner.close();

@@ -52,4 +52,6 @@ public interface CompanyDAO {
      */
     int count() throws DAOException;
 
+    void delete (long id) throws DAOException;
+
 }
