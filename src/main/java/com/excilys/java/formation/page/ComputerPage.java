@@ -52,23 +52,26 @@ public class ComputerPage extends Page {
         this.elements = computerService.getByOrder(orderCriteria, order, search, offset, size);
     }
 
-    public void getPageHelper(int pageNumber, int pageSize) throws ServiceException {
+    public void getPageHelper(int pageNumber, int pageSize) throws ServiceException, PageException {
         this.size = pageSize;
         this.offset = super.offsetGetPage(pageNumber, count);
+        if (pageNumber > this.getNumberOfPages()) {
+            throw new PageException("Page "+pageNumber+" doesn't exist.");
+        }
         this.number = pageNumber;
-        logger.debug("Getting page " + pageNumber + " with page size=" + size);
 
+        logger.debug("Getting page " + this.number + " with page size=" + this.size);
     }
 
     @Override
-    public void getPage(int pageNumber, int pageSize) throws ValidatorException, ServiceException {
+    public void getPage(int pageNumber, int pageSize) throws ValidatorException, ServiceException, PageException {
         this.count = computerService.count();
         getPageHelper(pageNumber, pageSize);
         updateList();
     }
 
     @Override
-    public void getPage(String name, int pageNumber, int pageSize) throws ValidatorException, ServiceException {
+    public void getPage(String name, int pageNumber, int pageSize) throws ValidatorException, ServiceException, PageException {
         this.count = computerService.count(name);
         getPageHelper(pageNumber, pageSize);
         updateList(name);
@@ -77,7 +80,7 @@ public class ComputerPage extends Page {
 
     @Override
     public void getPageOrder(String orderCriteria, String order, int pageNumber, int pageSize)
-            throws ValidatorException, ServiceException {
+            throws ValidatorException, ServiceException, PageException {
         this.count = computerService.count();
         getPageHelper(pageNumber, pageSize);
         updateListOrderBy(orderCriteria, order);
@@ -86,7 +89,7 @@ public class ComputerPage extends Page {
 
     @Override
     public void getPageOrder(String orderCriteria, String order, String name, int pageNumber, int pageSize)
-            throws ValidatorException, ServiceException {
+            throws ValidatorException, ServiceException, PageException {
         this.count = computerService.count(name);
         getPageHelper(pageNumber, pageSize);
         updateListOrderBy(orderCriteria, order, name);

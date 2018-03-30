@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.java.formation.page.ComputerDTOPage;
+import com.excilys.java.formation.page.PageException;
 import com.excilys.java.formation.service.ComputerService;
 import com.excilys.java.formation.service.ServiceException;
 import com.excilys.java.formation.validator.ValidatorException;
@@ -54,7 +55,6 @@ public class Dashboard extends HttpServlet {
             if (pageNumberStr == null || pageSizeStr == null) {
                 pageNumber = 1;
                 pageSize = 10;
-
             } else {
                 try {
                     pageNumber = Integer.parseUnsignedInt(pageNumberStr);
@@ -67,7 +67,6 @@ public class Dashboard extends HttpServlet {
                 }
             }
             ComputerDTOPage computerPage = new ComputerDTOPage();
-
             String search = request.getParameter("search");
             String by = request.getParameter("by");
             String order = request.getParameter("order");
@@ -99,6 +98,10 @@ public class Dashboard extends HttpServlet {
         } catch (ServiceException | ValidatorException e) {
             logger.error("Exception in ComputerListServlet", e);
             throw new ServletException(e);
+        }  catch (PageException e) {
+            logger.error("Page doesn't exist", e);
+            response.sendRedirect("static/views/404.jsp");
+
         }
     }
 

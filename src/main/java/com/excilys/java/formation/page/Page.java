@@ -14,14 +14,16 @@ public abstract class Page {
     protected int number;
 
     protected final static int DEFAULT_SIZE = 10;
+
     private static Logger logger = LoggerFactory.getLogger(Page.class);
+
     public abstract void nextPage() throws ServiceException, ValidatorException;
 
     public abstract void prevPage() throws ServiceException, ValidatorException;
 
-    public abstract void getPage(int pageNumber, int pageSize) throws ServiceException, ValidatorException;
+    public abstract void getPage(int pageNumber, int pageSize) throws ServiceException, ValidatorException, PageException;
 
-    public abstract void getPage(String name, int pageNumber, int pageSize) throws ServiceException, ValidatorException;
+    public abstract void getPage(String name, int pageNumber, int pageSize) throws ServiceException, ValidatorException, PageException;
 
     public int getSize() {
         return size;
@@ -65,8 +67,8 @@ public abstract class Page {
         return count;
     }
 
-    public abstract void getPageOrder(String orderCriteria, String order, int pageNumber, int pageSize) throws ValidatorException, ServiceException ;
+    public abstract void getPageOrder(String orderCriteria, String order, int pageNumber, int pageSize) throws ValidatorException, ServiceException,  PageException;
 
-    public abstract void getPageOrder(String orderCriteria, String order, String search, int pageNumber, int pageSize) throws ValidatorException, ServiceException ;
+    public abstract void getPageOrder(String orderCriteria, String order, String search, int pageNumber, int pageSize) throws ValidatorException, ServiceException,  PageException;
 
 }
