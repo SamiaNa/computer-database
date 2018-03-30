@@ -14,7 +14,6 @@ import com.excilys.java.formation.mapper.ComputerDTOMapper;
 import com.excilys.java.formation.page.CompanyPage;
 import com.excilys.java.formation.page.ComputerPage;
 import com.excilys.java.formation.page.Page;
-import com.excilys.java.formation.page.PageException;
 import com.excilys.java.formation.persistence.implementations.DAOException;
 import com.excilys.java.formation.service.CompanyService;
 import com.excilys.java.formation.service.ComputerService;
@@ -40,7 +39,7 @@ public class UserInterface {
             }
         }
     }
-    private static void printPagedList(Scanner scanner, Page page) throws ValidatorException, ServiceException, PageException {
+    private static void printPagedList(Scanner scanner, Page page) throws ValidatorException, ServiceException {
         scanner.nextLine();
         page.getPage(1, PAGE_SIZE);
         while (true) {
@@ -227,7 +226,7 @@ public class UserInterface {
         }
     }
 
-    public static void startUI(Scanner scanner) throws ServiceException,  ValidatorException, PageException {
+    public static void startUI(Scanner scanner) throws ServiceException,  ValidatorException {
         while (true) {
             System.out.println("Computer database application\n" + "Select operation:\n" + "1. List computers\n"
                     + "2. List companies\n" + "3. Show computer details (by id)\n" + "4. Create a computer\n"
@@ -280,7 +279,7 @@ public class UserInterface {
 
     }
 
-    public static void main(String[] args) throws ValidatorException, ServiceException, PageException {
+    public static void main(String[] args) throws ValidatorException, ServiceException {
         Scanner scanner = new Scanner(System.in);
         startUI(scanner);
         scanner.close();

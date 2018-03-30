@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.java.formation.page.ComputerDTOPage;
-import com.excilys.java.formation.page.PageException;
 import com.excilys.java.formation.service.ComputerService;
 import com.excilys.java.formation.service.ServiceException;
 import com.excilys.java.formation.validator.ValidatorException;
@@ -95,11 +94,11 @@ public class Dashboard extends HttpServlet {
                     "Successfully fetched page content (page number=" + pageNumber + " page size=" + pageSize + ")");
             request.setAttribute("page", computerPage);
             rd.forward(request, response);
-        } catch (ServiceException | ValidatorException e) {
+        } catch (ServiceException e) {
             logger.error("Exception in ComputerListServlet", e);
             throw new ServletException(e);
-        }  catch (PageException e) {
-            logger.error("Page doesn't exist", e);
+        } catch (ValidatorException e) {
+            logger.error("Validator exception in doGet ", e);
             response.sendRedirect("static/views/404.jsp");
 
         }

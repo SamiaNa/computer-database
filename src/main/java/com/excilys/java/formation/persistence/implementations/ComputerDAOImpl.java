@@ -17,22 +17,32 @@ import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.mapper.ComputerMapper;
 import com.excilys.java.formation.persistence.interfaces.ComputerDAO;
+import com.excilys.java.formation.validator.ValidatorException;
 
 public enum ComputerDAOImpl implements ComputerDAO {
 
     INSTANCE;
 
-    private static String SELECT_ALL = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id;";
-    private static String SELECT_ORDER = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id";
-    private static String SELECT_LIMIT = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id LIMIT ? OFFSET ?;";
-    private static String SELECT_BY_ID_JOIN = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id = ? ;";
-    private static String SELECT_BY_NAME = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE (computer.name LIKE ? OR company.name LIKE ?) LIMIT ? OFFSET ?;";
-    private static String INSERT = "INSERT INTO computer (name, company_id, introduced, discontinued) VALUES (?, ?, ?, ?);";
-    private static String UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?;";
-    private static String DELETE = "DELETE FROM computer WHERE id = ?;";
-    private static String DELETE_BY_COMPANY = "DELETE FROM computer WHERE company_id = ?;";
-    private static String COUNT = "SELECT COUNT(id) FROM computer";
-    private static String COUNT_NAME = "SELECT COUNT(computer.id) FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name LIKE ? OR company.name LIKE ?;";
+    private static final String SELECT_ALL = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id;";
+    private static final String SELECT_ORDER = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id";
+    private static final String SELECT_LIMIT = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id LIMIT ? OFFSET ?;";
+    private static final String SELECT_BY_ID_JOIN = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id = ? ;";
+    private static final String SELECT_BY_NAME = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE (computer.name LIKE ? OR company.name LIKE ?) LIMIT ? OFFSET ?;";
+    private static final String INSERT = "INSERT INTO computer (name, company_id, introduced, discontinued) VALUES (?, ?, ?, ?);";
+    private static final String UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?;";
+    private static final String DELETE = "DELETE FROM computer WHERE id = ?;";
+    private static final String DELETE_BY_COMPANY = "DELETE FROM computer WHERE company_id = ?;";
+    private static final String COUNT = "SELECT COUNT(id) FROM computer";
+    private static final String COUNT_NAME = "SELECT COUNT(computer.id) FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name LIKE ? OR company.name LIKE ?;";
+
+    private static final String COMPUTER_ID = "idcomputer";
+    private static final String COMPUTER_NAME = "namecomputer";
+    private static final String COMPUTER_INTRO = "introcomputer";
+    private static final String COMPUTER_DISC = "disccomputer";
+    private static final String COMPUTER_COMPANY = "namecompany";
+
+    private static final String ASCENDING = "ASC";
+    private static final String DESCENDING = "DESC";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ComputerMapper computerMapper = ComputerMapper.INSTANCE;
@@ -99,10 +109,11 @@ public enum ComputerDAOImpl implements ComputerDAO {
     }
 
     @Override
-    public List<Computer> getByOrder(String orderCriteria, String order, int offset, int limit) throws DAOException {
+    public List<Computer> getByOrder(String orderCriteria, String order, int offset, int limit) throws DAOException, ValidatorException {
         try (Connection connection = connectionManager.open();
                 PreparedStatement stmt = connection.prepareStatement(
-                        SELECT_ORDER + " ORDER BY " + orderCriteria + " " + order + " LIMIT ? OFFSET ?;");) {
+                        SELECT_ORDER + " ORDER BY " + getColumnName(orderCriteria) + " " + order + " LIMIT ? OFFSET ?;");) {
+            checkOrder(order);
             stmt.setInt(1, limit);
             stmt.setInt(2, offset);
             logger.info("(getByName) Query : " + stmt.toString());
@@ -115,13 +126,42 @@ public enum ComputerDAOImpl implements ComputerDAO {
 
     }
 
+    private String getColumnName(String orderCriteria) throws DAOException, ValidatorException {
+        switch (orderCriteria) {
+        case COMPUTER_ID:
+            return "computer.id";
+        case COMPUTER_NAME:
+            return "computer.name";
+        case COMPUTER_INTRO:
+            return "computer.introduced";
+        case COMPUTER_DISC:
+            return "computer.discontinued";
+        case COMPUTER_COMPANY:
+            return "company.name";
+        default:
+            String message = "Unknown order criteria : "+orderCriteria;
+            logger.error(message);
+            throw new ValidatorException(message) ;
+        }
+    }
+
+    private void checkOrder(String order) throws ValidatorException {
+        if (!order.equalsIgnoreCase(ASCENDING) &&  !order.equalsIgnoreCase(DESCENDING)) {
+            String message = "Unknown parameter "+order;
+            logger.error(message);
+            throw new ValidatorException(message);
+        }
+
+    }
     @Override
     public List<Computer> getByOrder(String orderCriteria, String order, String search, int offset, int limit)
-            throws DAOException {
+            throws DAOException, ValidatorException {
+
         try (Connection connection = connectionManager.open();
                 PreparedStatement stmt = connection.prepareStatement(
-                        SELECT_ORDER + " WHERE (computer.name LIKE ? OR company.name LIKE ?) ORDER BY " + orderCriteria
+                        SELECT_ORDER + " WHERE (computer.name LIKE ? OR company.name LIKE ?) ORDER BY " + getColumnName(orderCriteria)
                         + " " + order + " LIMIT ? OFFSET ?;");) {
+            checkOrder(order);
             stmt.setString(1, "%" + search + "%");
             stmt.setString(2, "%" + search + "%");
             stmt.setInt(3, limit);
@@ -229,7 +269,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
             stmt.setLong(1, id);
             logger.debug("(delete) Query : " + stmt.toString());
             stmt.executeUpdate();
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             logger.error("Exception in delete({}, {})", connection, id);
             throw new DAOException(e);
         }

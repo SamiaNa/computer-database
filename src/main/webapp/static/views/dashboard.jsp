@@ -28,8 +28,9 @@
 		</h1>
 		<div id="actions" class="form-horizontal">
 			<div class="pull-left">
-				<form id="searchForm" action="Dashboard?pageNumber=${page.number}&pageSize=${page.size}search=${search}&by=${by}&order=${order}" method="GET"
-					class="form-inline">
+				<form id="searchForm"
+					action="Dashboard?pageNumber=${page.number}&pageSize=${page.size}search=${search}&by=${by}&order=${order}"
+					method="GET" class="form-inline">
 					<input type="search" id="searchbox" name="search"
 						class="form-control" placeholder="Search name" /> <input
 						type="submit" id="searchsubmit" name="submit"
@@ -60,23 +61,21 @@
 						type="checkbox" id="selectall" /> <span
 						style="vertical-align: top;"> - <a href="#"
 							id="deleteSelected" onclick="$.fn.deleteSelected();"> <i
-								class="fa fa-trash-o fa-lg"></i>
+								class="fa fa-trash-o fa-lg"> </i>
 						</a>
 					</span></th>
+					
 					<th>Computer name <mylib:orderBy page="${page}"
-							target="Dashboard" by="computer.name" search="${search}" />
+							target="Dashboard" by="namecomputer" search="${search}" />
 					</th>
-					<th>Introduced date 
-					<mylib:orderBy page="${page}"
-							target="Dashboard" by="computer.introduced" search="${search}" /></th>
+					<th>Introduced date <mylib:orderBy page="${page}"
+							target="Dashboard" by="introcomputer" search="${search}" /></th>
 					<!-- Table header for Discontinued Date -->
-					<th>Discontinued date
-					<mylib:orderBy page="${page}"
-							target="Dashboard" by="computer.discontinued" search="${search}" /></th>
+					<th>Discontinued date <mylib:orderBy page="${page}"
+							target="Dashboard" by="disccomputer" search="${search}" /></th>
 					<!-- Table header for Company -->
-					<th>Company
-					<mylib:orderBy page="${page}"
-							target="Dashboard" by="company.name" search="${search}" /></th>
+					<th>Company <mylib:orderBy page="${page}" target="Dashboard"
+							by="namecompany" search="${search}" /></th>
 				</tr>
 			</thead>
 

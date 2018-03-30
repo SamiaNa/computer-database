@@ -18,12 +18,12 @@ public enum ConnectionManager{
 
     public Connection open() throws SQLException, ClassNotFoundException {
         if (ds == null) {
-            Class.forName("com.mysql.cj.jdbc.Driver");
             ResourceBundle resources = ResourceBundle.getBundle(RESOURCE_PATH, Locale.getDefault());
             String url = resources.getString("url");
             String user = resources.getString("user");
             String pass = resources.getString("pass");
             int maxPoolSize = Integer.parseInt(resources.getString("maximumPoolSize"));
+            Class.forName(resources.getString("driver"));
             config.setJdbcUrl(url);
             config.setUsername(user);
             config.setPassword(pass);

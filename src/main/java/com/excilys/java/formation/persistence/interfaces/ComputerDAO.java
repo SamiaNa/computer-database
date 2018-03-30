@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.persistence.implementations.DAOException;
+import com.excilys.java.formation.validator.ValidatorException;
 
 public interface ComputerDAO {
 
@@ -52,9 +53,9 @@ public interface ComputerDAO {
     List <Computer> getByName(String s, int offset, int limit) throws DAOException;
 
 
-    List<Computer> getByOrder(String orderCriteria, String order, int offset, int limit ) throws DAOException;
+    List<Computer> getByOrder(String orderCriteria, String order, int offset, int limit ) throws DAOException, ValidatorException;
 
     List<Computer> getByOrder(String orderCriteria, String order, String search, int offset, int limit)
-            throws DAOException;
+            throws DAOException, ValidatorException;
 
 }

@@ -2,6 +2,7 @@ package com.excilys.java.formation.validator;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,12 @@ public enum ComputerValidator {
         if (name.trim().equals("") || name.equalsIgnoreCase("null")) {
             throw new ValidatorException("Name can't be an empty string or 'null' String");
         }
+        String patternStr = "^[\\wÀ-ÿ]+[\\wÀ-ÿ_\\-'\\+\\* \\.]+$";
+        if (!Pattern.matches(patternStr, patternStr)) {
+            throw new ValidatorException("Invalid name "+name);
+
+        }
+
     }
 
     public LocalDate getDate(String strDate) throws ValidatorException {

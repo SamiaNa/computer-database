@@ -1,5 +1,6 @@
 package com.excilys.java.formation.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,7 +38,7 @@ public enum ComputerService {
         }
     }
 
-    public List<Computer> getByOrder(String orderBy, String by, int offset, int size) throws ServiceException {
+    public List<Computer> getByOrder(String orderBy, String by, int offset, int size) throws ServiceException, ValidatorException {
         try {
             return computerDAO.getByOrder(orderBy, by, offset, size);
         } catch (DAOException e) {
@@ -46,20 +47,25 @@ public enum ComputerService {
         }
     }
 
-    public List<Computer> getByOrder(String orderBy, String by, String search, int offset, int size) throws ServiceException {
+    public List<Computer> getByOrder(String orderBy, String by, String name, int offset, int size) throws ServiceException, ValidatorException {
         try {
-            return computerDAO.getByOrder(orderBy, by, search, offset, size);
+            ComputerValidator.INSTANCE.checkName(name);
+            return computerDAO.getByOrder(orderBy, by, name, offset, size);
         } catch (DAOException e) {
-            logger.error("Exception in getByOrder({}, {}, {})", orderBy, by, search, e);
+            logger.error("Exception in getByOrder({}, {}, {})", orderBy, by, name, e);
             throw new ServiceException(e);
         }
     }
     public List<Computer> getByName(String name, int offset, int size) throws ServiceException {
         try {
+            ComputerValidator.INSTANCE.checkName(name);
             return computerDAO.getByName(name, offset, size);
         } catch (DAOException e) {
             logger.error("Exception in getComputerListByName({})", name, e);
             throw new ServiceException(e);
+        }catch (ValidatorException e) {
+            logger.error("Name validation error {} ", name, e);
+            return new ArrayList<>();
         }
     }
 
@@ -128,10 +134,14 @@ public enum ComputerService {
 
     public int count(String name) throws ServiceException {
         try {
+            ComputerValidator.INSTANCE.checkName(name);
             return computerDAO.count(name);
         } catch (DAOException e) {
             logger.error("Exception in count()", e);
             throw new ServiceException(e);
+        } catch (ValidatorException e) {
+            logger.error("Name validation error {} ", name, e);
+            return 0;
         }
     }
 
