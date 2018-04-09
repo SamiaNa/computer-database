@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -177,10 +178,9 @@ public class ComputerDAOImplTest{
         assertEquals(res.getString(6), "Dell");
     }
 
-    /**
     @Test
     void testCreateComputerInvalidError() throws DAOException, ClassNotFoundException, SQLException {
         Computer c = new Computer (500, "OrdiPBDate", LocalDate.parse("2010-01-02"), LocalDate.parse("2005-02-03"), new Company(150, null));
         Assertions.assertThrows(DAOException.class, () -> ComputerDAOImpl.INSTANCE.createComputer(c));
-    }*/
+    }
 }

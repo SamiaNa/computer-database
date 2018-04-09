@@ -109,10 +109,11 @@ public enum ComputerDAOImpl implements ComputerDAO {
     }
 
     @Override
-    public List<Computer> getByOrder(String orderCriteria, String order, int offset, int limit) throws DAOException, ValidatorException {
+    public List<Computer> getByOrder(String orderCriteria, String order, int offset, int limit)
+            throws DAOException, ValidatorException {
         try (Connection connection = connectionManager.open();
-                PreparedStatement stmt = connection.prepareStatement(
-                        SELECT_ORDER + " ORDER BY " + getColumnName(orderCriteria) + " " + order + " LIMIT ? OFFSET ?;");) {
+                PreparedStatement stmt = connection.prepareStatement(SELECT_ORDER + " ORDER BY "
+                        + getColumnName(orderCriteria) + " " + order + " LIMIT ? OFFSET ?;");) {
             checkOrder(order);
             stmt.setInt(1, limit);
             stmt.setInt(2, offset);
@@ -139,28 +140,29 @@ public enum ComputerDAOImpl implements ComputerDAO {
         case COMPUTER_COMPANY:
             return "company.name";
         default:
-            String message = "Unknown order criteria : "+orderCriteria;
+            String message = "Unknown order criteria : " + orderCriteria;
             logger.error(message);
-            throw new ValidatorException(message) ;
+            throw new ValidatorException(message);
         }
     }
 
     private void checkOrder(String order) throws ValidatorException {
-        if (!order.equalsIgnoreCase(ASCENDING) &&  !order.equalsIgnoreCase(DESCENDING)) {
-            String message = "Unknown parameter "+order;
+        if (!order.equalsIgnoreCase(ASCENDING) && !order.equalsIgnoreCase(DESCENDING)) {
+            String message = "Unknown parameter " + order;
             logger.error(message);
             throw new ValidatorException(message);
         }
 
     }
+
     @Override
     public List<Computer> getByOrder(String orderCriteria, String order, String search, int offset, int limit)
             throws DAOException, ValidatorException {
 
         try (Connection connection = connectionManager.open();
                 PreparedStatement stmt = connection.prepareStatement(
-                        SELECT_ORDER + " WHERE (computer.name LIKE ? OR company.name LIKE ?) ORDER BY " + getColumnName(orderCriteria)
-                        + " " + order + " LIMIT ? OFFSET ?;");) {
+                        SELECT_ORDER + " WHERE (computer.name LIKE ? OR company.name LIKE ?) ORDER BY "
+                                + getColumnName(orderCriteria) + " " + order + " LIMIT ? OFFSET ?;");) {
             checkOrder(order);
             stmt.setString(1, "%" + search + "%");
             stmt.setString(2, "%" + search + "%");
@@ -213,14 +215,15 @@ public enum ComputerDAOImpl implements ComputerDAO {
             setCompanyIdOrNull(c.getCompany(), stmt, 2);
             setDateOrNull(c.getIntroduced(), stmt, 3);
             setDateOrNull(c.getDiscontinued(), stmt, 4);
-            logger.debug("(createComputer) Query : {}" , stmt);
+            logger.debug("(createComputer) Query : {}", stmt);
             stmt.executeUpdate();
             autoRollback.commit();
-            ResultSet res = stmt.getGeneratedKeys();
-            if (res.next()) {
-                return Optional.of(res.getLong(1));
-            } else {
-                return Optional.empty();
+            try (ResultSet res = stmt.getGeneratedKeys()) {
+                if (res.next()) {
+                    return Optional.of(res.getLong(1));
+                } else {
+                    return Optional.empty();
+                }
             }
         } catch (SQLException | ClassNotFoundException e) {
             logger.error("Exception in createComptuer({})", c, e);
@@ -296,8 +299,9 @@ public enum ComputerDAOImpl implements ComputerDAO {
     @Override
     public int count() throws DAOException {
         try (Connection connection = connectionManager.open();
-                PreparedStatement stmt = connection.prepareStatement(COUNT);) {
-            ResultSet rSet = stmt.executeQuery();
+                PreparedStatement stmt = connection.prepareStatement(COUNT);
+                ResultSet rSet = stmt.executeQuery();) {
+
             logger.debug("(count) Query : {}", stmt);
             if (rSet.next()) {
                 return rSet.getInt(1);
@@ -316,11 +320,12 @@ public enum ComputerDAOImpl implements ComputerDAO {
             stmt.setString(1, "%" + name + "%");
             stmt.setString(2, "%" + name + "%");
             logger.debug("(count) Query : {}", stmt);
-            ResultSet rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return rSet.getInt(1);
+            try (ResultSet rSet = stmt.executeQuery()) {
+                if (rSet.next()) {
+                    return rSet.getInt(1);
+                }
+                return -1;
             }
-            return -1;
         } catch (SQLException | ClassNotFoundException e) {
             logger.error("Exception in count()", e);
             throw new DAOException(e);
