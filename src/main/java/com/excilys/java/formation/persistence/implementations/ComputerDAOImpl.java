@@ -258,7 +258,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
                 AutoRollback autoRollback = new AutoRollback(connection);
                 PreparedStatement stmt = connection.prepareStatement(DELETE);) {
             stmt.setLong(1, id);
-            logger.debug("(delete) Query : {}", stmt);
+            logger.debug("(delete) Query : {}",  stmt);
             stmt.executeUpdate();
             autoRollback.commit();
         } catch (SQLException | ClassNotFoundException e) {
@@ -270,7 +270,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
     public void delete(Connection connection, long id) throws DAOException {
         try (PreparedStatement stmt = connection.prepareStatement(DELETE_BY_COMPANY);) {
             stmt.setLong(1, id);
-            logger.debug("(delete) Query : {}", stmt);
+            logger.debug("(delete with connection) Query : {}", stmt);
             stmt.executeUpdate();
         } catch (SQLException e) {
             logger.error("Exception in delete({}, {})", connection, id);
@@ -286,7 +286,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
                 PreparedStatement stmt = connection.prepareStatement(DELETE)) {
             for (long id : ids) {
                 stmt.setLong(1, id);
-                logger.debug("(delete) Query : {}", stmt);
+                logger.debug("(delete list) Query : {}", stmt);
                 stmt.executeUpdate();
             }
             autoRollback.commit();

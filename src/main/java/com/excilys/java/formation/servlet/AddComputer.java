@@ -46,7 +46,11 @@ public class AddComputer extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        doPost(request, response);
+        try {
+            doPost(request, response);
+        } catch (ServletException | IOException e) {
+            response.sendRedirect("static/views/500.jsp");
+        }
     }
 
     /**
@@ -58,7 +62,8 @@ public class AddComputer extends HttpServlet {
             throws ServletException, IOException {
         RequestDispatcher rd = request.getRequestDispatcher("/static/views/addComputer.jsp");
         try {
-            List<CompanyDTO> companyList = CompanyDTOMapper.INSTANCE.toDTOList(CompanyService.INSTANCE.getCompanyList());
+            List<CompanyDTO> companyList = CompanyDTOMapper.INSTANCE
+                    .toDTOList(CompanyService.INSTANCE.getCompanyList());
             request.setAttribute("companyList", companyList);
         } catch (ServiceException e) {
             logger.error("Exception in addComputerServlet", e);
@@ -77,18 +82,16 @@ public class AddComputer extends HttpServlet {
                     logger.info("Add computer valeur id : {}", id);
                     if (id != 0) {
                         companyDTO.setId(id);
-                    }else {
+                    } else {
                         companyDTO = null;
                     }
-                }catch (NumberFormatException e) {
+                } catch (NumberFormatException e) {
 
                     logger.info("companydto null");
                     companyDTO = null;
                 }
                 Builder computerDTOBuilder = new Builder();
-                computerDTOBuilder.withName(name)
-                .withIntroduced(introducedStr)
-                .withDiscontinued(discontinuedStr)
+                computerDTOBuilder.withName(name).withIntroduced(introducedStr).withDiscontinued(discontinuedStr)
                 .withCompany(companyDTO);
                 Optional<Computer> optComp = ComputerService.INSTANCE
                         .createComputer(ComputerDTOMapper.INSTANCE.toComputer(computerDTOBuilder.build()));
