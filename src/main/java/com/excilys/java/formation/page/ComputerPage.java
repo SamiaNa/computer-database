@@ -29,33 +29,82 @@ public class ComputerPage extends Page {
         this.elements = new ArrayList<>();
     }
 
-    public void updateList() throws ValidatorException, ServiceException {
-        logger.debug("Updating computer list, page number = " + offset + ", page size=" + size);
+    public void updateList() throws ServiceException {
+        logger.debug("Updating computer list, page number = {}, page size = {}", offset, size);
         this.elements = computerService.getComputerList(offset, size);
+    }
+
+    public void updateList(String name) throws ServiceException {
+        logger.debug("Updating computer list, page number = {}, page size = {}, search = {}", offset, size, name);
+        this.elements = computerService.getByName(name, offset, size);
+    }
+
+    public void updateListOrderBy(String orderCriteria, String order) throws ValidatorException, ServiceException {
+        logger.debug("Updating computer list, page number = {}, page size = {}, order by = {}", offset, size,
+                orderCriteria);
+        this.elements = computerService.getByOrder(orderCriteria, order, offset, size);
+    }
+
+    public void updateListOrderBy(String orderCriteria, String order, String search)
+            throws ValidatorException, ServiceException {
+        logger.debug("Updating computer list, page number = {}, page size = {}, order by = {}, search = {}", offset,
+                size, orderCriteria, search);
+        this.elements = computerService.getByOrder(orderCriteria, order, search, offset, size);
+    }
+
+    public void getPageHelper(int pageNumber, int pageSize) {
+        this.size = pageSize;
+        this.offset = super.offsetGetPage(pageNumber, count);
+        this.number = Math.min(pageNumber, this.getNumberOfPages());
+        logger.debug("Getting page {} with page size={}", this.number, this.size);
     }
 
     @Override
     public void getPage(int pageNumber, int pageSize) throws ValidatorException, ServiceException {
         this.count = computerService.count();
-        this.size = pageSize;
-        this.offset = super.offsetGetPage(pageNumber, count);
-        this.number = pageNumber;
-        logger.debug("Getting page " + pageNumber + " with page size=" + size);
+        getPageHelper(pageNumber, pageSize);
         updateList();
+    }
+
+    @Override
+    public void getPage(String name, int pageNumber, int pageSize) throws ValidatorException, ServiceException {
+        this.count = computerService.count(name);
+        getPageHelper(pageNumber, pageSize);
+        updateList(name);
+        logger.info("List size {}", this.elements.size());
+    }
+
+    @Override
+    public void getPageOrder(String orderCriteria, String order, int pageNumber, int pageSize)
+            throws ValidatorException, ServiceException {
+        this.count = computerService.count();
+        getPageHelper(pageNumber, pageSize);
+        updateListOrderBy(orderCriteria, order);
+        logger.info("List size {}", this.elements.size());
+    }
+
+    @Override
+    public void getPageOrder(String orderCriteria, String order, String name, int pageNumber, int pageSize)
+            throws ValidatorException, ServiceException {
+        this.count = computerService.count(name);
+        getPageHelper(pageNumber, pageSize);
+        updateListOrderBy(orderCriteria, order, name);
+        logger.info("getPageOrder({}, {}, {}, {}, {}) List size {}", orderCriteria, order, name, pageNumber, pageSize,
+                this.elements.size());
     }
 
     @Override
     public void nextPage() throws ValidatorException, ServiceException {
         this.count = computerService.count();
         super.offsetNextPage(count);
-        logger.debug("Getting page " + offset + " with page size=" + size);
+        logger.debug("Getting page {} with page size = {}", offset, size);
         updateList();
     }
 
     @Override
     public void prevPage() throws ValidatorException, ServiceException {
         super.offsetPrevPage();
-        logger.debug("Getting page " + offset + " with page size=" + size);
+        logger.debug("Getting page {} with page size = {}", offset, size);
         updateList();
 
     }

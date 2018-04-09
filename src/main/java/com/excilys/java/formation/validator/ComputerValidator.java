@@ -30,7 +30,7 @@ public enum ComputerValidator {
             try {
                 date = LocalDate.parse(strDate);
             } catch (DateTimeParseException e) {
-                logger.error("Failed to parse " + strDate + " as a LocalDate in getDate");
+                logger.error("Failed to parse {} as a LocalDate in getDate", strDate);
                 throw new ValidatorException("Date format must be YYYY-MM-DD");
             }
         }
@@ -41,7 +41,7 @@ public enum ComputerValidator {
         LocalDate introduced = computer.getIntroduced();
         LocalDate discontinued = computer.getDiscontinued();
         if (introduced != null && discontinued != null && introduced.isAfter(discontinued)) {
-            logger.error("Validation error " + introduced + " is after " + discontinued + " in checkDates");
+            logger.error("Validation error {} is after {} in checkDates", introduced, discontinued);
             throw new ValidatorException("Date of introduction must be anterior to date of discontinuation");
         }
     }
@@ -52,7 +52,7 @@ public enum ComputerValidator {
             ComputerDAOImpl.INSTANCE.getComputerById(id);
             return id;
         } catch (NumberFormatException e) {
-            logger.error("Failed to parse " + strId + " as a Long in checkComputerId");
+            logger.error("Failed to parse {} as a Long in checkComputerId", strId);
             throw new ValidatorException("Only numbers are accepted as id");
         } catch (DAOException e) {
             logger.error("Exception in checkComputerId({})", strId, e);

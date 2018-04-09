@@ -1,5 +1,6 @@
 package com.excilys.java.formation.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.persistence.implementations.ComputerDAOImpl;
 import com.excilys.java.formation.persistence.implementations.DAOException;
-import com.excilys.java.formation.validator.CompanyValidator;
 import com.excilys.java.formation.validator.ComputerValidator;
 import com.excilys.java.formation.validator.ValidatorException;
 
@@ -19,12 +19,11 @@ public enum ComputerService {
     private static Logger logger = LoggerFactory.getLogger(ComputerService.class);
     private static final ComputerDAOImpl computerDAO = ComputerDAOImpl.INSTANCE;
     private static final ComputerValidator computerValidator = ComputerValidator.INSTANCE;
-    private static final CompanyValidator companyValidator = CompanyValidator.INSTANCE;
 
     public List<Computer> getComputerList() throws ServiceException {
         try {
             return computerDAO.getAll();
-        }catch(DAOException e) {
+        } catch (DAOException e) {
             logger.error("Exception in getComputerList()", e);
             throw new ServiceException(e);
         }
@@ -33,25 +32,47 @@ public enum ComputerService {
     public List<Computer> getComputerList(int offset, int size) throws ServiceException {
         try {
             return computerDAO.get(offset, size);
-        }catch(DAOException e) {
+        } catch (DAOException e) {
             logger.error("Exception in getComputerList({}, {})", offset, size, e);
             throw new ServiceException(e);
         }
     }
 
-    public List<Computer> getComputerListByName(String name) throws ServiceException {
+    public List<Computer> getByOrder(String orderBy, String by, int offset, int size) throws ServiceException, ValidatorException {
         try {
-            return computerDAO.getByName(name);
-        }catch(DAOException e) {
+            return computerDAO.getByOrder(orderBy, by, offset, size);
+        } catch (DAOException e) {
+            logger.error("Exception in getByOrder({}, {})", orderBy, by,  e);
+            throw new ServiceException(e);
+        }
+    }
+
+    public List<Computer> getByOrder(String orderBy, String by, String name, int offset, int size) throws ServiceException, ValidatorException {
+        try {
+            ComputerValidator.INSTANCE.checkName(name);
+            return computerDAO.getByOrder(orderBy, by, name, offset, size);
+        } catch (DAOException e) {
+            logger.error("Exception in getByOrder({}, {}, {})", orderBy, by, name, e);
+            throw new ServiceException(e);
+        }
+    }
+    public List<Computer> getByName(String name, int offset, int size) throws ServiceException {
+        try {
+            ComputerValidator.INSTANCE.checkName(name);
+            return computerDAO.getByName(name, offset, size);
+        } catch (DAOException e) {
             logger.error("Exception in getComputerListByName({})", name, e);
             throw new ServiceException(e);
+        }catch (ValidatorException e) {
+            logger.error("Name validation error {} ", name, e);
+            return new ArrayList<>();
         }
     }
 
     public Optional<Computer> getComputerById(Long computerId) throws ServiceException {
         try {
             return computerDAO.getComputerById(computerId);
-        }catch(DAOException e) {
+        } catch (DAOException e) {
             logger.error("Exception in getComptuerById({})", computerId, e);
             throw new ServiceException(e);
         }
@@ -64,7 +85,7 @@ public enum ComputerService {
             if (computerId.isPresent()) {
                 computer.setId(computerId.get());
                 return Optional.of(computer);
-            }else {
+            } else {
                 return Optional.empty();
             }
         } catch (DAOException e) {
@@ -73,31 +94,54 @@ public enum ComputerService {
         }
     }
 
-    public boolean updateComputer(Computer computer) throws ServiceException, ValidatorException   {
+    public void updateComputer(Computer computer) throws ServiceException, ValidatorException {
         computerValidator.checkComputer(computer);
         try {
-            return computerDAO.update(computer);
-        }catch (DAOException e) {
+            computerDAO.update(computer);
+        } catch (DAOException e) {
             logger.error("Exception in updateComputer({})", computer, e);
             throw new ServiceException(e);
         }
     }
 
-    public boolean deleteComputer(Long computerId) throws ServiceException {
+    public void deleteComputer(Long computerId) throws ServiceException {
         try {
-            return computerDAO.delete(computerId);
-        }catch(DAOException e) {
+            computerDAO.delete(computerId);
+        } catch (DAOException e) {
             logger.error("Exception in deleteComputer({})", computerId, e);
             throw new ServiceException(e);
         }
     }
 
+    public void deleteComputer(List<Long> computerIds) throws ServiceException {
+        try {
+            computerDAO.delete(computerIds);
+        } catch (DAOException e) {
+            logger.error("Exception in deleteComputer({})", computerIds);
+            throw new ServiceException(e);
+        }
+
+    }
+
     public int count() throws ServiceException {
         try {
             return computerDAO.count();
-        }catch(DAOException e) {
+        } catch (DAOException e) {
             logger.error("Exception in count()", e);
             throw new ServiceException(e);
+        }
+    }
+
+    public int count(String name) throws ServiceException {
+        try {
+            ComputerValidator.INSTANCE.checkName(name);
+            return computerDAO.count(name);
+        } catch (DAOException e) {
+            logger.error("Exception in count()", e);
+            throw new ServiceException(e);
+        } catch (ValidatorException e) {
+            logger.error("Name validation error {} ", name, e);
+            return 0;
         }
     }
 

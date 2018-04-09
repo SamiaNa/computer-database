@@ -18,10 +18,8 @@ public enum CompanyMapper {
 
     /**
      * Creates an ArrayList of companies from a ResultSet
-     *
-     * @param res
-     *            a resultSet obtained after a query on table company
-     * @return a ArrayList of companies
+     * @param a ResultSet of companies
+     * @return an list of companies
      * @throws SQLException
      */
     public List<Company> createCompanyListFromResultSet(ResultSet res) throws SQLException {
@@ -34,15 +32,11 @@ public enum CompanyMapper {
     }
 
     /**
-     * Creates a Company objet from a ResultSet
-     *
-     * @param res
-     *            a resultSet from a query on table company
-     * @param id
-     * @return a company
+     * Creates a Company object from a ResultSet
+     * @param a ResultSet of companies
+     * @return a Company
      * @throws SQLException
-     * @throws NoComputerInResultSetException
-     *             if the resultSet is empty
+     * @throws NoComputerInResultSetException if the resultSet is empty
      */
     public Company createCompanyFromResultSet(ResultSet res) throws SQLException, NoComputerInResultSetException {
         if (res.next()) {

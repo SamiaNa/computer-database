@@ -9,9 +9,9 @@ import org.slf4j.LoggerFactory;
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.service.CompanyService;
 import com.excilys.java.formation.service.ServiceException;
+import com.excilys.java.formation.validator.ValidatorException;
 
 public class CompanyPage extends Page {
-
 
     private List<Company> elements;
     private static final Logger logger = LoggerFactory.getLogger(CompanyPage.class);
@@ -27,11 +27,10 @@ public class CompanyPage extends Page {
         this.offset = pageNumber;
         this.size = size;
         this.elements = new ArrayList<>();
-
     }
 
     public void updateList() throws ServiceException  {
-        logger.debug("Updating company list, page number = "+offset+", page size="+size);
+        logger.debug("Updating company list, page number = {}, page size = {}", offset, size);
         this.elements = companyService.getCompanyList(offset, size);
     }
 
@@ -40,7 +39,7 @@ public class CompanyPage extends Page {
         this.count = companyService.count();
         this.size = pageSize;
         super.offsetGetPage(pageNumber, count);
-        logger.debug("Getting page "+pageNumber+" with page size="+size);
+        logger.debug("Getting page {} with page size= {}", pageNumber, size);
         updateList();
     }
 
@@ -48,14 +47,14 @@ public class CompanyPage extends Page {
     public void nextPage() throws ServiceException  {
         this.count = companyService.count();
         super.offsetNextPage(count);
-        logger.debug("Getting page "+offset+" with page size="+size);
+        logger.debug("Getting page {} with page size={}", offset, size);
         updateList();
     }
 
     @Override
     public void prevPage() throws ServiceException  {
         super.offsetPrevPage();
-        logger.debug("Getting page "+offset+" with page size="+size);
+        logger.debug("Getting page {} with page size={}", offset, size);
         updateList();
 
     }
@@ -64,6 +63,23 @@ public class CompanyPage extends Page {
         return this.elements;
     }
 
+    @Override
+    public void getPage(String name, int pageNumber, int pageSize) throws ServiceException, ValidatorException {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void getPageOrder(String orderCriteria, String order, int pageNumber, int pageSize) throws ValidatorException, ServiceException {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void getPageOrder(String orderCriteria, String order, String search, int pageNumber, int pageSize) throws ValidatorException, ServiceException {
+        // TODO Auto-generated method stub
+
+    }
 
 
 }

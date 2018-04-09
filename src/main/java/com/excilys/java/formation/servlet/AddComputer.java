@@ -27,15 +27,15 @@ import com.excilys.java.formation.validator.ValidatorException;
 /**
  * Servlet implementation class AddCompanyServlet
  */
-@WebServlet("/AddComputerServlet")
-public class AddComputerServlet extends HttpServlet {
+@WebServlet("/AddComputer")
+public class AddComputer extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static Logger logger = LoggerFactory.getLogger(AddComputerServlet.class);
+    private static Logger logger = LoggerFactory.getLogger(AddComputer.class);
 
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public AddComputerServlet() {
+    public AddComputer() {
         super();
     }
 

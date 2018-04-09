@@ -15,6 +15,11 @@ public enum CompanyDTOMapper {
     private static final Logger logger = LoggerFactory.getLogger(CompanyDTOMapper.class);
 
 
+    /**
+     * Maps a Company object to a CompanyDTO object
+     * @param a Company object
+     * @return a CompanyDTO object
+     */
     public CompanyDTO toDTO(Company company)   {
         CompanyDTO companyDTO = new CompanyDTO();
         if (company == null) {
@@ -23,10 +28,15 @@ public enum CompanyDTOMapper {
             companyDTO.setName(company.getName());
             companyDTO.setId(company.getId());
         }
-        logger.debug("Company " + company + " mapped to CompanyDTO " + companyDTO);
+        logger.debug("Company {}  mapped to CompanyDTO {}", company, companyDTO);
         return companyDTO;
     }
 
+    /**
+     * Maps a CompanyDTO object to a Company object
+     * @param a CompanyDTO object
+     * @return a Company object
+     */
     public Company toCompany(CompanyDTO companyDTO)   {
         if (companyDTO == null) {
             return null;
@@ -38,6 +48,11 @@ public enum CompanyDTOMapper {
         return company;
     }
 
+    /**
+     * Maps a CompanyDTO list to a Company list
+     * @param a list of CompanyDTO objects
+     * @return a list of Company objects
+     */
     public List<CompanyDTO> toDTOList(List<Company> companies)   {
         List<CompanyDTO> companiesDTO = new ArrayList<>();
         for (Company c : companies) {
@@ -46,6 +61,11 @@ public enum CompanyDTOMapper {
         return companiesDTO;
     }
 
+    /**
+     * Maps a Company list to a CompanyDTO list
+     * @param a list of Company objects
+     * @return a list of CompanyDTO objects
+     */
     public List<Company> toCompanyList(List<CompanyDTO> companiesDTO)   {
         List<Company> companies = new ArrayList<>();
         for (CompanyDTO c : companiesDTO) {

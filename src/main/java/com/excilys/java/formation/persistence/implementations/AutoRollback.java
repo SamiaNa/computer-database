@@ -8,7 +8,7 @@ public class AutoRollback implements AutoCloseable {
     private Connection conn;
     private boolean committed;
 
-    public AutoRollback(Connection conn) throws SQLException {
+    public AutoRollback(Connection conn) {
         this.conn = conn;
     }
 

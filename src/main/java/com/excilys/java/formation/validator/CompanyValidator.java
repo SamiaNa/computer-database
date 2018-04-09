@@ -27,7 +27,7 @@ public enum CompanyValidator {
             if (strId.equals("") || strId.equalsIgnoreCase("null")) {
                 return null;
             }
-            logger.error("Validator error : failed to parse "+strId+" as a Long");
+            logger.error("Validator error : failed to parse {} as a Long", strId);
             throw new ValidatorException("Only numbers are accepted as id");
         }
     }

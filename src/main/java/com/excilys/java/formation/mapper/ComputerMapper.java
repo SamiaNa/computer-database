@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.entities.Computer;
-import com.excilys.java.formation.entities.Computer.ComputerBuilder;
 import com.excilys.java.formation.persistence.implementations.DAOException;
 
 public enum ComputerMapper {
@@ -20,13 +19,12 @@ public enum ComputerMapper {
     INSTANCE;
     private static final Logger logger = LoggerFactory.getLogger(ComputerMapper.class);
 
-    public LocalDate toLocalDateOrNull(java.sql.Date date) {
-        if (date == null) {
-            return null;
-        }
-        return date.toLocalDate();
-    }
-
+    /**
+     * Creates a list of computer from a computer ResultSet
+     * @param a Computer ResultSet
+     * @return a list of computers
+     * @throws DAOException
+     */
     public List<Computer> createComputerListFromResultSet(ResultSet res) throws  DAOException {
         List<Computer> computers = new ArrayList<>();
         try {
@@ -40,24 +38,12 @@ public enum ComputerMapper {
         }
     }
 
-    public Computer createComputerAfterNext(ResultSet res) throws DAOException {
-        try {
-            Company company = new Company(res.getLong(5), res.getString(6));
-            if (res.wasNull()) {
-                company = null;
-            }
-            return new Computer.ComputerBuilder()
-                    .withId(res.getLong(1))
-                    .withName(res.getString(2))
-                    .withIntroduced(toLocalDateOrNull(res.getDate(3)))
-                    .withDiscontinued(toLocalDateOrNull(res.getDate(4)))
-                    .withCompany(company)
-                    .build();
-        } catch (SQLException e) {
-            logger.error("Exception in createComputerAfterNext", e);
-            throw new DAOException(e.getMessage());
-        }
-    }
+    /**
+     * Creates a computer from a ResultSet
+     * @param a ResultSet
+     * @return an Optional of Computer
+     * @throws DAOException
+     */
     public Optional<Computer> createComputerFromResultSet(ResultSet res) throws DAOException {
         try {
             if (res.next()) {
@@ -71,4 +57,35 @@ public enum ComputerMapper {
         }
     }
 
+    /**
+     * Creates a computer from a ResultSet after a call to next
+     * @param a ResultSet
+     * @return a Computer
+     * @throws DAOException
+     */
+    public Computer createComputerAfterNext(ResultSet res) throws DAOException {
+        try {
+            Company company = new Company(res.getLong(5), res.getString(6));
+            if (res.wasNull()) {
+                company = null;
+            }
+            return new Computer.ComputerBuilder()
+                    .withId(res.getLong(1))
+                    .withName(res.getString(2))
+                    .withIntroduced(stringToLocalDateOrNull(res.getDate(3)))
+                    .withDiscontinued(stringToLocalDateOrNull(res.getDate(4)))
+                    .withCompany(company)
+                    .build();
+        } catch (SQLException e) {
+            logger.error("Exception in createComputerAfterNext", e);
+            throw new DAOException(e.getMessage());
+        }
+    }
+
+    public LocalDate stringToLocalDateOrNull(java.sql.Date date) {
+        if (date == null) {
+            return null;
+        }
+        return date.toLocalDate();
+    }
 }

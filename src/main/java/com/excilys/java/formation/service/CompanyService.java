@@ -49,6 +49,14 @@ public enum CompanyService {
             logger.error("Exception in getCompaniesByName({})", name, e);
             throw new ServiceException(e);
         }
+    }
 
+    public void delete (long id) throws ServiceException {
+        try {
+            companyDAO.delete(id);
+        }catch (DAOException e) {
+            logger.error("Exception in delete ({})", id, e);
+            throw new ServiceException(e);
+        }
     }
 }

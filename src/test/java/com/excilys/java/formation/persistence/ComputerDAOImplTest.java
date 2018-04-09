@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +25,30 @@ import com.excilys.java.formation.persistence.implementations.DAOException;
 
 public class ComputerDAOImplTest{
 
+    private static final String CREATE_TABLE_COMPUTER = "  create table computer (" +
+            "    id                        bigint not null identity," +
+            "    name                      varchar(255)," +
+            "    introduced                date NULL," +
+            "    discontinued              date NULL," +
+            "    company_id                bigint default NULL," +
+            "    constraint pk_computer primary key (id));";
+
+    private static final String CREATE_TABLE_COMPANY = "  create table company (" +
+            "    id bigint not null identity," +
+            "    name varchar(255)," +
+            "    constraint pk_company primary key (id));";
+
+    private static final String ADD_CONSTRAINTS = "alter table computer add constraint fk_computer_company_1 "
+            + "foreign key (company_id) references company (id) on delete restrict on update restrict;";
+
+    private static final String COMPUTER_0 = "INSERT INTO computer (name, company_id, introduced, discontinued) VALUES ('HP1', 0, NULL, NULL);";
+    private static final String COMPUTER_1 = "INSERT INTO computer (name, company_id, introduced, discontinued) VALUES ('Ordi1', NULL, '1998-01-01' , NULL);";
+    private static final String COMPUTER_2 = "INSERT INTO computer (name, company_id, introduced, discontinued) values ('Apple IIe', 2,null,null);";
+
+    private static final String COMPANY_0 = "INSERT INTO company (name) VALUES ('HP');";
+    private static final String COMPANY_1 = "INSERT INTO company (name) VALUES ('Dell');";
+    private static final String COMPANY_2 = "INSERT INTO company (name) VALUES ('Apple');";
+
 
     @BeforeEach
     void before() throws SQLException, InstantiationException, IllegalAccessException,  ClassNotFoundException {
@@ -36,53 +61,42 @@ public class ComputerDAOImplTest{
     }
 
 
-    void createTableCompany() throws  SQLException, ClassNotFoundException{
+    void createTableCompany() throws SQLException, ClassNotFoundException{
         Connection conn = ConnectionManager.INSTANCE.open();
-        String sql = "  create table computer (" +
-                "    id                        bigint not null identity," +
-                "    name                      varchar(255)," +
-                "    introduced                date NULL," +
-                "    discontinued              date NULL," +
-                "    company_id                bigint default NULL," +
-                "    constraint pk_computer primary key (id));";
-        PreparedStatement stmt = conn.prepareStatement(sql);
+        PreparedStatement stmt = conn.prepareStatement(CREATE_TABLE_COMPUTER);
         stmt.executeUpdate();
         conn.close();
-
     }
 
 
     void createTableComputer() throws SQLException, ClassNotFoundException {
         Connection conn = ConnectionManager.INSTANCE.open();
-        String sql = "  create table company (" +
-                "    id bigint not null identity," +
-                "    name varchar(255)," +
-                "    constraint pk_company primary key (id));";
-        PreparedStatement stmt = conn.prepareStatement(sql);
+        PreparedStatement stmt = conn.prepareStatement(CREATE_TABLE_COMPANY);
         stmt.executeUpdate();
-        stmt = conn.prepareStatement("alter table computer add constraint fk_computer_company_1 foreign key (company_id) references company (id) on delete restrict on update restrict;");
+        stmt = conn.prepareStatement(ADD_CONSTRAINTS);
         stmt.executeUpdate();
         conn.close();
     }
 
     void populateTableComputer() throws SQLException, ClassNotFoundException {
         Connection conn = ConnectionManager.INSTANCE.open();
-        PreparedStatement stmt = conn.prepareStatement("INSERT INTO computer (name, company_id, introduced, discontinued) VALUES ('HP1', 0, NULL, NULL);");
+        PreparedStatement stmt = conn.prepareStatement(COMPUTER_0);
         stmt.executeUpdate();
-        stmt = conn.prepareStatement("INSERT INTO computer (name, company_id, introduced, discontinued) VALUES ('Ordi1', NULL, '1998-01-01' , NULL);");
+        stmt = conn.prepareStatement(COMPUTER_1);
         stmt.executeUpdate();
-        stmt = conn.prepareStatement("INSERT INTO computer (name, company_id, introduced, discontinued) values ('Apple IIe', 2,null,null);");
+        stmt = conn.prepareStatement(COMPUTER_2);
         stmt.executeUpdate();
         conn.close();
     }
 
     void populateTableCompany() throws SQLException, ClassNotFoundException {
         Connection conn = ConnectionManager.INSTANCE.open();
-        PreparedStatement stmt = conn.prepareStatement("INSERT INTO company (name) VALUES ('HP');");
+        PreparedStatement stmt = conn.prepareStatement(COMPANY_0);
         stmt.executeUpdate();
-        stmt = conn.prepareStatement("INSERT INTO company (name) VALUES ('Dell');");
+        stmt = conn.prepareStatement(COMPANY_1);
         stmt.executeUpdate();
-        stmt = conn.prepareStatement("INSERT INTO company (name) VALUES ('Apple');");
+
+        stmt = conn.prepareStatement(COMPANY_2);
         stmt.executeUpdate();
         conn.close();
 
@@ -99,7 +113,7 @@ public class ComputerDAOImplTest{
 
 
     @Test
-    void getAllTest() throws DAOException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+    void testGetAll() throws DAOException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
         List<Computer> computers = ComputerDAOImpl.INSTANCE.getAll();
         assertEquals(computers.size(), 3);
         Computer comp0 = computers.get(0);
@@ -113,14 +127,14 @@ public class ComputerDAOImplTest{
 
 
     @Test
-    void getComputerByIdTest() throws InstantiationException, IllegalAccessException, DAOException, SQLException {
+    void testGetComputerByValidId() throws DAOException {
         Optional<Computer> computerOpt = ComputerDAOImpl.INSTANCE.getComputerById(-1);
         assertFalse(computerOpt.isPresent());
+    }
 
-        computerOpt = ComputerDAOImpl.INSTANCE.getComputerById(10);
-        assertFalse(computerOpt.isPresent());
-
-        computerOpt = ComputerDAOImpl.INSTANCE.getComputerById(2);
+    @Test
+    void testGetComputerByInvalidId() throws DAOException {
+        Optional<Computer> computerOpt = ComputerDAOImpl.INSTANCE.getComputerById(2);
         assertTrue(computerOpt.isPresent());
         Computer computer = computerOpt.get();
         assertEquals(computer.getName(), "Apple IIe");
@@ -129,9 +143,8 @@ public class ComputerDAOImplTest{
         assertEquals(computer.getCompany().getName(), "Apple");
     }
 
-
     @Test
-    void createComputerTest () throws  DAOException, SQLException, ClassNotFoundException{
+    void testCreateComputerValid () throws  DAOException, SQLException, ClassNotFoundException{
         Computer c0 = new Computer ("Ordi1", null, null, new Company(1, null));
         Optional<Long> id = ComputerDAOImpl.INSTANCE.createComputer(c0);
         Connection conn = ConnectionManager.INSTANCE.open();
@@ -145,7 +158,29 @@ public class ComputerDAOImplTest{
         assertEquals(res.getDate(4), c0.getDiscontinued());
         assertEquals(res.getLong(5), c0.getCompany().getId());
         assertEquals(res.getString(6), "Dell");
-
     }
 
+    @Test
+    void testCreateComputerInvalid() throws DAOException, ClassNotFoundException, SQLException {
+        Computer c = new Computer (500, "OrdiPBDate", LocalDate.parse("2010-01-02"), LocalDate.parse("2005-02-03"), new Company(1, null));
+        Optional<Long> id = ComputerDAOImpl.INSTANCE.createComputer(c);
+        Connection conn = ConnectionManager.INSTANCE.open();
+        PreparedStatement stmt = conn.prepareStatement("SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE id = ?");
+        stmt.setLong(1, id.get());
+        ResultSet res = stmt.executeQuery();
+        assertTrue(res.next());
+        assertEquals(Optional.of(res.getLong(1)), id);
+        assertEquals(res.getString(2), c.getName());
+        assertEquals(res.getDate(3).toLocalDate(), c.getIntroduced());
+        assertEquals(res.getDate(4).toLocalDate(), c.getDiscontinued());
+        assertEquals(res.getLong(5), c.getCompany().getId());
+        assertEquals(res.getString(6), "Dell");
+    }
+
+    /**
+    @Test
+    void testCreateComputerInvalidError() throws DAOException, ClassNotFoundException, SQLException {
+        Computer c = new Computer (500, "OrdiPBDate", LocalDate.parse("2010-01-02"), LocalDate.parse("2005-02-03"), new Company(150, null));
+        Assertions.assertThrows(DAOException.class, () -> ComputerDAOImpl.INSTANCE.createComputer(c));
+    }*/
 }

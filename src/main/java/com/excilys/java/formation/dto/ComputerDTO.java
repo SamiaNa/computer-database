@@ -42,9 +42,10 @@ public class ComputerDTO {
         return this.company;
     }
 
-    public void setCompany (CompanyDTO company) {
+    public void setCompany(CompanyDTO company) {
         this.company = company;
     }
+
     public void setId(long id) {
         this.id = id;
     }
@@ -80,7 +81,7 @@ public class ComputerDTO {
         StringBuilder str = new StringBuilder();
         str.append("Id=").append(this.id).append(", name=").append(this.name).append(", introduced=")
         .append(this.introduced).append(", discontinued=").append(this.discontinued).append(", company= ")
-        .append(this.company==null?"null":this.company.toString());
+        .append(this.company == null ? "null" : this.company.toString());
         return str.toString();
     }
 
@@ -92,7 +93,7 @@ public class ComputerDTO {
         private String discontinued;
         private CompanyDTO company;
 
-        public Builder withName(String name)  {
+        public Builder withName(String name) {
             this.name = name;
             return this;
         }
@@ -131,7 +132,7 @@ public class ComputerDTO {
             StringBuilder str = new StringBuilder();
             str.append("Id=").append(this.id).append(", name=").append(this.name).append(", introduced=")
             .append(this.introduced).append(", discontinued=").append(this.discontinued).append(", company= ")
-            .append(this.company==null?"null":this.company.toString());
+            .append(this.company == null ? "null" : this.company.toString());
             return str.toString();
         }
 
