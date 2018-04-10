@@ -6,6 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,9 +20,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.hsqldb.cmdline.SqlFile;
+import org.hsqldb.cmdline.SqlToolError;
+import org.hsqldb.persist.HsqlDatabaseProperties;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.entities.Computer;
@@ -28,91 +37,20 @@ import com.excilys.java.formation.persistence.implementations.DAOException;
 
 public class ComputerDAOImplTest{
 
-    private static final String CREATE_TABLE_COMPUTER = "  create table computer (" +
-            "    id                        bigint not null identity," +
-            "    name                      varchar(255)," +
-            "    introduced                date NULL," +
-            "    discontinued              date NULL," +
-            "    company_id                bigint default NULL," +
-            "    constraint pk_computer primary key (id));";
 
-    private static final String CREATE_TABLE_COMPANY = "  create table company (" +
-            "    id bigint not null identity," +
-            "    name varchar(255)," +
-            "    constraint pk_company primary key (id));";
-
-    private static final String ADD_CONSTRAINTS = "alter table computer add constraint fk_computer_company_1 "
-            + "foreign key (company_id) references company (id) on delete restrict on update restrict;";
-
-    private static final String COMPUTER_0 = "INSERT INTO computer (name, company_id, introduced, discontinued) VALUES ('HP1', 0, NULL, NULL);";
-    private static final String COMPUTER_1 = "INSERT INTO computer (name, company_id, introduced, discontinued) VALUES ('Ordi1', NULL, '1998-01-01' , NULL);";
-    private static final String COMPUTER_2 = "INSERT INTO computer (name, company_id, introduced, discontinued) values ('Apple IIe', 2,null,null);";
-
-    private static final String COMPANY_0 = "INSERT INTO company (name) VALUES ('HP');";
-    private static final String COMPANY_1 = "INSERT INTO company (name) VALUES ('Dell');";
-    private static final String COMPANY_2 = "INSERT INTO company (name) VALUES ('Apple');";
-
-
+    private static Logger logger = LoggerFactory.getLogger(ComputerDAOImplTest.class);
     @BeforeEach
-    void before() throws SQLException, InstantiationException, IllegalAccessException,  ClassNotFoundException {
+    void before() throws SQLException, InstantiationException, IllegalAccessException,  ClassNotFoundException, IOException, SqlToolError {
         Class.forName("org.hsqldb.jdbcDriver").newInstance();
-        destroyTables();
-        createTableCompany();
-        createTableComputer();
-        populateTableCompany();
-        populateTableComputer();
-    }
-
-
-    void createTableCompany() throws SQLException, ClassNotFoundException{
-        Connection conn = ConnectionManager.INSTANCE.open();
-        PreparedStatement stmt = conn.prepareStatement(CREATE_TABLE_COMPUTER);
-        stmt.executeUpdate();
-        conn.close();
-    }
-
-
-    void createTableComputer() throws SQLException, ClassNotFoundException {
-        Connection conn = ConnectionManager.INSTANCE.open();
-        PreparedStatement stmt = conn.prepareStatement(CREATE_TABLE_COMPANY);
-        stmt.executeUpdate();
-        stmt = conn.prepareStatement(ADD_CONSTRAINTS);
-        stmt.executeUpdate();
-        conn.close();
-    }
-
-    void populateTableComputer() throws SQLException, ClassNotFoundException {
-        Connection conn = ConnectionManager.INSTANCE.open();
-        PreparedStatement stmt = conn.prepareStatement(COMPUTER_0);
-        stmt.executeUpdate();
-        stmt = conn.prepareStatement(COMPUTER_1);
-        stmt.executeUpdate();
-        stmt = conn.prepareStatement(COMPUTER_2);
-        stmt.executeUpdate();
-        conn.close();
-    }
-
-    void populateTableCompany() throws SQLException, ClassNotFoundException {
-        Connection conn = ConnectionManager.INSTANCE.open();
-        PreparedStatement stmt = conn.prepareStatement(COMPANY_0);
-        stmt.executeUpdate();
-        stmt = conn.prepareStatement(COMPANY_1);
-        stmt.executeUpdate();
-
-        stmt = conn.prepareStatement(COMPANY_2);
-        stmt.executeUpdate();
-        conn.close();
+        Connection connection = ConnectionManager.INSTANCE.open();
+        InputStream inputStream = HsqlDatabaseProperties.class.getResourceAsStream("/hsqldb_script.sql");
+        SqlFile sqlFile = new SqlFile(new InputStreamReader(inputStream), "init", System.out, "UTF-8", false,
+                new File("."));
+        sqlFile.setConnection(connection);
+        sqlFile.execute();
 
     }
 
-    void destroyTables() throws SQLException, ClassNotFoundException {
-        Connection conn = ConnectionManager.INSTANCE.open();
-        PreparedStatement stmt = conn.prepareStatement("drop table if exists computer;");
-        stmt.executeUpdate();
-        stmt = conn.prepareStatement("drop table if exists company;");
-        stmt.executeUpdate();
-        conn.close();
-    }
 
 
     @Test
