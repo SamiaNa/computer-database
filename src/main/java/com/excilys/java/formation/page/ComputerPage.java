@@ -3,6 +3,7 @@ package com.excilys.java.formation.page;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,33 +30,98 @@ public class ComputerPage extends Page {
         this.elements = new ArrayList<>();
     }
 
-    public void updateList() throws ValidatorException, ServiceException {
-        logger.debug("Updating computer list, page number = " + offset + ", page size=" + size);
+    public void updateList() throws ServiceException {
+        logger.debug("Updating computer list, page number = {}, page size = {}", offset, size);
         this.elements = computerService.getComputerList(offset, size);
+    }
+
+    public void updateList(String name) throws ServiceException {
+        logger.debug("Updating computer list, page number = {}, page size = {}, search = {}", offset, size, name);
+        this.elements = computerService.getByName(name, offset, size);
+    }
+
+    public void updateListOrderBy(String orderCriteria, String order) throws ValidatorException, ServiceException {
+        logger.debug("Updating computer list, page number = {}, page size = {}, order by = {}", offset, size,
+                orderCriteria);
+        this.elements = computerService.getByOrder(orderCriteria, order, offset, size);
+    }
+
+    public void updateListOrderBy(String orderCriteria, String order, String search)
+            throws ValidatorException, ServiceException {
+        logger.debug("Updating computer list, page number = {}, page size = {}, order by = {}, search = {}", offset,
+                size, orderCriteria, search);
+        this.elements = computerService.getByOrder(orderCriteria, order, search, offset, size);
+    }
+
+    public void getPageHelper(int pageNumber, int pageSize) {
+        this.size = pageSize;
+        this.offset = super.offsetGetPage(pageNumber, count);
+        this.number = Math.min(pageNumber, this.getNumberOfPages());
+        logger.debug("Getting page {} with page size={}", this.number, this.size);
     }
 
     @Override
     public void getPage(int pageNumber, int pageSize) throws ValidatorException, ServiceException {
         this.count = computerService.count();
-        this.size = pageSize;
-        this.offset = super.offsetGetPage(pageNumber, count);
-        this.number = pageNumber;
-        logger.debug("Getting page " + pageNumber + " with page size=" + size);
+        getPageHelper(pageNumber, pageSize);
         updateList();
+    }
+
+    public void getPage(String name, int pageNumber, int pageSize) throws ValidatorException, ServiceException {
+        this.count = computerService.count(name);
+        getPageHelper(pageNumber, pageSize);
+        updateList(name);
+        logger.info("List size {}", this.elements.size());
+    }
+
+    public void getPageOrder(String orderCriteria, String order, int pageNumber, int pageSize)
+            throws ValidatorException, ServiceException {
+        this.count = computerService.count();
+        getPageHelper(pageNumber, pageSize);
+        updateListOrderBy(orderCriteria, order);
+        logger.info("List size {}", this.elements.size());
+    }
+
+    public void getPageOrder(String orderCriteria, String order, String name, int pageNumber, int pageSize)
+            throws ValidatorException, ServiceException {
+        this.count = computerService.count(name);
+        getPageHelper(pageNumber, pageSize);
+        updateListOrderBy(orderCriteria, order, name);
+        logger.info("getPageOrder({}, {}, {}, {}, {}) List size {}", orderCriteria, order, name, pageNumber, pageSize,
+                this.elements.size());
+    }
+
+    @Override
+    public void getPage(String orderCriteria, String order, String name, int pageNumber, int pageSize) throws ValidatorException, ServiceException {
+        this.number = pageNumber;
+        this.size = pageSize;
+        if (StringUtils.isBlank(name)) {
+            if (StringUtils.isBlank(order)) {
+                getPage(pageNumber, pageSize);
+            } else {
+                getPageOrder(orderCriteria, order, pageNumber, pageSize);
+            }
+        } else {
+            if (StringUtils.isBlank(order)) {
+                getPage(name, pageNumber, pageSize);
+            } else {
+                getPageOrder(orderCriteria, order, name, pageNumber, pageSize);
+            }
+        }
     }
 
     @Override
     public void nextPage() throws ValidatorException, ServiceException {
         this.count = computerService.count();
         super.offsetNextPage(count);
-        logger.debug("Getting page " + offset + " with page size=" + size);
+        logger.debug("Getting page {} with page size = {}", offset, size);
         updateList();
     }
 
     @Override
     public void prevPage() throws ValidatorException, ServiceException {
         super.offsetPrevPage();
-        logger.debug("Getting page " + offset + " with page size=" + size);
+        logger.debug("Getting page {} with page size = {}", offset, size);
         updateList();
 
     }

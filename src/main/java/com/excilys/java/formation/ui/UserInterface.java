@@ -65,8 +65,7 @@ public class UserInterface {
         }
     }
 
-    private static void findCompanyByName(Scanner scanner) throws ServiceException   {
-        CompanyService companyService = CompanyService.INSTANCE;
+    private static void findCompanyByName(Scanner scanner, CompanyService companyService ) throws ServiceException   {
         System.out.println("Enter name :");
         scanner.nextLine();
         List<Company> companies = companyService.getCompaniesByName(scanner.nextLine());
@@ -174,26 +173,29 @@ public class UserInterface {
                 System.out.println("Enter new date of discontinuation");
                 computerDTO.setDiscontinued(scanner.nextLine());
             }
-            if (updateAttribute("company id", String.valueOf(computerDTO.getCompany().getId()), scanner)) {
+            CompanyDTO companyDTO = computerDTO.getCompany();
+            String companyIdStr;
+            if (companyDTO == null) {
+                companyIdStr = "null";
+            }else {
+                companyIdStr = String.valueOf(computerDTO.getCompany().getId());
+            }
+            if (updateAttribute("company id", companyIdStr, scanner)) {
                 System.out.println("Enter company id");
-                String companyIdStr = scanner.nextLine();
-                CompanyDTO companyDTO = computerDTO.getCompany();
-
+                companyIdStr = scanner.nextLine();
+                companyDTO = computerDTO.getCompany();
                 try {
                     companyDTO.setId(Long.parseUnsignedLong(companyIdStr));
-                }catch (NumberFormatException e) {
+                }catch (NumberFormatException | NullPointerException e) {
                     companyDTO = null;
                 }
-                companyDTO.setId(scanner.nextLong());
                 computerDTO.setCompany(companyDTO);
             }
-            if (computerService.updateComputer(ComputerDTOMapper.INSTANCE.toComputer(computerDTO))) {
-                System.out.println("Successful update");
-            } else {
-                System.out.println("Error : update not taken into account");
-            }}catch (ValidatorException e) {
-                System.out.println(e.getMessage());
-            }
+            computerService.updateComputer(ComputerDTOMapper.INSTANCE.toComputer(computerDTO));
+
+        }catch (ValidatorException e) {
+            System.out.println(e.getMessage());
+        }
 
     }
 
@@ -212,14 +214,20 @@ public class UserInterface {
         System.out.println("Enter id of computer : ");
         try {
             Long computerId = scanner.nextLong();
-            boolean deleted = computerService.deleteComputer(computerId);
-            if (deleted) {
-                System.out.println("Successful deletion");
-            } else {
-                System.out.println("No computer found with id " + computerId);
-            }
+            computerService.deleteComputer(computerId);
+
         } catch (InputMismatchException e) {
-            System.out.println("Only numbers are excepted as id");
+            System.out.println("Only numbers are accepted as id");
+        }
+    }
+
+    private static void deleteCompany(Scanner scanner, CompanyService companyService) throws ServiceException{
+        System.out.println("Enter id of company to delete :");
+        try {
+            Long companyId = scanner.nextLong();
+            companyService.delete(companyId);
+        }catch(InputMismatchException e) {
+            System.out.println("Only numbers are accepted as id");
         }
     }
 
@@ -227,13 +235,17 @@ public class UserInterface {
         while (true) {
             System.out.println("Computer database application\n" + "Select operation:\n" + "1. List computers\n"
                     + "2. List companies\n" + "3. Show computer details (by id)\n" + "4. Create a computer\n"
-                    + "5. Update a computer\n" + "6. Delete a computer\n" + "7. Find company by name\n" + "8. Quit");
+                    + "5. Update a computer\n" + "6. Delete a computer\n" + "7. Find company by name\n"
+                    + "8. Delete company by id\n" + "9. Quit"
+                    );
 
             ComputerService computerService = ComputerService.INSTANCE;
+            CompanyService companyService = CompanyService.INSTANCE;
             int featureChoice = 0;
             try {
                 featureChoice = scanner.nextInt();
             } catch (InputMismatchException e) {
+                return;
             }
             switch (CLIActionEnum.values()[featureChoice]) {
             case LIST_COMPUTERS:
@@ -255,7 +267,10 @@ public class UserInterface {
                 deleteComputer(scanner, computerService);
                 break;
             case COMPANY_BY_NAME:
-                findCompanyByName(scanner);
+                findCompanyByName(scanner, companyService);
+                break;
+            case DELETE_COMPANY:
+                deleteCompany(scanner, companyService);
                 break;
             case EXIT:
                 System.out.println("Bye!");
@@ -274,7 +289,6 @@ public class UserInterface {
         Scanner scanner = new Scanner(System.in);
         startUI(scanner);
         scanner.close();
-
     }
 
 }

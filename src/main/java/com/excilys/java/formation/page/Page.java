@@ -5,12 +5,13 @@ import com.excilys.java.formation.validator.ValidatorException;
 
 public abstract class Page {
 
+
     protected int offset;
     protected int size;
     protected int count;
     protected int number;
 
-    protected final static int DEFAULT_SIZE = 10;
+    protected static final int DEFAULT_SIZE = 10;
 
     public abstract void nextPage() throws ServiceException, ValidatorException;
 
@@ -41,19 +42,29 @@ public abstract class Page {
         return offset;
     }
 
+    public int getNumberOfPages() {
+        return (this.count / this.size) + ((this.count % this.size) == 0 ? 0 : 1);
+    }
+
     public int offsetGetPage(int number, int dbSize) {
-        if (number <= 0) {
-            number = 0;
-        } else if ((number - 1) * size <= dbSize) {
-            number = ((number - 1) * size);
-        } else {
-            number = dbSize - size;
+        if (size > dbSize) {
+            this.number = 1;
+            this.offset = 0;
+            return 0;
         }
-        return number;
+        if ((number - 1) * size <= dbSize) {
+            this.offset = ((number - 1) * size);
+        } else {
+            this.offset = dbSize - size;
+        }
+        return this.offset;
     }
 
     public int getCount() {
         return count;
     }
+
+    public abstract void getPage(String orderCriteria, String order, String search, int pageNumber, int pageSize)
+            throws ValidatorException, ServiceException;
 
 }

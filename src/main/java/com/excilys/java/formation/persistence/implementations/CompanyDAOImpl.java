@@ -18,11 +18,12 @@ public enum CompanyDAOImpl implements CompanyDAO {
 
     INSTANCE;
 
-    private final String SELECT = "SELECT id, name FROM company;";
-    private final String SELECT_LIMIT = "SELECT id, name FROM company LIMIT ? OFFSET ?;";
-    private final String SELECT_BY_NAME = "SELECT id, name FROM company WHERE name LIKE ?;";
-    private final String SELECT_BY_ID = "SELECT id, name FROM company WHERE id = ?;";
-    private final String COUNT = "SELECT COUNT(id) FROM company;";
+    private static final String SELECT = "SELECT id, name FROM company;";
+    private static final String SELECT_LIMIT = "SELECT id, name FROM company LIMIT ? OFFSET ?;";
+    private static final String SELECT_BY_NAME = "SELECT id, name FROM company WHERE name LIKE ?;";
+    private static final String SELECT_BY_ID = "SELECT id, name FROM company WHERE id = ?;";
+    private static final String COUNT = "SELECT COUNT(id) FROM company;";
+    private static final String DELETE = "DELETE FROM company WHERE id = ?;";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ConnectionManager connectionManager = ConnectionManager.INSTANCE;
@@ -33,11 +34,11 @@ public enum CompanyDAOImpl implements CompanyDAO {
         List<Company> companies = new ArrayList<>();
         try (Connection connection = connectionManager.open();
                 PreparedStatement stmt = connection.prepareStatement(SELECT);) {
-            logger.debug("(getAll) Query : " + stmt.toString());
+            logger.debug("(getAll) Query : {}", stmt);
             ResultSet res = stmt.executeQuery();
             companies = companyMapper.createCompanyListFromResultSet(res);
             return companies;
-        } catch (SQLException | ClassNotFoundException  e) {
+        } catch (SQLException | ClassNotFoundException e) {
             logger.error("Exception in getAll()", e);
             throw new DAOException(e);
         }
@@ -50,7 +51,7 @@ public enum CompanyDAOImpl implements CompanyDAO {
                 PreparedStatement stmt = connection.prepareStatement(SELECT_LIMIT);) {
             stmt.setInt(1, size);
             stmt.setInt(2, offset);
-            logger.debug("(get) Query : " + stmt.toString());
+            logger.debug("(get) Query : {}", stmt);
             ResultSet res = stmt.executeQuery();
             companies = companyMapper.createCompanyListFromResultSet(res);
             return companies;
@@ -66,10 +67,11 @@ public enum CompanyDAOImpl implements CompanyDAO {
         try (Connection connection = connectionManager.open();
                 PreparedStatement stmt = connection.prepareStatement(SELECT_BY_NAME);) {
             stmt.setString(1, "%" + name + "%");
-            logger.debug("(getByName) Query : " + stmt.toString());
-            ResultSet res = stmt.executeQuery();
-            companies = companyMapper.createCompanyListFromResultSet(res);
-            return companies;
+            logger.debug("(getByName) Query : {}", stmt);
+            try (ResultSet res = stmt.executeQuery()) {
+                companies = companyMapper.createCompanyListFromResultSet(res);
+                return companies;
+            }
         } catch (SQLException | ClassNotFoundException e) {
             logger.error("Exception in getByName({})", name, e);
             throw new DAOException(e);
@@ -81,11 +83,12 @@ public enum CompanyDAOImpl implements CompanyDAO {
         try (Connection connection = connectionManager.open();
                 PreparedStatement stmt = connection.prepareStatement(SELECT_BY_ID);) {
             stmt.setLong(1, id);
-            logger.debug("(checkCompanyById) Query : " + stmt.toString());
-            ResultSet res = stmt.executeQuery();
-            return res.next();
+            logger.debug("(checkCompanyById) Query : {}", stmt);
+            try (ResultSet res = stmt.executeQuery()) {
+                return res.next();
+            }
         } catch (SQLException | ClassNotFoundException e) {
-            logger.error("Exception in checkCompanyByID({})",id, e);
+            logger.error("Exception in checkCompanyByID({})", id, e);
             throw new DAOException(e);
         }
     }
@@ -93,13 +96,30 @@ public enum CompanyDAOImpl implements CompanyDAO {
     @Override
     public int count() throws DAOException {
         try (Connection connection = connectionManager.open();
-                PreparedStatement stmt = connection.prepareStatement(COUNT);) {
-            logger.debug("(count) Query : " + stmt.toString());
-            ResultSet res = stmt.executeQuery();
+                PreparedStatement stmt = connection.prepareStatement(COUNT);
+                ResultSet res = stmt.executeQuery()) {
+            logger.debug("(count) Query : {}", stmt);
             res.next();
             return res.getInt(1);
-        }catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             logger.error("Exception in count()", e);
+            throw new DAOException(e);
+        }
+    }
+
+    @Override
+    public void delete(long id) throws DAOException {
+        try (Connection connection = connectionManager.open();
+                PreparedStatement stmt = connection.prepareStatement(DELETE);
+                AutoSetAutoCommit autoCommit = new AutoSetAutoCommit(connection, false);
+                AutoRollback autoRollback = new AutoRollback(connection);) {
+            ComputerDAOImpl.INSTANCE.delete(connection, id);
+            stmt.setLong(1, id);
+            logger.debug("(count) Query : {}", stmt);
+            stmt.executeUpdate();
+            autoRollback.commit();
+        } catch (SQLException | DAOException | ClassNotFoundException e) {
+            logger.error("Exception in delete({})", id, e);
             throw new DAOException(e);
         }
     }
