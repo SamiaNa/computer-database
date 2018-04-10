@@ -32,80 +32,56 @@ public class EditComputer extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
     private static final Logger logger = LoggerFactory.getLogger(EditComputer.class);
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public EditComputer() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-     */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         RequestDispatcher rd = request.getRequestDispatcher("/static/views/editComputer.jsp");
+        logger.info("Edit Computer doGet");
         try {
             String idStr = request.getParameter("id");
+            logger.info("Id to parse {}", idStr);
             long id = Long.parseLong(idStr);
             Optional<Computer> optComp = ComputerService.INSTANCE.getComputerById(id);
             if (optComp.isPresent()) {
                 List<Company> companyList = CompanyService.INSTANCE.getCompanyList();
                 request.setAttribute("companyList", companyList);
                 request.setAttribute("computer", ComputerDTOMapper.INSTANCE.toDTO(optComp.get()));
-            }else {
+            } else {
                 rd = request.getRequestDispatcher("/static/views/404.jsp");
-                request.setAttribute("message", "No computer with id "+idStr);
+                request.setAttribute("message", "No computer with id " + idStr);
             }
             rd.forward(request, response);
-        }catch(ServiceException e) {
+        } catch (ServiceException e) {
             rd = request.getRequestDispatcher("/static/views/500.jsp");
             request.setAttribute("stacktrace", e.getStackTrace());
             rd.forward(request, response);
-        }catch(NumberFormatException e) {
+            return;
+        } catch (NumberFormatException e) {
+            logger.error("Exception in doGet EditComputer", e);
             response.sendRedirect("static/views/404.jsp");
         }
 
     }
 
     /**
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+     *      response)
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String submit = request.getParameter("submit");
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         RequestDispatcher rd = request.getRequestDispatcher("/static/views/editComputer.jsp");
         try {
-            if (submit == null){
-            }else {
-                String idStr = request.getParameter("id");
-                String name = request.getParameter("name");
-                String introducedStr = request.getParameter("introduced");
-                String discontinuedStr = request.getParameter("discontinued");
-                String companyIdStr = request.getParameter("companyId");
-                CompanyDTO companyDTO = new CompanyDTO();
-                try {
-                    long id = Long.parseUnsignedLong(companyIdStr);
-                    if (id != 0) {
-                        companyDTO.setId(id);
-                    }else {
-                        companyDTO = null;
-                    }
-                }catch (NumberFormatException e) {
-                    companyDTO = null;
-                }
-                Builder computerDTOBuilder = new Builder();
-                computerDTOBuilder.withId(idStr)
-                .withName(name)
-                .withIntroduced(introducedStr)
-                .withDiscontinued(discontinuedStr)
-                .withCompany(companyDTO);
-                ComputerService.INSTANCE.updateComputer(ComputerDTOMapper.INSTANCE.toComputer(computerDTOBuilder.build()));
-
-            }
+            String companyIdStr = request.getParameter("companyId");
+            CompanyDTO companyDTO = CompanyDTO.getCompanyDTOFromString(companyIdStr);
+            Builder computerDTOBuilder = new Builder();
+            computerDTOBuilder.withId(request.getParameter("id")).withName(request.getParameter("name"))
+            .withIntroduced(request.getParameter("introduced"))
+            .withDiscontinued(request.getParameter("discontinued")).withCompany(companyDTO);
+            ComputerService.INSTANCE.updateComputer(ComputerDTOMapper.INSTANCE.toComputer(computerDTOBuilder.build()));
             rd.forward(request, response);
-        }catch(ServiceException | NumberFormatException | ValidatorException e) {
+        } catch (ServiceException | NumberFormatException | ValidatorException e) {
             rd = request.getRequestDispatcher("/static/views/404.jsp");
             logger.error("Exception in doPost ", e);
             rd.forward(request, response);

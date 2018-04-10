@@ -63,21 +63,9 @@ public class CompanyPage extends Page {
         return this.elements;
     }
 
-    @Override
-    public void getPage(String name, int pageNumber, int pageSize) throws ServiceException, ValidatorException {
-        // TODO Auto-generated method stub
-
-    }
 
     @Override
-    public void getPageOrder(String orderCriteria, String order, int pageNumber, int pageSize) throws ValidatorException, ServiceException {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void getPageOrder(String orderCriteria, String order, String search, int pageNumber, int pageSize) throws ValidatorException, ServiceException {
-        // TODO Auto-generated method stub
+    public void getPage(String orderCriteria, String order, String search, int pageNumber, int pageSize) throws ValidatorException, ServiceException {
 
     }
 

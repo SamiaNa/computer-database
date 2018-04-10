@@ -245,6 +245,7 @@ public class UserInterface {
             try {
                 featureChoice = scanner.nextInt();
             } catch (InputMismatchException e) {
+                return;
             }
             switch (CLIActionEnum.values()[featureChoice]) {
             case LIST_COMPUTERS:

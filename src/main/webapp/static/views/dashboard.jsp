@@ -21,7 +21,6 @@
 			Computer Database </a>
 	</div>
 	</header>
-
 	<section id="main">
 	<div class="container">
 		<h1 id="homeTitle">
@@ -29,8 +28,9 @@
 		</h1>
 		<div id="actions" class="form-horizontal">
 			<div class="pull-left">
-				<form id="searchForm" action="/ComputerListServlet" method="GET"
-					class="form-inline">
+				<form id="searchForm"
+					action="Dashboard?pageNumber=${page.number}&pageSize=${page.size}search=${search}&by=${by}&order=${order}"
+					method="GET" class="form-inline">
 					<input type="search" id="searchbox" name="search"
 						class="form-control" placeholder="Search name" /> <input
 						type="submit" id="searchsubmit" name="submit"
@@ -40,14 +40,14 @@
 			<div class="pull-right">
 				<a class="btn btn-success" id="addComputer"
 					href="./static/views/addComputer.jsp">Add Computer</a> <a
-					class="btn btn-default" id="editComputer" href="#"
-					onclick="$.fn.toggleEditMode();">Edit</a>
+					class="btn btn-default" id="deleteComputer" href="#"
+					onclick="$.fn.toggleEditMode();">Delete</a>
 			</div>
 		</div>
 	</div>
 
-	<form id="deleteForm" action="#" method="POST">
-		<input type="hidden" name="selection" value="">
+	<form id="deleteForm" action="Dashboard" method="POST">
+		<input type="hidden" id="selection" name="selection" value="">
 	</form>
 
 	<div class="container" style="margin-top: 10px;">
@@ -61,16 +61,21 @@
 						type="checkbox" id="selectall" /> <span
 						style="vertical-align: top;"> - <a href="#"
 							id="deleteSelected" onclick="$.fn.deleteSelected();"> <i
-								class="fa fa-trash-o fa-lg"></i>
+								class="fa fa-trash-o fa-lg"> </i>
 						</a>
 					</span></th>
-					<th>Computer name</th>
-					<th>Introduced date</th>
+					
+					<th>Computer name <mylib:orderBy page="${page}"
+							target="Dashboard" by="namecomputer" search="${search}" />
+					</th>
+					<th>Introduced date <mylib:orderBy page="${page}"
+							target="Dashboard" by="introcomputer" search="${search}" /></th>
 					<!-- Table header for Discontinued Date -->
-					<th>Discontinued date</th>
+					<th>Discontinued date <mylib:orderBy page="${page}"
+							target="Dashboard" by="disccomputer" search="${search}" /></th>
 					<!-- Table header for Company -->
-					<th>Company</th>
-
+					<th>Company <mylib:orderBy page="${page}" target="Dashboard"
+							by="namecompany" search="${search}" /></th>
 				</tr>
 			</thead>
 
@@ -81,9 +86,10 @@
 				<c:forEach var="computer" items="${requestScope.page.DTOElements}">
 					<tr>
 						<td class="editMode"><input type="checkbox" name="cb"
-							class="cb" value="0"></td>
-						<td><a href="EditComputerServlet?id=${computer.id}" onclick=""> <c:out
-									value="${computer.name}" /></a></td>
+							class="cb" value="${computer.id}" /></td>
+						<td><a href="EditComputer?id=${computer.id}" onclick="">
+								<c:out value="${computer.name}" />
+						</a></td>
 						<td><c:out value="${computer.introduced}" /></td>
 						<td><c:out value="${computer.discontinued}" /></td>
 						<td><c:out value="${computer.company.name}" /></td>
@@ -98,18 +104,18 @@
 	<footer class="navbar-fixed-bottom">
 	<div class="container text-center">
 		<ul class="pagination">
-			<mylib:pagination page="${page}" target="ComputerListServlet" />
+			<mylib:pagination page="${page}" search="${search}" by="${by}"
+				order="${order}" target="Dashboard" />
 		</ul>
 		<div class="btn-group btn-group-sm pull-right" role="group">
-
 			<form
-				action="CmputerListServlet?pageNumber=${page.number}&pageSize=10"
+				action="Dashboard?pageNumber=${page.number}&pageSize=10&search=${search}&by=${by}&order=${order}"
 				method="post">
 				<button type="submit" class="btn btn-default">10</button>
 				<button type="submit" class="btn btn-default"
-					formaction="ComputerListServlet?pageNumber=${page.number}&pageSize=50">50</button>
+					formaction="Dashboard?pageNumber=${page.number}&pageSize=50&search=${search}&by=${by}&order=${order}">50</button>
 				<button type="submit" class="btn btn-default"
-					formaction="ComputerListServlet?pageNumber=${page.number}&pageSize=100">100</button>
+					formaction="Dashboard?pageNumber=${page.number}&pageSize=100&search=${search}&by=${by}&order=${order}">100</button>
 			</form>
 		</div>
 	</div>

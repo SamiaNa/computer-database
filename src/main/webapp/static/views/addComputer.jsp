@@ -23,14 +23,14 @@
 	</header>
 
 	<c:if test="${companyList == null}">
-		<c:redirect url="/AddComputerServlet" />
+		<c:redirect url="/AddComputer" />
 	</c:if>
 	<section id="main">
 	<div class="container">
 		<div class="row">
 			<div class="col-xs-8 col-xs-offset-2 box">
 				<h1>Add Computer</h1>
-				<form action="AddComputerServlet" method="POST">
+				<form action="AddComputer" method="POST">
 					<fieldset>
 						<div class="form-group">
 							<label for="computerName">Computer name</label> 
@@ -66,7 +66,7 @@
 					<div class="actions pull-right">
 						<input type="submit" name="submit" value="Add"
 							class="btn btn-primary"> or <a
-							href="ComputerListServlet" class="btn btn-default">Cancel</a>
+							href="Dashboard" class="btn btn-default">Cancel</a>
 					</div>
 				</form>
 				${res}

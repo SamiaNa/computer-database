@@ -1,8 +1,5 @@
 package com.excilys.java.formation.page;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.excilys.java.formation.service.ServiceException;
 import com.excilys.java.formation.validator.ValidatorException;
 
@@ -21,8 +18,6 @@ public abstract class Page {
     public abstract void prevPage() throws ServiceException, ValidatorException;
 
     public abstract void getPage(int pageNumber, int pageSize) throws ServiceException, ValidatorException;
-
-    public abstract void getPage(String name, int pageNumber, int pageSize) throws ServiceException, ValidatorException;
 
     public int getSize() {
         return size;
@@ -52,24 +47,24 @@ public abstract class Page {
     }
 
     public int offsetGetPage(int number, int dbSize) {
-        if (number <= 0) {
-            number = 0;
-        } else if ((number - 1) * size <= dbSize) {
-            number = ((number - 1) * size);
-        } else {
-            number = dbSize - size;
+        if (size > dbSize) {
+            this.number = 1;
+            this.offset = 0;
+            return 0;
         }
-        return number;
+        if ((number - 1) * size <= dbSize) {
+            this.offset = ((number - 1) * size);
+        } else {
+            this.offset = dbSize - size;
+        }
+        return this.offset;
     }
 
     public int getCount() {
         return count;
     }
 
-    public abstract void getPageOrder(String orderCriteria, String order, int pageNumber, int pageSize)
-            throws ValidatorException, ServiceException;
-
-    public abstract void getPageOrder(String orderCriteria, String order, String search, int pageNumber, int pageSize)
+    public abstract void getPage(String orderCriteria, String order, String search, int pageNumber, int pageSize)
             throws ValidatorException, ServiceException;
 
 }

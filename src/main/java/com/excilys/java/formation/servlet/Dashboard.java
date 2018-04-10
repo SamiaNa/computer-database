@@ -11,11 +11,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.java.formation.page.ComputerDTOPage;
+import com.excilys.java.formation.page.ComputerPage;
 import com.excilys.java.formation.service.ComputerService;
 import com.excilys.java.formation.service.ServiceException;
 import com.excilys.java.formation.validator.ValidatorException;
@@ -32,74 +32,25 @@ public class Dashboard extends HttpServlet {
     private static final String ORDER = "order";
     private static final String BY = "by";
 
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public Dashboard() {
-        super();
-    }
-
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-
-            String pageNumberStr = request.getParameter("pageNumber");
-            String pageSizeStr = request.getParameter("pageSize");
-            int pageNumber = 0;
-            int pageSize = 0;
             RequestDispatcher rd = request.getRequestDispatcher("/static/views/dashboard.jsp");
-            if (pageNumberStr == null || pageSizeStr == null) {
-                pageNumber = 1;
-                pageSize = 10;
-            } else {
-                try {
-                    pageNumber = Integer.parseUnsignedInt(pageNumberStr);
-                    pageSize = Integer.parseUnsignedInt(pageSizeStr);
-                    logger.info("Page number = {}, page size = {}", pageNumber, pageSize);
-                } catch (NumberFormatException e) {
-                    logger.error("Failed to parse {} or {} as an unsigned int", pageNumberStr, pageSizeStr);
-                    response.sendRedirect("static/views/404.jsp");
-                    return;
-                }
-            }
+            int pageNumber = getUnsignedIntFromParam(request, response, "pageNumber", 1);
+            int pageSize = getUnsignedIntFromParam(request, response, "pageSize", 10);
             ComputerDTOPage computerPage = new ComputerDTOPage();
             String search = request.getParameter(SEARCH);
             String by = request.getParameter(BY);
             String order = request.getParameter(ORDER);
-            if (StringUtils.isBlank(search)) {
-                if (StringUtils.isBlank(order)) {
-                    computerPage.getPage(pageNumber, pageSize);
-                }else {
-                    computerPage.getPageOrder(by, order, pageNumber, pageSize);
-                    request.setAttribute(ORDER, order);
-                    request.setAttribute(SEARCH, search);
-                    request.setAttribute(BY, by);
-                }
-            }else {
-                request.setAttribute(SEARCH, search);
-                if (StringUtils.isBlank(ORDER)) {
-                    computerPage.getPage(search, pageNumber, pageSize);
-                }else {
-                    computerPage.getPageOrder(by, order, search, pageNumber, pageSize);
-                    logger.info("page size : {}", computerPage.getDTOElements().size());;
-                    request.setAttribute(ORDER, order);
-                    request.setAttribute(SEARCH, search);
-                    request.setAttribute(BY, by);
-                }
-            }
-            logger.info(
-                    "Successfully fetched page content (page number= {}, page size={})", pageNumber, pageSize);
-            request.setAttribute("page", computerPage);
+            computerPage.getPage(by, order, search, pageNumber, pageSize);
+            setAttributes(request, by, order, search, computerPage);
+            logger.info("Successfully fetched page content (page number= {}, page size={})", pageNumber, pageSize);
             rd.forward(request, response);
         } catch (ServiceException e) {
             logger.error("Exception in ComputerListServlet", e);
-            throw new ServletException(e);
+            response.sendRedirect("static/views/500.jsp");
         } catch (ValidatorException e) {
             logger.error("Validator exception in doGet ", e);
             response.sendRedirect("static/views/404.jsp");
@@ -107,17 +58,13 @@ public class Dashboard extends HttpServlet {
         }
     }
 
-    /**
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String checked = request.getParameter("selection");
         if (checked != null) {
             String[] computerIds = checked.split(",");
-            List <Long> ids = new ArrayList<>();
+            List<Long> ids = new ArrayList<>();
             for (String strId : computerIds) {
                 ids.add(Long.parseLong(strId));
             }
@@ -131,6 +78,31 @@ public class Dashboard extends HttpServlet {
             }
         }
         doGet(request, response);
+    }
+
+    private int getUnsignedIntFromParam(HttpServletRequest request, HttpServletResponse response, String name,
+            int defaultValue) throws IOException {
+        String numberStr = request.getParameter(name);
+        int number = defaultValue;
+        if (numberStr != null) {
+            try {
+                number = Integer.parseUnsignedInt(numberStr);
+                logger.info("{} = {}", name, number);
+            } catch (NumberFormatException e) {
+                logger.error("Failed to parse {} as unsigned int", numberStr);
+                response.sendRedirect("static/views/404.jsp");
+                return -1;
+            }
+        }
+        return number;
+    }
+
+
+    private void setAttributes(HttpServletRequest request, String by, String order, String search, ComputerPage page) {
+        request.setAttribute(ORDER, order);
+        request.setAttribute(SEARCH, search);
+        request.setAttribute(BY, by);
+        request.setAttribute("page", page);
     }
 
 }

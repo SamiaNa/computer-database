@@ -11,6 +11,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -159,6 +161,9 @@ public class ComputerDAOImplTest{
         assertEquals(res.getDate(4), c0.getDiscontinued());
         assertEquals(res.getLong(5), c0.getCompany().getId());
         assertEquals(res.getString(6), "Dell");
+        res.close();
+        stmt.close();
+        conn.close();
     }
 
     @Test
@@ -176,11 +181,71 @@ public class ComputerDAOImplTest{
         assertEquals(res.getDate(4).toLocalDate(), c.getDiscontinued());
         assertEquals(res.getLong(5), c.getCompany().getId());
         assertEquals(res.getString(6), "Dell");
+        res.close();
+        stmt.close();
+        conn.close();
     }
 
     @Test
     void testCreateComputerInvalidError() throws DAOException, ClassNotFoundException, SQLException {
         Computer c = new Computer (500, "OrdiPBDate", LocalDate.parse("2010-01-02"), LocalDate.parse("2005-02-03"), new Company(150, null));
         Assertions.assertThrows(DAOException.class, () -> ComputerDAOImpl.INSTANCE.createComputer(c));
+    }
+
+    @Test
+    void testCount() throws DAOException{
+        int count = ComputerDAOImpl.INSTANCE.count();
+        assertEquals(3, count);
+    }
+
+    @Test
+    void testCountWithName() throws DAOException{
+        int count = ComputerDAOImpl.INSTANCE.count("1");
+        assertEquals(2, count);
+    }
+
+    @Test
+    void testDelete() throws DAOException, ClassNotFoundException, SQLException {
+        ComputerDAOImpl.INSTANCE.delete(1);
+        Connection conn = ConnectionManager.INSTANCE.open();
+        PreparedStatement stmt = conn.prepareStatement("SELECT count(*) FROM computer;");
+        ResultSet res = stmt.executeQuery();
+        res.next();
+        assertEquals(2, res.getInt(1));
+        stmt = conn.prepareStatement("SELECT computer.id FROM computer;");
+        res = stmt.executeQuery();
+        res.next();
+        assertEquals(0, res.getInt(1));
+        res.next();
+        assertEquals(2, res.getInt(1));
+        res.close();
+        stmt.close();
+        conn.close();
+    }
+
+    @Test
+    void testDeleteNotInDB() throws DAOException {
+        ComputerDAOImpl.INSTANCE.delete(5);
+        ComputerDAOImpl.INSTANCE.delete(-1);
+    }
+
+    @Test
+    void testDeleteListAll() throws DAOException, ClassNotFoundException, SQLException {
+        ComputerDAOImpl.INSTANCE.delete(Arrays.asList(0l,1l,2l));
+        Connection conn = ConnectionManager.INSTANCE.open();
+        PreparedStatement stmt = conn.prepareStatement("SELECT count(*) FROM computer;");
+        ResultSet res = stmt.executeQuery();
+        res.next();
+        assertEquals(0, res.getInt(1));
+    }
+
+    @Test
+    void testDeleteEmptyList() throws DAOException, ClassNotFoundException, SQLException {
+        ComputerDAOImpl.INSTANCE.delete(new ArrayList<Long>());
+        Connection conn = ConnectionManager.INSTANCE.open();
+        PreparedStatement stmt = conn.prepareStatement("SELECT count(*) FROM computer;");
+        ResultSet res = stmt.executeQuery();
+        res.next();
+        assertEquals(3, res.getInt(1));
     }
 }

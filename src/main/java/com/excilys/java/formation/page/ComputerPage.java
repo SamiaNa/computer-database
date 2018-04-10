@@ -3,6 +3,7 @@ package com.excilys.java.formation.page;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +67,6 @@ public class ComputerPage extends Page {
         updateList();
     }
 
-    @Override
     public void getPage(String name, int pageNumber, int pageSize) throws ValidatorException, ServiceException {
         this.count = computerService.count(name);
         getPageHelper(pageNumber, pageSize);
@@ -74,7 +74,6 @@ public class ComputerPage extends Page {
         logger.info("List size {}", this.elements.size());
     }
 
-    @Override
     public void getPageOrder(String orderCriteria, String order, int pageNumber, int pageSize)
             throws ValidatorException, ServiceException {
         this.count = computerService.count();
@@ -83,7 +82,6 @@ public class ComputerPage extends Page {
         logger.info("List size {}", this.elements.size());
     }
 
-    @Override
     public void getPageOrder(String orderCriteria, String order, String name, int pageNumber, int pageSize)
             throws ValidatorException, ServiceException {
         this.count = computerService.count(name);
@@ -91,6 +89,25 @@ public class ComputerPage extends Page {
         updateListOrderBy(orderCriteria, order, name);
         logger.info("getPageOrder({}, {}, {}, {}, {}) List size {}", orderCriteria, order, name, pageNumber, pageSize,
                 this.elements.size());
+    }
+
+    @Override
+    public void getPage(String orderCriteria, String order, String name, int pageNumber, int pageSize) throws ValidatorException, ServiceException {
+        this.number = pageNumber;
+        this.size = pageSize;
+        if (StringUtils.isBlank(name)) {
+            if (StringUtils.isBlank(order)) {
+                getPage(pageNumber, pageSize);
+            } else {
+                getPageOrder(orderCriteria, order, pageNumber, pageSize);
+            }
+        } else {
+            if (StringUtils.isBlank(order)) {
+                getPage(name, pageNumber, pageSize);
+            } else {
+                getPageOrder(orderCriteria, order, name, pageNumber, pageSize);
+            }
+        }
     }
 
     @Override

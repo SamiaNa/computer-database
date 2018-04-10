@@ -16,7 +16,7 @@ public enum ConnectionManager{
     private static HikariDataSource ds;
 
 
-    public Connection open() throws SQLException, ClassNotFoundException {
+    public  Connection open() throws SQLException, ClassNotFoundException {
         if (ds == null) {
             ResourceBundle resources = ResourceBundle.getBundle(RESOURCE_PATH, Locale.getDefault());
             String url = resources.getString("url");

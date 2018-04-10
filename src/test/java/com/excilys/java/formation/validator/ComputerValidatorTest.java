@@ -27,8 +27,6 @@ public class ComputerValidatorTest {
         checkName = () -> {validator.checkName("NULL");};
         assertThrows(ValidatorException.class, checkName);
 
-        //validator.checkName("name");
-        //validator.checkName("computer");
     }
 
     @Test

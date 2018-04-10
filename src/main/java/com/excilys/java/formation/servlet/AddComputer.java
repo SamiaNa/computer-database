@@ -32,81 +32,51 @@ public class AddComputer extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private static Logger logger = LoggerFactory.getLogger(AddComputer.class);
 
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public AddComputer() {
-        super();
-    }
-
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            doPost(request, response);
-        } catch (ServletException | IOException e) {
+            RequestDispatcher rd = request.getRequestDispatcher("/static/views/addComputer.jsp");
+            List<CompanyDTO> companyList = CompanyDTOMapper.INSTANCE
+                    .toDTOList(CompanyService.INSTANCE.getCompanyList());
+            request.setAttribute("companyList", companyList);
+            rd.forward(request, response);
+        } catch (ServiceException e) {
+            logger.error("Exception in addComputerServlet doGet", e);
             response.sendRedirect("static/views/500.jsp");
         }
     }
 
-    /**
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
+
+
+    private void setInfoMsg(HttpServletRequest request, Optional<Computer> optComp) {
+        if (optComp.isPresent()) {
+            request.setAttribute("res", "Computer added ");
+        } else {
+            request.setAttribute("res", "Error");
+        }
+    }
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         RequestDispatcher rd = request.getRequestDispatcher("/static/views/addComputer.jsp");
         try {
-            List<CompanyDTO> companyList = CompanyDTOMapper.INSTANCE
-                    .toDTOList(CompanyService.INSTANCE.getCompanyList());
-            request.setAttribute("companyList", companyList);
+            CompanyDTO companyDTO = CompanyDTO.getCompanyDTOFromString(request.getParameter("companyId"));
+            Builder computerDTOBuilder =
+                    new Builder().withName(request.getParameter("name"))
+                    .withIntroduced(request.getParameter("introduced"))
+                    .withDiscontinued(request.getParameter("discontinued"))
+                    .withCompany(companyDTO);
+            Optional<Computer> optComp = ComputerService.INSTANCE
+                    .createComputer(ComputerDTOMapper.INSTANCE.toComputer(computerDTOBuilder.build()));
+            setInfoMsg(request, optComp);
+        } catch (ValidatorException e) {
+            request.setAttribute("res", e.getMessage());
         } catch (ServiceException e) {
-            logger.error("Exception in addComputerServlet", e);
-        }
-        String submit = request.getParameter("submit");
-        if (submit != null) {
-            try {
-                String name = request.getParameter("name");
-                String introducedStr = request.getParameter("introduced");
-                String discontinuedStr = request.getParameter("discontinued");
-                String companyIdStr = request.getParameter("companyId");
-                CompanyDTO companyDTO = new CompanyDTO();
-                logger.info("Add computer servlet");
-                try {
-                    long id = Long.parseUnsignedLong(companyIdStr);
-                    logger.info("Add computer valeur id : {}", id);
-                    if (id != 0) {
-                        companyDTO.setId(id);
-                    } else {
-                        companyDTO = null;
-                    }
-                } catch (NumberFormatException e) {
-
-                    logger.info("companydto null");
-                    companyDTO = null;
-                }
-                Builder computerDTOBuilder = new Builder();
-                computerDTOBuilder.withName(name).withIntroduced(introducedStr).withDiscontinued(discontinuedStr)
-                .withCompany(companyDTO);
-                Optional<Computer> optComp = ComputerService.INSTANCE
-                        .createComputer(ComputerDTOMapper.INSTANCE.toComputer(computerDTOBuilder.build()));
-                if (optComp.isPresent()) {
-                    request.setAttribute("res", "Computer added ");
-                } else {
-                    request.setAttribute("res", "Error");
-                }
-
-            } catch (ValidatorException e) {
-                request.setAttribute("res", e.getMessage());
-            } catch (ServiceException e) {
-                logger.error("Exception in doPost AddCompanyServlet", e);
-                throw new ServletException(e);
-            }
+            logger.error("Exception in doPost AddCompanyServlet", e);
+            throw new ServletException(e);
         }
         rd.forward(request, response);
     }

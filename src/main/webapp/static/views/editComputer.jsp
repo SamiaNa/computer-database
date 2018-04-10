@@ -15,7 +15,7 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="dashboard.html"> Application -
+			<a class="navbar-brand" href="dashboard.jsp"> Application -
 				Computer Database </a>
 		</div>
 	</header>
@@ -28,7 +28,7 @@
 						<c:out value="${param.id}" />
 					</div>
 					<h1>Edit Computer</h1>
-					<form action="EditComputerServlet" method="POST">
+					<form action="EditComputer" method="POST">
 						<input type="hidden" value="${param.id}" name="id" id="id" />
 						<fieldset>
 							<div class="form-group">
@@ -70,7 +70,7 @@
 						<div class="actions pull-right">
 							<input type="submit" name="submit" value="Edit"
 								class="btn btn-primary"> or <a
-								href="ComputerListServlet" class="btn btn-default">Cancel</a>
+								href="Dashboard" class="btn btn-default">Cancel</a>
 						</div>
 					</form>
 				</div>
