@@ -21,24 +21,23 @@
         <junit-platform.version>1.0.3</junit-platform.version>
         <mockito.version>1.9.5</mockito.version>
         <hsqldb.version>2.4.0</hsqldb.version>
+        <selenium.version>3.11.0</selenium.version>
 
         <!-- report -->
-        <selenium.version>3.11.0</selenium.version>
+        <sonar.version>7.0</sonar.version>
 
         <!-- logs -->
         <slf4j.version>1.7.25</slf4j.version>
 
+        <!-- database -->
+         <hikariCP.version>2.7.8</hikariCP.version>
 
         <!-- runtime -->
-        <mysql.version>5.1.38</mysql.version>
-        <myqsl-jdbc.version>8.0.8-dmr</myqsl-jdbc.version>
-        <hikariCP.version>2.7.8</hikariCP.version>
         <tomcat7.version>2.2</tomcat7.version>
         <tomcat-catalina.version>8.0.1</tomcat-catalina.version>
         <javax.servlet.version>2.5</javax.servlet.version>
         <java.version>1.8</java.version>
         <mojo.version>1.2.1</mojo.version>
-        <sonar.version>7.0</sonar.version>
         <apache-commons.version>3.7</apache-commons.version>
         <jquery.version>3.3.1</jquery.version>
 
@@ -48,28 +47,12 @@
         <maven-surefire.version>2.19.1</maven-surefire.version>
         <maven-war.version>3.2.0</maven-war.version>
         <maven-checkstyle.version>3.0.0</maven-checkstyle.version>
+
     </properties>
-    
+
     <dependencies>
-        <dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP</artifactId>
-            <version>${hikariCP.version}</version>
-        </dependency>
 
-        <dependency>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-war-plugin</artifactId>
-            <version>${maven-war.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>${javax.servlet.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
+        <!-- tests -->
         <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>sqltool</artifactId>
@@ -77,19 +60,6 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>${apache-commons.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-catalina</artifactId>
-            <version>${tomcat-catalina.version}</version>
-        </dependency>
-
-        <!-- tests -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
@@ -117,12 +87,47 @@
             <version>${selenium.version}</version>
         </dependency>
 
+        <!-- database -->
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>${hikariCP.version}</version>
+        </dependency>
+
+        <!-- maven -->
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-war-plugin</artifactId>
+            <version>${maven-war.version}</version>
+        </dependency>
 
         <!-- logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
+        </dependency>
+
+        <!-- runtime -->
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>${javax.servlet.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${apache-commons.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-catalina</artifactId>
+            <version>${tomcat-catalina.version}</version>
         </dependency>
 
         <dependency>
