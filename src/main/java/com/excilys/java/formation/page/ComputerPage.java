@@ -16,18 +16,20 @@ public class ComputerPage extends Page {
 
     private List<Computer> elements;
     private static final Logger logger = LoggerFactory.getLogger(ComputerPage.class);
-    private static final ComputerService computerService = ComputerService.INSTANCE;
+    private  ComputerService computerService;
 
-    public ComputerPage() {
+    public ComputerPage(ComputerService computerService) {
         this.offset = 0;
         this.size = DEFAULT_SIZE;
         this.elements = new ArrayList<>();
+        this.computerService = computerService;
     }
 
-    public ComputerPage(int pageNumber, int size) {
+    public ComputerPage(ComputerService computerService, int pageNumber, int size) {
         this.offset = pageNumber;
         this.size = size;
         this.elements = new ArrayList<>();
+        this.computerService = computerService;
     }
 
     public void updateList() throws ServiceException {

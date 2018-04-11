@@ -1,34 +1,8 @@
 package com.excilys.java.formation.persistence;
 
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import com.excilys.java.formation.entities.Company;
-import com.excilys.java.formation.entities.Computer;
-import com.excilys.java.formation.persistence.implementations.ComputerDAOImpl;
-import com.excilys.java.formation.persistence.implementations.ConnectionManager;
-import com.excilys.java.formation.persistence.implementations.DAOException;
-
 public class ComputerDAOImplTest{
 
-    private static final String CREATE_TABLE_COMPUTER = "  create table computer (" +
+    /*  private static final String CREATE_TABLE_COMPUTER = "  create table computer (" +
             "    id                        bigint not null identity," +
             "    name                      varchar(255)," +
             "    introduced                date NULL," +
@@ -247,5 +221,5 @@ public class ComputerDAOImplTest{
         ResultSet res = stmt.executeQuery();
         res.next();
         assertEquals(3, res.getInt(1));
-    }
+    }*/
 }

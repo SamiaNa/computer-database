@@ -1,19 +1,7 @@
 package com.excilys.java.formation.validator;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.sql.SQLException;
-import java.text.ParseException;
-import java.time.LocalDate;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
-
-import com.excilys.java.formation.entities.Computer;
-
 public class ComputerValidatorTest {
-
+    /*
     @Test
     void testCheckName() throws ValidatorException  {
         ComputerValidator validator = ComputerValidator.INSTANCE;
@@ -89,7 +77,7 @@ public class ComputerValidatorTest {
         assertThrows(ValidatorException.class, checkId);
         checkId = () -> {validator.checkComputerId("0.1");};
         assertThrows(ValidatorException.class, checkId);
-    }
+    }*/
 
 
 }

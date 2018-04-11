@@ -12,6 +12,7 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
 
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.entities.Computer;
@@ -19,9 +20,9 @@ import com.excilys.java.formation.mapper.ComputerMapper;
 import com.excilys.java.formation.persistence.interfaces.ComputerDAO;
 import com.excilys.java.formation.validator.ValidatorException;
 
-public enum ComputerDAOImpl implements ComputerDAO {
+@Repository
+public class ComputerDAOImpl implements ComputerDAO {
 
-    INSTANCE;
 
     private static final String SELECT_ALL = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id;";
     private static final String SELECT_ORDER = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id";

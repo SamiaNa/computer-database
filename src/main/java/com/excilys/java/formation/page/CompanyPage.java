@@ -15,18 +15,20 @@ public class CompanyPage extends Page {
 
     private List<Company> elements;
     private static final Logger logger = LoggerFactory.getLogger(CompanyPage.class);
-    private static final CompanyService companyService = CompanyService.INSTANCE;
+    private CompanyService companyService;
 
-    public CompanyPage() {
+    public CompanyPage(CompanyService companyService) {
         this.offset = 0;
         this.size = DEFAULT_SIZE;
         this.elements = new ArrayList<>();
+        this.companyService = companyService;
     }
 
-    public CompanyPage(int pageNumber, int size) {
+    public CompanyPage(CompanyService companyService, int pageNumber, int size) {
         this.offset = pageNumber;
         this.size = size;
         this.elements = new ArrayList<>();
+        this.companyService = companyService;
     }
 
     public void updateList() throws ServiceException  {

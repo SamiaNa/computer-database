@@ -4,8 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.java.formation.entities.Company;
-import com.excilys.java.formation.persistence.implementations.CompanyDAOImpl;
 import com.excilys.java.formation.persistence.implementations.DAOException;
+import com.excilys.java.formation.persistence.interfaces.CompanyDAO;
 
 public enum CompanyValidator {
 
@@ -32,20 +32,20 @@ public enum CompanyValidator {
         }
     }
 
-    public Long checkCompanyIdOrNull(String strId) throws ValidatorException {
+    public Long checkCompanyIdOrNull(CompanyDAO companyDAO, String strId) throws ValidatorException {
         Long id = getLongId(strId);
         if (id != null) {
-            checkCompanyOrNull(new Company(id, null));
+            checkCompanyOrNull(companyDAO, new Company(id, null));
         }
         return id;
     }
 
-    public void checkCompanyOrNull(Company company) throws ValidatorException {
+    public void checkCompanyOrNull(CompanyDAO companyDAO, Company company) throws ValidatorException {
         logger.info("Check company or null {}", company);
         if (company != null) {
             long id = company.getId();
             try {
-                if (!CompanyDAOImpl.INSTANCE.checkCompanyById(id)) {
+                if (!companyDAO.checkCompanyById(id)) {
                     throw new ValidatorException(("No existing company with id " + id));
                 }
             }catch(DAOException e) {

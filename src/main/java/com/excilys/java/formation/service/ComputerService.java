@@ -6,19 +6,27 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.excilys.java.formation.entities.Computer;
+import com.excilys.java.formation.persistence.implementations.CompanyDAOImpl;
 import com.excilys.java.formation.persistence.implementations.ComputerDAOImpl;
 import com.excilys.java.formation.persistence.implementations.DAOException;
 import com.excilys.java.formation.validator.ComputerValidator;
 import com.excilys.java.formation.validator.ValidatorException;
 
-public enum ComputerService {
+@Service
+public class ComputerService {
 
-    INSTANCE;
     private static Logger logger = LoggerFactory.getLogger(ComputerService.class);
-    private static final ComputerDAOImpl computerDAO = ComputerDAOImpl.INSTANCE;
-    private static final ComputerValidator computerValidator = ComputerValidator.INSTANCE;
+    @Autowired
+    private ComputerDAOImpl computerDAO ;
+
+    @Autowired
+    private CompanyDAOImpl companyDAO;
+
+    private ComputerValidator computerValidator = ComputerValidator.INSTANCE;
 
     public List<Computer> getComputerList() throws ServiceException {
         try {
@@ -79,7 +87,7 @@ public enum ComputerService {
     }
 
     public Optional<Computer> createComputer(Computer computer) throws ServiceException, ValidatorException {
-        computerValidator.checkComputer(computer);
+        computerValidator.checkComputer(companyDAO, computer);
         try {
             Optional<Long> computerId = computerDAO.createComputer(computer);
             if (computerId.isPresent()) {
@@ -95,7 +103,7 @@ public enum ComputerService {
     }
 
     public void updateComputer(Computer computer) throws ServiceException, ValidatorException {
-        computerValidator.checkComputer(computer);
+        computerValidator.checkComputer(companyDAO, computer);
         try {
             computerDAO.update(computer);
         } catch (DAOException e) {

@@ -9,14 +9,15 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.mapper.CompanyMapper;
 import com.excilys.java.formation.persistence.interfaces.CompanyDAO;
 
-public enum CompanyDAOImpl implements CompanyDAO {
-
-    INSTANCE;
+@Repository
+public class CompanyDAOImpl implements CompanyDAO {
 
     private static final String SELECT = "SELECT id, name FROM company;";
     private static final String SELECT_LIMIT = "SELECT id, name FROM company LIMIT ? OFFSET ?;";
@@ -28,6 +29,8 @@ public enum CompanyDAOImpl implements CompanyDAO {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ConnectionManager connectionManager = ConnectionManager.INSTANCE;
     private final CompanyMapper companyMapper = CompanyMapper.INSTANCE;
+    @Autowired
+    private ComputerDAOImpl computerDAO;
 
     @Override
     public List<Company> getAll() throws DAOException {
@@ -113,7 +116,7 @@ public enum CompanyDAOImpl implements CompanyDAO {
                 PreparedStatement stmt = connection.prepareStatement(DELETE);
                 AutoSetAutoCommit autoCommit = new AutoSetAutoCommit(connection, false);
                 AutoRollback autoRollback = new AutoRollback(connection);) {
-            ComputerDAOImpl.INSTANCE.delete(connection, id);
+            computerDAO.delete(connection, id);
             stmt.setLong(1, id);
             logger.debug("(count) Query : {}", stmt);
             stmt.executeUpdate();

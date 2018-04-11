@@ -50,11 +50,15 @@
         <maven-compiler.version>3.5.1</maven-compiler.version>
         <maven-plugins.version>3.0.2</maven-plugins.version>
         <maven-surefire.version>2.19.1</maven-surefire.version>
-        <maven-war.version>3.2.0</maven-war.version>
+        <maven-war.version>3.2.0</maven-war.version>    
         <maven-checkstyle.version>3.0.0</maven-checkstyle.version>
 
         <slf4j-simple.version>1.6.2</slf4j-simple.version>
         <lombok.version>1.16.20</lombok.version>
+        
+        <!--  spring -->
+        
+        <spring.version>5.0.5.RELEASE</spring.version>
 
     </properties>
 
@@ -216,7 +220,7 @@
             <version>${apache-commons.version}</version>
         </dependency>
         <dependency>
-        
+
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
@@ -283,6 +287,32 @@
             <artifactId>jquery</artifactId>
             <version>${jquery.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
 
 
     </dependencies>
