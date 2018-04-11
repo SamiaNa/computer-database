@@ -46,6 +46,8 @@ public interface ComputerDAO {
 
     void delete(long id) throws DAOException;
 
+    void delete(List<Long> computerIds) throws DAOException;
+
     int count() throws DAOException;
 
     int count(String name) throws DAOException;

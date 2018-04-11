@@ -178,43 +178,43 @@ public enum ComputerDAOImpl implements ComputerDAO {
 
     }
 
-    private void setDateOrNull(LocalDate d, PreparedStatement stmt, int position) throws DAOException {
+    private void setDateOrNull(LocalDate date, PreparedStatement stmt, int position) throws DAOException {
         try {
-            if (d == null) {
+            if (date == null) {
                 stmt.setNull(position, java.sql.Types.DATE);
             } else {
-                stmt.setDate(position, Date.valueOf(d));
+                stmt.setDate(position, Date.valueOf(date));
             }
         } catch (SQLException e) {
-            logger.error("Exception in setDateOrNull({}, {}, {})", d, stmt, position, e);
+            logger.error("Exception in setDateOrNull({}, {}, {})", date, stmt, position, e);
             throw new DAOException(e);
         }
     }
 
-    private void setCompanyIdOrNull(Company c, PreparedStatement stmt, int position) throws DAOException {
+    private void setCompanyIdOrNull(Company company, PreparedStatement stmt, int position) throws DAOException {
         try {
-            if (c == null) {
+            if (company == null) {
                 stmt.setNull(position, java.sql.Types.BIGINT);
             } else {
-                stmt.setLong(position, c.getId());
+                stmt.setLong(position, company.getId());
             }
         } catch (SQLException e) {
-            logger.error("Exception in setCompanyIdOrNull({}, {}, {})", c, stmt, position, e);
+            logger.error("Exception in setCompanyIdOrNull({}, {}, {})", company, stmt, position, e);
             throw new DAOException(e);
         }
     }
 
     @Override
-    public Optional<Long> createComputer(Computer c) throws DAOException {
+    public Optional<Long> createComputer(Computer computer) throws DAOException {
         try (Connection connection = connectionManager.open();
                 AutoSetAutoCommit autoCommit = new AutoSetAutoCommit(connection, false);
                 AutoRollback autoRollback = new AutoRollback(connection);
                 PreparedStatement stmt = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)) {
             connection.setAutoCommit(false);
-            stmt.setString(1, c.getName());
-            setCompanyIdOrNull(c.getCompany(), stmt, 2);
-            setDateOrNull(c.getIntroduced(), stmt, 3);
-            setDateOrNull(c.getDiscontinued(), stmt, 4);
+            stmt.setString(1, computer.getName());
+            setCompanyIdOrNull(computer.getCompany(), stmt, 2);
+            setDateOrNull(computer.getIntroduced(), stmt, 3);
+            setDateOrNull(computer.getDiscontinued(), stmt, 4);
             logger.debug("(createComputer) Query : {}", stmt);
             stmt.executeUpdate();
             autoRollback.commit();
@@ -226,27 +226,27 @@ public enum ComputerDAOImpl implements ComputerDAO {
                 }
             }
         } catch (SQLException | ClassNotFoundException e) {
-            logger.error("Exception in createComptuer({})", c, e);
+            logger.error("Exception in createComptuer({})", computer, e);
             throw new DAOException(e);
         }
     }
 
     @Override
-    public void update(Computer c) throws DAOException {
+    public void update(Computer computer) throws DAOException {
         try (Connection connection = connectionManager.open();
                 AutoSetAutoCommit autoCommit = new AutoSetAutoCommit(connection, false);
                 AutoRollback autoRollback = new AutoRollback(connection);
                 PreparedStatement stmt = connection.prepareStatement(UPDATE);) {
-            stmt.setString(1, c.getName());
-            setDateOrNull(c.getIntroduced(), stmt, 2);
-            setDateOrNull(c.getDiscontinued(), stmt, 3);
-            setCompanyIdOrNull(c.getCompany(), stmt, 4);
-            stmt.setLong(5, c.getId());
+            stmt.setString(1, computer.getName());
+            setDateOrNull(computer.getIntroduced(), stmt, 2);
+            setDateOrNull(computer.getDiscontinued(), stmt, 3);
+            setCompanyIdOrNull(computer.getCompany(), stmt, 4);
+            stmt.setLong(5, computer.getId());
             logger.debug("(update) Query : {}", stmt);
             stmt.executeUpdate();
             autoRollback.commit();
         } catch (SQLException | ClassNotFoundException e) {
-            logger.error("Exception in update({c})", c, e);
+            logger.error("Exception in update({c})", computer, e);
             throw new DAOException(e);
         }
     }
@@ -267,6 +267,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
         }
     }
 
+
     public void delete(Connection connection, long id) throws DAOException {
         try (PreparedStatement stmt = connection.prepareStatement(DELETE_BY_COMPANY);) {
             stmt.setLong(1, id);
@@ -279,6 +280,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
 
     }
 
+    @Override
     public void delete(List<Long> ids) throws DAOException {
         try (Connection connection = connectionManager.open();
                 AutoSetAutoCommit autoCommit = new AutoSetAutoCommit(connection, false);

@@ -41,11 +41,13 @@ public class Dashboard extends HttpServlet {
             int pageNumber = getUnsignedIntFromParam(request, response, "pageNumber", 1);
             int pageSize = getUnsignedIntFromParam(request, response, "pageSize", 10);
             ComputerDTOPage computerPage = new ComputerDTOPage();
-            String search = request.getParameter(SEARCH);
-            String by = request.getParameter(BY);
-            String order = request.getParameter(ORDER);
-            computerPage.getPage(by, order, search, pageNumber, pageSize);
-            setAttributes(request, by, order, search, computerPage);
+            computerPage.setNumber(pageNumber);
+            computerPage.setSize(pageSize);
+            computerPage.setOrder(request.getParameter(ORDER));
+            computerPage.setOrderCriteria(request.getParameter(BY));
+            computerPage.setSearch(request.getParameter(SEARCH));
+            computerPage.getPage();
+            setAttributes(request, computerPage);
             logger.info("Successfully fetched page content (page number= {}, page size={})", pageNumber, pageSize);
             rd.forward(request, response);
         } catch (ServiceException e) {
@@ -98,10 +100,11 @@ public class Dashboard extends HttpServlet {
     }
 
 
-    private void setAttributes(HttpServletRequest request, String by, String order, String search, ComputerPage page) {
-        request.setAttribute(ORDER, order);
-        request.setAttribute(SEARCH, search);
-        request.setAttribute(BY, by);
+    private void setAttributes(HttpServletRequest request, ComputerPage page) {
+        request.setAttribute(ORDER, page.getOrder());
+        request.setAttribute(SEARCH, page.getSearch());
+        request.setAttribute(BY, page.getOrderCriteria());
+        // request.setAttribute("pageNumber", page.getNumber());
         request.setAttribute("page", page);
     }
 
