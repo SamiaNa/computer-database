@@ -8,12 +8,13 @@ import org.slf4j.LoggerFactory;
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.persistence.implementations.CompanyDAOImpl;
 import com.excilys.java.formation.persistence.implementations.DAOException;
+import com.excilys.java.formation.persistence.interfaces.CompanyDAO;
 
 public enum CompanyService {
 
     INSTANCE;
     private static Logger logger = LoggerFactory.getLogger(CompanyService.class);
-    private static final CompanyDAOImpl companyDAO = CompanyDAOImpl.INSTANCE;
+    private static final CompanyDAO companyDAO = CompanyDAOImpl.INSTANCE;
 
     public List<Company> getCompanyList() throws ServiceException {
         try {

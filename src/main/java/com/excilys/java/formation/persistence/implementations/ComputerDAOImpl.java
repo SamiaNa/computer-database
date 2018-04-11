@@ -267,6 +267,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
         }
     }
 
+
     public void delete(Connection connection, long id) throws DAOException {
         try (PreparedStatement stmt = connection.prepareStatement(DELETE_BY_COMPANY);) {
             stmt.setLong(1, id);
@@ -279,6 +280,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
 
     }
 
+    @Override
     public void delete(List<Long> ids) throws DAOException {
         try (Connection connection = connectionManager.open();
                 AutoSetAutoCommit autoCommit = new AutoSetAutoCommit(connection, false);
