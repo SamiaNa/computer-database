@@ -26,8 +26,6 @@ import org.hsqldb.persist.HsqlDatabaseProperties;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.entities.Computer;
@@ -37,8 +35,6 @@ import com.excilys.java.formation.persistence.implementations.DAOException;
 
 public class ComputerDAOImplTest{
 
-
-    private static Logger logger = LoggerFactory.getLogger(ComputerDAOImplTest.class);
     @BeforeEach
     void before() throws SQLException, InstantiationException, IllegalAccessException,  ClassNotFoundException, IOException, SqlToolError {
         Class.forName("org.hsqldb.jdbcDriver").newInstance();
@@ -48,7 +44,6 @@ public class ComputerDAOImplTest{
                 new File("."));
         sqlFile.setConnection(connection);
         sqlFile.execute();
-
     }
 
 
