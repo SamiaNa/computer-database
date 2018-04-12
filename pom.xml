@@ -56,6 +56,7 @@
         <slf4j-simple.version>1.6.2</slf4j-simple.version>
         <lombok.version>1.16.20</lombok.version>
         <commons-dbcp.version>1.4</commons-dbcp.version>
+        <jcl-over-slf4j.version>1.8.0-beta2</jcl-over-slf4j.version>
 
         <!-- spring -->
 
@@ -280,6 +281,13 @@
         </dependency>
 
         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${jcl-over-slf4j.version}</version>
+        </dependency>
+
+
+        <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
             <version>${logback.version}</version>
@@ -296,6 +304,13 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
             <version>${spring.version}</version>
+
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
 
