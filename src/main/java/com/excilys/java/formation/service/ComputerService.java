@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.persistence.implementations.CompanyDAOImpl;
@@ -17,6 +19,7 @@ import com.excilys.java.formation.validator.ComputerValidator;
 import com.excilys.java.formation.validator.ValidatorException;
 
 @Service
+@EnableTransactionManagement
 public class ComputerService {
 
     private static Logger logger = LoggerFactory.getLogger(ComputerService.class);
@@ -86,6 +89,7 @@ public class ComputerService {
         }
     }
 
+    @Transactional(rollbackFor=Exception.class)
     public Optional<Computer> createComputer(Computer computer) throws ServiceException, ValidatorException {
         computerValidator.checkComputer(companyDAO, computer);
         try {
@@ -102,6 +106,7 @@ public class ComputerService {
         }
     }
 
+    @Transactional(rollbackFor=Exception.class)
     public void updateComputer(Computer computer) throws ServiceException, ValidatorException {
         computerValidator.checkComputer(companyDAO, computer);
         try {
@@ -112,6 +117,7 @@ public class ComputerService {
         }
     }
 
+    @Transactional(rollbackFor=Exception.class)
     public void deleteComputer(Long computerId) throws ServiceException {
         try {
             computerDAO.delete(computerId);
@@ -121,6 +127,7 @@ public class ComputerService {
         }
     }
 
+    @Transactional(rollbackFor=Exception.class)
     public void deleteComputer(List<Long> computerIds) throws ServiceException {
         try {
             computerDAO.delete(computerIds);

@@ -10,8 +10,12 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import javax.sql.DataSource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.java.formation.entities.Company;
@@ -22,7 +26,6 @@ import com.excilys.java.formation.validator.ValidatorException;
 
 @Repository
 public class ComputerDAOImpl implements ComputerDAO {
-
 
     private static final String SELECT_ALL = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id;";
     private static final String SELECT_ORDER = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id";
@@ -47,16 +50,18 @@ public class ComputerDAOImpl implements ComputerDAO {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ComputerMapper computerMapper = ComputerMapper.INSTANCE;
-    private final ConnectionManager connectionManager = ConnectionManager.INSTANCE;
+
+    @Autowired
+    private DataSource dataSource;
 
     @Override
     public List<Computer> getAll() throws DAOException {
-        try (Connection connection = connectionManager.open();
+        try (Connection connection = DataSourceUtils.getConnection(dataSource);
                 PreparedStatement stmt = connection.prepareStatement(SELECT_ALL);) {
             logger.debug("(getAll) Query : {}", stmt);
             ResultSet res = stmt.executeQuery();
             return computerMapper.createComputerListFromResultSet(res);
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             logger.error("Exception in getAll()", e);
             throw new DAOException(e);
         }
@@ -64,14 +69,14 @@ public class ComputerDAOImpl implements ComputerDAO {
 
     @Override
     public List<Computer> get(int offset, int size) throws DAOException {
-        try (Connection connection = connectionManager.open();
+        try (Connection connection = DataSourceUtils.getConnection(dataSource);
                 PreparedStatement stmt = connection.prepareStatement(SELECT_LIMIT);) {
             stmt.setInt(1, size);
             stmt.setInt(2, offset);
             logger.debug("(get) Query : {}", stmt);
             ResultSet res = stmt.executeQuery();
             return computerMapper.createComputerListFromResultSet(res);
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             logger.error("Exception in get(offset, size)", offset, size, e);
             throw new DAOException(e);
         }
@@ -79,13 +84,13 @@ public class ComputerDAOImpl implements ComputerDAO {
 
     @Override
     public Optional<Computer> getComputerById(long id) throws DAOException {
-        try (Connection connection = connectionManager.open();
+        try (Connection connection = DataSourceUtils.getConnection(dataSource);
                 PreparedStatement stmt = connection.prepareStatement(SELECT_BY_ID_JOIN)) {
             stmt.setLong(1, id);
             logger.debug("(getComputerById) Query : {}", stmt);
             ResultSet res = stmt.executeQuery();
             return computerMapper.createComputerFromResultSet(res);
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             logger.error("Exception in getComputerById({}), id", e);
             throw new DAOException(e);
         }
@@ -93,7 +98,7 @@ public class ComputerDAOImpl implements ComputerDAO {
 
     @Override
     public List<Computer> getByName(String name, int offset, int limit) throws DAOException {
-        try (Connection connection = connectionManager.open();
+        try (Connection connection = DataSourceUtils.getConnection(dataSource);
                 PreparedStatement stmt = connection.prepareStatement(SELECT_BY_NAME);) {
             stmt.setString(1, "%" + name + "%");
             stmt.setString(2, "%" + name + "%");
@@ -102,7 +107,7 @@ public class ComputerDAOImpl implements ComputerDAO {
             logger.debug("(getByName) Query : {}", stmt);
             ResultSet res = stmt.executeQuery();
             return computerMapper.createComputerListFromResultSet(res);
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             logger.error("Exception in getByName({}, {}, {})", name, offset, limit, e);
             throw new DAOException(e);
         }
@@ -112,7 +117,7 @@ public class ComputerDAOImpl implements ComputerDAO {
     @Override
     public List<Computer> getByOrder(String orderCriteria, String order, int offset, int limit)
             throws DAOException, ValidatorException {
-        try (Connection connection = connectionManager.open();
+        try (Connection connection = DataSourceUtils.getConnection(dataSource);
                 PreparedStatement stmt = connection.prepareStatement(SELECT_ORDER + " ORDER BY "
                         + getColumnName(orderCriteria) + " " + order + " LIMIT ? OFFSET ?;");) {
             checkOrder(order);
@@ -121,7 +126,7 @@ public class ComputerDAOImpl implements ComputerDAO {
             logger.info("(getByOrder) Query : {}", stmt);
             ResultSet res = stmt.executeQuery();
             return computerMapper.createComputerListFromResultSet(res);
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             logger.error("Exception in getByOrder({}, {}, {})", orderCriteria, offset, limit, e);
             throw new DAOException(e);
         }
@@ -160,7 +165,7 @@ public class ComputerDAOImpl implements ComputerDAO {
     public List<Computer> getByOrder(String orderCriteria, String order, String search, int offset, int limit)
             throws DAOException, ValidatorException {
 
-        try (Connection connection = connectionManager.open();
+        try (Connection connection = DataSourceUtils.getConnection(dataSource);
                 PreparedStatement stmt = connection.prepareStatement(
                         SELECT_ORDER + " WHERE (computer.name LIKE ? OR company.name LIKE ?) ORDER BY "
                                 + getColumnName(orderCriteria) + " " + order + " LIMIT ? OFFSET ?;");) {
@@ -172,7 +177,7 @@ public class ComputerDAOImpl implements ComputerDAO {
             logger.info("(getByOrderSearch) Query : {}", stmt);
             ResultSet res = stmt.executeQuery();
             return computerMapper.createComputerListFromResultSet(res);
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             logger.error("Exception in getByOrder({}, {}, {})", orderCriteria, offset, limit, e);
             throw new DAOException(e);
         }
@@ -207,18 +212,14 @@ public class ComputerDAOImpl implements ComputerDAO {
 
     @Override
     public Optional<Long> createComputer(Computer c) throws DAOException {
-        try (Connection connection = connectionManager.open();
-                AutoSetAutoCommit autoCommit = new AutoSetAutoCommit(connection, false);
-                AutoRollback autoRollback = new AutoRollback(connection);
-                PreparedStatement stmt = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)) {
-            connection.setAutoCommit(false);
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+        try (PreparedStatement stmt = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, c.getName());
             setCompanyIdOrNull(c.getCompany(), stmt, 2);
             setDateOrNull(c.getIntroduced(), stmt, 3);
             setDateOrNull(c.getDiscontinued(), stmt, 4);
             logger.debug("(createComputer) Query : {}", stmt);
             stmt.executeUpdate();
-            autoRollback.commit();
             try (ResultSet res = stmt.getGeneratedKeys()) {
                 if (res.next()) {
                     return Optional.of(res.getLong(1));
@@ -226,7 +227,7 @@ public class ComputerDAOImpl implements ComputerDAO {
                     return Optional.empty();
                 }
             }
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             logger.error("Exception in createComptuer({})", c, e);
             throw new DAOException(e);
         }
@@ -234,10 +235,8 @@ public class ComputerDAOImpl implements ComputerDAO {
 
     @Override
     public void update(Computer c) throws DAOException {
-        try (Connection connection = connectionManager.open();
-                AutoSetAutoCommit autoCommit = new AutoSetAutoCommit(connection, false);
-                AutoRollback autoRollback = new AutoRollback(connection);
-                PreparedStatement stmt = connection.prepareStatement(UPDATE);) {
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+        try (PreparedStatement stmt = connection.prepareStatement(UPDATE);) {
             stmt.setString(1, c.getName());
             setDateOrNull(c.getIntroduced(), stmt, 2);
             setDateOrNull(c.getDiscontinued(), stmt, 3);
@@ -245,8 +244,7 @@ public class ComputerDAOImpl implements ComputerDAO {
             stmt.setLong(5, c.getId());
             logger.debug("(update) Query : {}", stmt);
             stmt.executeUpdate();
-            autoRollback.commit();
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             logger.error("Exception in update({c})", c, e);
             throw new DAOException(e);
         }
@@ -254,15 +252,12 @@ public class ComputerDAOImpl implements ComputerDAO {
 
     @Override
     public void delete(long id) throws DAOException {
-        try (Connection connection = connectionManager.open();
-                AutoSetAutoCommit autoCommit = new AutoSetAutoCommit(connection, false);
-                AutoRollback autoRollback = new AutoRollback(connection);
-                PreparedStatement stmt = connection.prepareStatement(DELETE);) {
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+        try (PreparedStatement stmt = connection.prepareStatement(DELETE);) {
             stmt.setLong(1, id);
-            logger.debug("(delete) Query : {}",  stmt);
+            logger.debug("(delete) Query : {}", stmt);
             stmt.executeUpdate();
-            autoRollback.commit();
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             logger.error("Exception in delete({})", id, e);
             throw new DAOException(e);
         }
@@ -280,18 +275,16 @@ public class ComputerDAOImpl implements ComputerDAO {
 
     }
 
+    @Override
     public void delete(List<Long> ids) throws DAOException {
-        try (Connection connection = connectionManager.open();
-                AutoSetAutoCommit autoCommit = new AutoSetAutoCommit(connection, false);
-                AutoRollback autoRollback = new AutoRollback(connection);
-                PreparedStatement stmt = connection.prepareStatement(DELETE)) {
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+        try (PreparedStatement stmt = connection.prepareStatement(DELETE)) {
             for (long id : ids) {
                 stmt.setLong(1, id);
                 logger.debug("(delete list) Query : {}", stmt);
                 stmt.executeUpdate();
             }
-            autoRollback.commit();
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             logger.error("Exception in delete({})", ids.toString(), e);
             throw new DAOException(e);
         }
@@ -299,16 +292,15 @@ public class ComputerDAOImpl implements ComputerDAO {
 
     @Override
     public int count() throws DAOException {
-        try (Connection connection = connectionManager.open();
+        try (Connection connection = DataSourceUtils.getConnection(dataSource);
                 PreparedStatement stmt = connection.prepareStatement(COUNT);
                 ResultSet rSet = stmt.executeQuery();) {
-
             logger.debug("(count) Query : {}", stmt);
             if (rSet.next()) {
                 return rSet.getInt(1);
             }
             return -1;
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             logger.error("Exception in count()", e);
             throw new DAOException(e);
         }
@@ -316,7 +308,7 @@ public class ComputerDAOImpl implements ComputerDAO {
 
     @Override
     public int count(String name) throws DAOException {
-        try (Connection connection = connectionManager.open();
+        try (Connection connection = DataSourceUtils.getConnection(dataSource);
                 PreparedStatement stmt = connection.prepareStatement(COUNT_NAME);) {
             stmt.setString(1, "%" + name + "%");
             stmt.setString(2, "%" + name + "%");
@@ -327,7 +319,7 @@ public class ComputerDAOImpl implements ComputerDAO {
                 }
                 return -1;
             }
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             logger.error("Exception in count()", e);
             throw new DAOException(e);
         }

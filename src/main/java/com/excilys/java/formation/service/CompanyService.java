@@ -6,12 +6,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.persistence.implementations.CompanyDAOImpl;
 import com.excilys.java.formation.persistence.implementations.DAOException;
 
 @Service
+@EnableTransactionManagement
 public class CompanyService {
 
     private static Logger logger = LoggerFactory.getLogger(CompanyService.class);
@@ -55,6 +58,7 @@ public class CompanyService {
         }
     }
 
+    @Transactional(rollbackFor=Exception.class)
     public void delete (long id) throws ServiceException {
         try {
             companyDAO.delete(id);
