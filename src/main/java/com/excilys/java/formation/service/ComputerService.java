@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.persistence.implementations.CompanyDAOImpl;
-import com.excilys.java.formation.persistence.implementations.ComputerDAOImpl;
+import com.excilys.java.formation.persistence.implementations.ComputerDAOJdbc;
 import com.excilys.java.formation.persistence.implementations.DAOException;
 import com.excilys.java.formation.validator.ComputerValidator;
 import com.excilys.java.formation.validator.ValidatorException;
@@ -24,7 +24,7 @@ public class ComputerService {
 
     private static Logger logger = LoggerFactory.getLogger(ComputerService.class);
     @Autowired
-    private ComputerDAOImpl computerDAO ;
+    private ComputerDAOJdbc computerDAO ;
 
     @Autowired
     private CompanyDAOImpl companyDAO;

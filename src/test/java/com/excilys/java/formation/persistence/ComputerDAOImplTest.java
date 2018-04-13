@@ -34,8 +34,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.entities.Computer;
+import com.excilys.java.formation.persistence.implementations.ComputerDAOJdbc;
 import com.excilys.java.formation.persistence.implementations.DAOException;
-import com.excilys.java.formation.persistence.interfaces.ComputerDAO;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -46,7 +46,7 @@ public class ComputerDAOImplTest{
     private DataSource dataSource;
 
     @Autowired
-    private ComputerDAO computerDAO;
+    private ComputerDAOJdbc computerDAO;
 
     @Before
     public void before() throws SQLException, InstantiationException, IllegalAccessException,  ClassNotFoundException, IOException, SqlToolError {

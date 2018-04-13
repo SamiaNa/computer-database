@@ -15,17 +15,19 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.mapper.ComputerMapper;
+import com.excilys.java.formation.mapper.ComputerRowMapper;
 import com.excilys.java.formation.persistence.interfaces.ComputerDAO;
 import com.excilys.java.formation.validator.ValidatorException;
 
 @Repository
-public class ComputerDAOImpl implements ComputerDAO {
+public class ComputerDAOJdbc implements ComputerDAO {
 
     private static final String SELECT_ALL = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id;";
     private static final String SELECT_ORDER = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id";
@@ -54,37 +56,26 @@ public class ComputerDAOImpl implements ComputerDAO {
     @Autowired
     private DataSource dataSource;
 
+    private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    public void init(DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
+    }
 
     @Override
     public List<Computer> getAll() throws DAOException {
-        try (Connection connection = DataSourceUtils.getConnection(dataSource);
-                PreparedStatement stmt = connection.prepareStatement(SELECT_ALL);) {
-            logger.debug("(getAll) Query : {}", stmt);
-            ResultSet res = stmt.executeQuery();
-            return computerMapper.createComputerListFromResultSet(res);
-        } catch (SQLException e) {
-            logger.error("Exception in getAll()", e);
-            throw new DAOException(e);
-        }
+        return jdbcTemplate.query(SELECT_ALL, new ComputerRowMapper());
     }
 
     @Override
     public List<Computer> get(int offset, int size) throws DAOException {
-        try (Connection connection = DataSourceUtils.getConnection(dataSource);
-                PreparedStatement stmt = connection.prepareStatement(SELECT_LIMIT);) {
-            stmt.setInt(1, size);
-            stmt.setInt(2, offset);
-            logger.debug("(get) Query : {}", stmt);
-            ResultSet res = stmt.executeQuery();
-            return computerMapper.createComputerListFromResultSet(res);
-        } catch (SQLException e) {
-            logger.error("Exception in get(offset, size)", offset, size, e);
-            throw new DAOException(e);
-        }
+        return jdbcTemplate.query(SELECT_LIMIT, new ComputerRowMapper(), size, offset);
     }
 
     @Override
     public Optional<Computer> getComputerById(long id) throws DAOException {
+        //return jdbcTemplate.query(SELECT_BY_ID_JOIN, new ComputerRowMapper(), id);
         try (Connection connection = DataSourceUtils.getConnection(dataSource);
                 PreparedStatement stmt = connection.prepareStatement(SELECT_BY_ID_JOIN)) {
             stmt.setLong(1, id);
@@ -277,7 +268,7 @@ public class ComputerDAOImpl implements ComputerDAO {
     }
 
     @Override
-    public void delete(List<Long> ids) throws DAOException {
+    public void delete(List<Long> ids) throws DAOException{
         Connection connection = DataSourceUtils.getConnection(dataSource);
         try (PreparedStatement stmt = connection.prepareStatement(DELETE)) {
             for (long id : ids) {
@@ -293,37 +284,12 @@ public class ComputerDAOImpl implements ComputerDAO {
 
     @Override
     public int count() throws DAOException {
-        try (Connection connection = DataSourceUtils.getConnection(dataSource);
-                PreparedStatement stmt = connection.prepareStatement(COUNT);
-                ResultSet rSet = stmt.executeQuery();) {
-            logger.debug("(count) Query : {}", stmt);
-            if (rSet.next()) {
-                return rSet.getInt(1);
-            }
-            return -1;
-        } catch (SQLException e) {
-            logger.error("Exception in count()", e);
-            throw new DAOException(e);
-        }
+        return jdbcTemplate.queryForObject(COUNT, Integer.class);
     }
 
     @Override
     public int count(String name) throws DAOException {
-        try (Connection connection = DataSourceUtils.getConnection(dataSource);
-                PreparedStatement stmt = connection.prepareStatement(COUNT_NAME);) {
-            stmt.setString(1, "%" + name + "%");
-            stmt.setString(2, "%" + name + "%");
-            logger.debug("(count) Query : {}", stmt);
-            try (ResultSet rSet = stmt.executeQuery()) {
-                if (rSet.next()) {
-                    return rSet.getInt(1);
-                }
-                return -1;
-            }
-        } catch (SQLException e) {
-            logger.error("Exception in count()", e);
-            throw new DAOException(e);
-        }
+        return jdbcTemplate.queryForObject(COUNT_NAME, Integer.class, "%" + name + "%", "%" + name + "%");
     }
 
 }
