@@ -79,14 +79,7 @@ public class Dashboard extends HttpServlet {
             for (String strId : computerIds) {
                 ids.add(Long.parseLong(strId));
             }
-            try {
-                computerService.deleteComputer(ids);
-            } catch (ServiceException e) {
-                logger.error("Exception in doPost", e);
-                RequestDispatcher rd = request.getRequestDispatcher("/static/views/500.jsp");
-                request.setAttribute("stacktrace", e.getStackTrace());
-                rd.forward(request, response);
-            }
+            computerService.deleteComputer(ids);
         }
         doGet(request, response);
     }

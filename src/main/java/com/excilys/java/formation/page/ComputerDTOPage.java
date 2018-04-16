@@ -35,7 +35,7 @@ public class ComputerDTOPage extends ComputerPage {
     }
 
     @Override
-    public void updateList(String name) throws ServiceException {
+    public void updateList(String name) throws ServiceException, ValidatorException {
         logger.info("Updating computer list (search : {}) page number = {}, page size={}", name, offset, size);
         this.dTOElements = ComputerDTOMapper.INSTANCE.toDTOList(computerService.getByName(name, offset, size));
     }

@@ -37,7 +37,7 @@ public class ComputerPage extends Page {
         this.elements = computerService.getComputerList(offset, size);
     }
 
-    public void updateList(String name) throws ServiceException {
+    public void updateList(String name) throws ServiceException, ValidatorException {
         logger.debug("Updating computer list, page number = {}, page size = {}, search = {}", offset, size, name);
         this.elements = computerService.getByName(name, offset, size);
     }

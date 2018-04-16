@@ -92,9 +92,10 @@ public class EditComputer extends HttpServlet {
             computerDTOBuilder.withId(request.getParameter("id")).withName(request.getParameter("name"))
             .withIntroduced(request.getParameter("introduced"))
             .withDiscontinued(request.getParameter("discontinued")).withCompany(companyDTO);
-            computerService.createComputer(ComputerDTOMapper.INSTANCE.toComputer(computerDTOBuilder.build()));
+            logger.info("Call to updateComputer");
+            computerService.updateComputer(ComputerDTOMapper.INSTANCE.toComputer(computerDTOBuilder.build()));
             rd.forward(request, response);
-        } catch (ServiceException | NumberFormatException | ValidatorException e) {
+        } catch (NumberFormatException | ValidatorException e) {
             rd = request.getRequestDispatcher("/static/views/404.jsp");
             logger.error("Exception in doPost ", e);
             rd.forward(request, response);

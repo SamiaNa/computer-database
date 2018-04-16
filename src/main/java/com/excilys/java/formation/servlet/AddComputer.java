@@ -2,7 +2,6 @@ package com.excilys.java.formation.servlet;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -19,10 +18,8 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.excilys.java.formation.dto.CompanyDTO;
 import com.excilys.java.formation.dto.ComputerDTO.Builder;
-import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.mapper.CompanyDTOMapper;
 import com.excilys.java.formation.mapper.ComputerDTOMapper;
-import com.excilys.java.formation.persistence.interfaces.CompanyDAO;
 import com.excilys.java.formation.service.CompanyService;
 import com.excilys.java.formation.service.ComputerService;
 import com.excilys.java.formation.service.ServiceException;
@@ -42,8 +39,6 @@ public class AddComputer extends HttpServlet {
     @Autowired
     private ComputerService computerService;
 
-    @Autowired
-    private CompanyDAO companyDAO;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -54,27 +49,13 @@ public class AddComputer extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            RequestDispatcher rd = request.getRequestDispatcher("/static/views/addComputer.jsp");
-            List<CompanyDTO> companyList = CompanyDTOMapper.INSTANCE
-                    .toDTOList(companyService.getCompanyList());
-            request.setAttribute("companyList", companyList);
-            rd.forward(request, response);
-        } catch (ServiceException e) {
-            logger.error("Exception in addComputerServlet doGet", e);
-            response.sendRedirect("static/views/500.jsp");
-        }
+        RequestDispatcher rd = request.getRequestDispatcher("/static/views/addComputer.jsp");
+        List<CompanyDTO> companyList = CompanyDTOMapper.INSTANCE
+                .toDTOList(companyService.getCompanyList());
+        request.setAttribute("companyList", companyList);
+        rd.forward(request, response);
     }
 
-
-
-    private void setInfoMsg(HttpServletRequest request, Optional<Computer> optComp) {
-        if (optComp.isPresent()) {
-            request.setAttribute("res", "Computer added ");
-        } else {
-            request.setAttribute("res", "Error");
-        }
-    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -88,9 +69,8 @@ public class AddComputer extends HttpServlet {
                     .withIntroduced(request.getParameter("introduced"))
                     .withDiscontinued(request.getParameter("discontinued"))
                     .withCompany(companyDTO);
-            Optional<Computer> optComp = computerService
-                    .createComputer(ComputerDTOMapper.INSTANCE.toComputer(computerDTOBuilder.build()));
-            setInfoMsg(request, optComp);
+            computerService
+            .createComputer(ComputerDTOMapper.INSTANCE.toComputer(computerDTOBuilder.build()));
         } catch (ValidatorException e) {
             request.setAttribute("res", e.getMessage());
         } catch (ServiceException e) {

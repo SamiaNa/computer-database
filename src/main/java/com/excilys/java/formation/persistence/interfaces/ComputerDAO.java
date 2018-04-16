@@ -40,7 +40,7 @@ public interface ComputerDAO {
 
     Optional<Computer> getComputerById(long id) throws DAOException;
 
-    Optional<Long> createComputer(Computer c) throws DAOException;
+    long createComputer(Computer c) throws DAOException;
 
     void update(Computer c) throws DAOException;
 

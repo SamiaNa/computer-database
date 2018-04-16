@@ -27,6 +27,8 @@ import org.hsqldb.persist.HsqlDatabaseProperties;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.test.context.ContextConfiguration;
@@ -47,6 +49,8 @@ public class ComputerDAOImplTest{
 
     @Autowired
     private ComputerDAOJdbc computerDAO;
+
+    private static Logger logger = LoggerFactory.getLogger(ComputerDAOImplTest.class);
 
     @Before
     public void before() throws SQLException, InstantiationException, IllegalAccessException,  ClassNotFoundException, IOException, SqlToolError {
@@ -82,6 +86,7 @@ public class ComputerDAOImplTest{
         assertFalse(computerOpt.isPresent());
     }
 
+
     @Test
     public void testGetComputerByInvalidId() throws DAOException {
         Optional<Computer> computerOpt = computerDAO.getComputerById(2);
@@ -97,13 +102,14 @@ public class ComputerDAOImplTest{
     @Test
     public void testCreateComputerValid () throws  DAOException, SQLException, ClassNotFoundException{
         Computer c0 = new Computer ("Ordi1", null, null, new Company(1, null));
-        Optional<Long> id = computerDAO.createComputer(c0);
+        long id = computerDAO.createComputer(c0);
+
         Connection conn = DataSourceUtils.getConnection(dataSource);
         PreparedStatement stmt = conn.prepareStatement("SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE id = ?");
-        stmt.setLong(1, id.get());
+        stmt.setLong(1, id);
         ResultSet res = stmt.executeQuery();
         assertTrue(res.next());
-        assertEquals(Optional.of(res.getLong(1)), id);
+        assertEquals(res.getLong(1), id);
         assertEquals(res.getString(2), c0.getName());
         assertEquals(res.getDate(3), c0.getIntroduced());
         assertEquals(res.getDate(4), c0.getDiscontinued());
@@ -114,29 +120,15 @@ public class ComputerDAOImplTest{
         conn.close();
     }
 
-    @Test
+
     public void testCreateComputerInvalid() throws DAOException, ClassNotFoundException, SQLException {
         Computer c = new Computer (500, "OrdiPBDate", LocalDate.parse("2010-01-02"), LocalDate.parse("2005-02-03"), new Company(1, null));
-        Optional<Long> id = computerDAO.createComputer(c);
-        Connection conn = DataSourceUtils.getConnection(dataSource);
-        PreparedStatement stmt = conn.prepareStatement("SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE id = ?");
-        stmt.setLong(1, id.get());
-        ResultSet res = stmt.executeQuery();
-        assertTrue(res.next());
-        assertEquals(Optional.of(res.getLong(1)), id);
-        assertEquals(res.getString(2), c.getName());
-        assertEquals(res.getDate(3).toLocalDate(), c.getIntroduced());
-        assertEquals(res.getDate(4).toLocalDate(), c.getDiscontinued());
-        assertEquals(res.getLong(5), c.getCompany().getId());
-        assertEquals(res.getString(6), "Dell");
-        res.close();
-        stmt.close();
-        conn.close();
+        long id = computerDAO.createComputer(c);
     }
 
 
 
-    @Test(expected=DAOException.class)
+    @Test(expected=org.springframework.dao.DataIntegrityViolationException.class)
     public void testCreateComputerInvalidError() throws DAOException, ClassNotFoundException, SQLException {
         Computer c = new Computer (500, "OrdiPBDate", LocalDate.parse("2010-01-02"), LocalDate.parse("2005-02-03"), new Company(150, null));
         computerDAO.createComputer(c);

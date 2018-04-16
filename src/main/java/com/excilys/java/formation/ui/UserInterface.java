@@ -145,12 +145,8 @@ public class UserInterface {
             .withIntroduced(introducedStr)
             .withDiscontinued(discontinuedStr)
             .withCompany(companyDTO);
-            Optional<Computer> optComp = computerService.createComputer(ComputerDTOMapper.INSTANCE.toComputer(computerDTOBuilder.build()));
-            if (optComp.isPresent()) {
-                System.out.println("Successful creation with id " + optComp.get().getId());
-            } else {
-                System.out.println("Constraint violation, make sure company exists in database");
-            }
+            computerService.createComputer(ComputerDTOMapper.INSTANCE.toComputer(computerDTOBuilder.build()));
+
         } catch (ValidatorException e) {
             System.out.println(e.getMessage());
         }
