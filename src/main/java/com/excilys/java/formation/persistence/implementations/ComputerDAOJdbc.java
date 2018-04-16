@@ -165,28 +165,19 @@ public class ComputerDAOJdbc implements ComputerDAO {
 
     @Override
     public long createComputer(Computer c) throws DAOException {
-        logger.info("In create computer\n computer = {}", c);
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             try {
-                logger.info("Create computer");
                 PreparedStatement stmt = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
-                logger.info("After create statement");
                 stmt.setString(1, c.getName());
-                logger.info("After set name");
                 setCompanyIdOrNull(c.getCompany(), stmt, 2);
-                logger.info("After set company");
                 setDateOrNull(c.getIntroduced(), stmt, 3);
-                logger.info("After intro");
                 setDateOrNull(c.getDiscontinued(), stmt, 4);
-                logger.info("After disc");
                 return stmt;
             } catch (DAOException e) {
                 throw new SQLException(e);
             }
         }, keyHolder);
-        logger.info("After update");
-        logger.info("{}", keyHolder.getKey());
         return keyHolder.getKey().longValue();
     }
 

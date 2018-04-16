@@ -27,8 +27,6 @@ import org.hsqldb.persist.HsqlDatabaseProperties;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.test.context.ContextConfiguration;
@@ -50,7 +48,7 @@ public class ComputerDAOImplTest{
     @Autowired
     private ComputerDAOJdbc computerDAO;
 
-    private static Logger logger = LoggerFactory.getLogger(ComputerDAOImplTest.class);
+
 
     @Before
     public void before() throws SQLException, InstantiationException, IllegalAccessException,  ClassNotFoundException, IOException, SqlToolError {
