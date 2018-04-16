@@ -17,7 +17,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- test -->
-        <junit.version>5.0.0</junit.version>
+        <junit.version>4.12</junit.version>
         <junit-platform.version>1.0.3</junit-platform.version>
         <mockito.version>1.9.5</mockito.version>
         <hsqldb.version>2.4.0</hsqldb.version>
@@ -55,6 +55,12 @@
 
         <slf4j-simple.version>1.6.2</slf4j-simple.version>
         <lombok.version>1.16.20</lombok.version>
+        <commons-dbcp.version>1.4</commons-dbcp.version>
+        <jcl-over-slf4j.version>1.8.0-beta2</jcl-over-slf4j.version>
+
+        <!-- spring -->
+
+        <spring.version>5.0.5.RELEASE</spring.version>
 
     </properties>
 
@@ -106,18 +112,10 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire.version}</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.junit.platform</groupId>
-                        <artifactId>junit-platform-surefire-provider</artifactId>
-                        <version>${junit-platform.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.junit.jupiter</groupId>
-                        <artifactId>junit-jupiter-engine</artifactId>
-                        <version>${junit.version}</version>
-                    </dependency>
-                </dependencies>
+                <!-- <dependencies> <dependency> <groupId>org.junit.platform</groupId> 
+                    <artifactId>junit-platform-surefire-provider</artifactId> <version>${junit-platform.version}</version> 
+                    </dependency> <dependency> <groupId>org.junit.jupiter</groupId> <artifactId>junit-jupiter-engine</artifactId> 
+                    <version>${junit.version}</version> </dependency> </dependencies> -->
             </plugin>
 
             <plugin>
@@ -216,7 +214,7 @@
             <version>${apache-commons.version}</version>
         </dependency>
         <dependency>
-        
+
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
@@ -230,12 +228,14 @@
         </dependency>
 
         <!-- tests -->
+
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+
 
         <dependency>
             <groupId>org.mockito</groupId>
@@ -252,6 +252,14 @@
         </dependency>
 
         <dependency>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>sqltool</artifactId>
+            <version>${hsqldb.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+
+        <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-server</artifactId>
             <version>${selenium.version}</version>
@@ -265,12 +273,18 @@
             <version>${slf4j.version}</version>
         </dependency>
 
-
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${jcl-over-slf4j.version}</version>
+        </dependency>
+
 
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -284,6 +298,57 @@
             <version>${jquery.version}</version>
         </dependency>
 
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring.version}</version>
+
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
 
     </dependencies>
 

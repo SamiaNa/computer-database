@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -13,6 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.excilys.java.formation.dto.CompanyDTO;
 import com.excilys.java.formation.dto.ComputerDTO.Builder;
@@ -32,6 +35,16 @@ public class EditComputer extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
     private static final Logger logger = LoggerFactory.getLogger(EditComputer.class);
+    @Autowired
+    private ComputerService computerService;
+    @Autowired
+    private CompanyService companyService;
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -42,9 +55,9 @@ public class EditComputer extends HttpServlet {
             String idStr = request.getParameter("id");
             logger.info("Id to parse {}", idStr);
             long id = Long.parseLong(idStr);
-            Optional<Computer> optComp = ComputerService.INSTANCE.getComputerById(id);
+            Optional<Computer> optComp = computerService.getComputerById(id);
             if (optComp.isPresent()) {
-                List<Company> companyList = CompanyService.INSTANCE.getCompanyList();
+                List<Company> companyList = companyService.getCompanyList();
                 request.setAttribute("companyList", companyList);
                 request.setAttribute("computer", ComputerDTOMapper.INSTANCE.toDTO(optComp.get()));
             } else {
@@ -79,9 +92,10 @@ public class EditComputer extends HttpServlet {
             computerDTOBuilder.withId(request.getParameter("id")).withName(request.getParameter("name"))
             .withIntroduced(request.getParameter("introduced"))
             .withDiscontinued(request.getParameter("discontinued")).withCompany(companyDTO);
-            ComputerService.INSTANCE.updateComputer(ComputerDTOMapper.INSTANCE.toComputer(computerDTOBuilder.build()));
+            logger.info("Call to updateComputer");
+            computerService.updateComputer(ComputerDTOMapper.INSTANCE.toComputer(computerDTOBuilder.build()));
             rd.forward(request, response);
-        } catch (ServiceException | NumberFormatException | ValidatorException e) {
+        } catch (NumberFormatException | ValidatorException e) {
             rd = request.getRequestDispatcher("/static/views/404.jsp");
             logger.error("Exception in doPost ", e);
             rd.forward(request, response);

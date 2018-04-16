@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -13,6 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.excilys.java.formation.page.ComputerDTOPage;
 import com.excilys.java.formation.page.ComputerPage;
@@ -32,6 +35,14 @@ public class Dashboard extends HttpServlet {
     private static final String ORDER = "order";
     private static final String BY = "by";
 
+    @Autowired
+    private ComputerService computerService;
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -40,7 +51,7 @@ public class Dashboard extends HttpServlet {
             RequestDispatcher rd = request.getRequestDispatcher("/static/views/dashboard.jsp");
             int pageNumber = getUnsignedIntFromParam(request, response, "pageNumber", 1);
             int pageSize = getUnsignedIntFromParam(request, response, "pageSize", 10);
-            ComputerDTOPage computerPage = new ComputerDTOPage();
+            ComputerDTOPage computerPage = new ComputerDTOPage(computerService);
             String search = request.getParameter(SEARCH);
             String by = request.getParameter(BY);
             String order = request.getParameter(ORDER);
@@ -68,14 +79,7 @@ public class Dashboard extends HttpServlet {
             for (String strId : computerIds) {
                 ids.add(Long.parseLong(strId));
             }
-            try {
-                ComputerService.INSTANCE.deleteComputer(ids);
-            } catch (ServiceException e) {
-                logger.error("Exception in doPost", e);
-                RequestDispatcher rd = request.getRequestDispatcher("/static/views/500.jsp");
-                request.setAttribute("stacktrace", e.getStackTrace());
-                rd.forward(request, response);
-            }
+            computerService.deleteComputer(ids);
         }
         doGet(request, response);
     }

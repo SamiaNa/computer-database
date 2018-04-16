@@ -16,33 +16,35 @@ public class ComputerDTOPage extends ComputerPage {
 
     private List<ComputerDTO> dTOElements;
     private static final Logger logger = LoggerFactory.getLogger(ComputerDTOPage.class);
+    private ComputerService computerService;
 
-    public ComputerDTOPage() {
-        super();
+    public ComputerDTOPage(ComputerService computerService) {
+        super(computerService);
         this.dTOElements = new ArrayList<>();
+        this.computerService  = computerService;
     }
 
-    public ComputerDTOPage(int pageNumber, int size) {
-        super(pageNumber, size);
+    public ComputerDTOPage(ComputerService computerService, int pageNumber, int size) {
+        super(computerService, pageNumber, size);
     }
 
     @Override
     public void updateList() throws  ServiceException {
         logger.info("Updating computer list : page number = {}, page size={}", offset ,size);
-        this.dTOElements = ComputerDTOMapper.INSTANCE.toDTOList(ComputerService.INSTANCE.getComputerList(offset, size));
+        this.dTOElements = ComputerDTOMapper.INSTANCE.toDTOList(computerService.getComputerList(offset, size));
     }
 
     @Override
-    public void updateList(String name) throws ServiceException {
+    public void updateList(String name) throws ServiceException, ValidatorException {
         logger.info("Updating computer list (search : {}) page number = {}, page size={}", name, offset, size);
-        this.dTOElements = ComputerDTOMapper.INSTANCE.toDTOList(ComputerService.INSTANCE.getByName(name, offset, size));
+        this.dTOElements = ComputerDTOMapper.INSTANCE.toDTOList(computerService.getByName(name, offset, size));
     }
 
     @Override
     public void updateListOrderBy(String orderCriteria, String order) throws ValidatorException, ServiceException {
         logger.info("Updating computer list (orderBy : {}) page number = {}, page size={}", orderCriteria, offset, size);
         this.dTOElements = ComputerDTOMapper.INSTANCE
-                .toDTOList(ComputerService.INSTANCE.getByOrder(orderCriteria, order, offset, size));
+                .toDTOList(computerService.getByOrder(orderCriteria, order, offset, size));
 
     }
 
@@ -52,7 +54,7 @@ public class ComputerDTOPage extends ComputerPage {
         logger.debug("Updating computer list, page number = {}, page size = {}, order by = {}, search = {}", offset,
                 size, orderCriteria, search);
         this.dTOElements = ComputerDTOMapper.INSTANCE
-                .toDTOList(ComputerService.INSTANCE.getByOrder(orderCriteria, order, search, offset, size));
+                .toDTOList(computerService.getByOrder(orderCriteria, order, search, offset, size));
     }
 
 
