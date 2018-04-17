@@ -52,8 +52,7 @@ public class ComputerDAOJdbc implements ComputerDAO {
 
     private JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    DataSource dataSource;
+
 
     @Autowired
     public void init(DataSource dataSource) {

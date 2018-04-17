@@ -17,7 +17,7 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 	<div class="container">
-		<a class="navbar-brand" href="dashboard.html"> Application -
+		<a class="navbar-brand" href="Dashboard"> Application -
 			Computer Database </a>
 	</div>
 	</header>
@@ -108,9 +108,10 @@
 				order="${order}" target="Dashboard" />
 		</ul>
 		<div class="btn-group btn-group-sm pull-right" role="group">
+
 			<form
 				action="Dashboard?pageNumber=${page.number}&pageSize=10&search=${search}&by=${by}&order=${order}"
-				method="post">
+				method="post">  
 				<button type="submit" class="btn btn-default">10</button>
 				<button type="submit" class="btn btn-default"
 					formaction="Dashboard?pageNumber=${page.number}&pageSize=50&search=${search}&by=${by}&order=${order}">50</button>
@@ -123,7 +124,6 @@
 	<script src="static/js/jquery.min.js"></script>
 	<script src="static/js/bootstrap.min.js"></script>
 	<script src="static/js/dashboard.js"></script>
-
 
 </body>
 </html>
