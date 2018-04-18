@@ -1,7 +1,9 @@
-package com.excilys.java.formation.configuration;
+package com.excilys.java.formation.configuration.web;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
+@Profile("!CLI")
 public class ComputerDatabaseInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
     @Override

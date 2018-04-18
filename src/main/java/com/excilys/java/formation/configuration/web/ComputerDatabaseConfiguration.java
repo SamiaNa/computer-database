@@ -1,12 +1,13 @@
-package com.excilys.java.formation.configuration;
+package com.excilys.java.formation.configuration.web;
 
 import javax.sql.DataSource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -22,9 +23,21 @@ import org.springframework.web.servlet.view.JstlView;
 @EnableWebMvc
 @EnableTransactionManagement
 @ComponentScan(basePackages = { "com.excilys.java.formation" })
+@PropertySource(value= {"classpath:datasource.properties"})
+@Profile("!CLI")
 public class ComputerDatabaseConfiguration  implements WebMvcConfigurer{
 
-    private Logger logger = LoggerFactory.getLogger(ComputerDatabaseConfiguration.class);
+    @Value("${driver}")
+    private String driver;
+
+    @Value("${url}")
+    private String url;
+
+    @Value("${dbuser}")
+    private String user;
+
+    @Value("${dbpass}")
+    private String pass;
 
     @Bean
     public ViewResolver viewResolver() {
@@ -44,10 +57,10 @@ public class ComputerDatabaseConfiguration  implements WebMvcConfigurer{
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/computer-database-db?useSSL=false&serverTimezone=CET");
-        dataSource.setUsername("admincdb");
-        dataSource.setPassword("qwerty1234");
+        dataSource.setDriverClassName(driver);
+        dataSource.setUrl(url);
+        dataSource.setUsername(user);
+        dataSource.setPassword(pass);
         return dataSource;
     }
 

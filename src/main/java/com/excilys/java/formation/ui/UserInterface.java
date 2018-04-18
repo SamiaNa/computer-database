@@ -6,9 +6,11 @@ import java.util.Optional;
 import java.util.Scanner;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.stereotype.Controller;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.stereotype.Component;
 
+import com.excilys.java.formation.configuration.cli.CLIConfiguration;
 import com.excilys.java.formation.dto.CompanyDTO;
 import com.excilys.java.formation.dto.ComputerDTO;
 import com.excilys.java.formation.dto.ComputerDTO.Builder;
@@ -24,7 +26,7 @@ import com.excilys.java.formation.service.ComputerService;
 import com.excilys.java.formation.service.ServiceException;
 import com.excilys.java.formation.validator.ValidatorException;
 
-@Controller
+@Component
 public class UserInterface {
 
     private static final int PAGE_SIZE = 10;
@@ -34,6 +36,7 @@ public class UserInterface {
 
     @Autowired
     private CompanyService companyService;
+
 
     private  void printElements(Page page) {
         if (page instanceof ComputerPage) {
@@ -291,13 +294,8 @@ public class UserInterface {
     }
 
     public static void main(String[] args) throws ValidatorException, ServiceException {
-        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("/applicationContext.xml", UserInterface.class);
-        UserInterface ui = context.getBean(UserInterface.class);
-        Scanner scanner = new Scanner(System.in);
-        ui.startUI(scanner);
-        scanner.close();
-        context.close();
-
+        ApplicationContext context = new AnnotationConfigApplicationContext(CLIConfiguration.class);
+        context.getBean(UserInterface.class).startUI(new Scanner(System.in));
     }
 
 }
