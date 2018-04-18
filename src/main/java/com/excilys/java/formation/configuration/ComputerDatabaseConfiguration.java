@@ -2,6 +2,8 @@ package com.excilys.java.formation.configuration;
 
 import javax.sql.DataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +24,8 @@ import org.springframework.web.servlet.view.JstlView;
 @ComponentScan(basePackages = { "com.excilys.java.formation" })
 public class ComputerDatabaseConfiguration  implements WebMvcConfigurer{
 
+    private Logger logger = LoggerFactory.getLogger(ComputerDatabaseConfiguration.class);
+
     @Bean
     public ViewResolver viewResolver() {
         InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
@@ -30,6 +34,7 @@ public class ComputerDatabaseConfiguration  implements WebMvcConfigurer{
         viewResolver.setSuffix(".jsp");
         return viewResolver;
     }
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/static/**").addResourceLocations("/static/");

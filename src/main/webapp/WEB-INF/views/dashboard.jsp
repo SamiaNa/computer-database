@@ -39,7 +39,7 @@
 			</div>
 			<div class="pull-right">
 				<a class="btn btn-success" id="addComputer"
-					href="./static/views/addComputer.jsp">Add Computer</a> <a
+					href="AddComputer">Add Computer</a> <a
 					class="btn btn-default" id="deleteComputer" href="#"
 					onclick="$.fn.toggleEditMode();">Delete</a>
 			</div>

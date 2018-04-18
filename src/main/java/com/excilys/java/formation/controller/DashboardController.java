@@ -20,6 +20,7 @@ import com.excilys.java.formation.validator.ValidatorException;
 
 @Controller
 @RequestMapping(value = { "/", "/Dashboard" })
+
 public class DashboardController {
 
     private static Logger logger = LoggerFactory.getLogger(DashboardController.class);

@@ -292,6 +292,12 @@
         </dependency>
 
         <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.webjars.bower</groupId>
             <artifactId>jquery</artifactId>
             <version>${jquery.version}</version>
