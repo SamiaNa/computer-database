@@ -31,7 +31,6 @@ import com.excilys.java.formation.validator.ValidatorException;
 @Profile("!CLI")
 public class ComputerDatabaseController {
 
-
     private static Logger logger = LoggerFactory.getLogger(ComputerDatabaseController.class);
     private static final String SEARCH = "search";
     private static final String ORDER = "order";
@@ -42,6 +41,12 @@ public class ComputerDatabaseController {
 
     @Autowired
     private CompanyService companyService;
+
+    @Autowired
+    private ComputerDTOMapper computerDTOMapper;
+
+    @Autowired
+    private CompanyDTOMapper companyDTOMapper;
 
     @GetMapping(value = { "/", "/Dashboard" })
     public String doGetDashboard(ModelMap model, @RequestParam(value = "pageNumber", required = false) String pageNumberStr,
@@ -54,7 +59,7 @@ public class ComputerDatabaseController {
         if (pageNumber == -1 || pageSize == -1) {
             return ("redirect:static/views/404.jsp");
         }
-        ComputerDTOPage computerPage = new ComputerDTOPage(computerService);
+        ComputerDTOPage computerPage = new ComputerDTOPage(computerService, computerDTOMapper);
         computerPage.getPage(by, order, search, pageNumber, pageSize);
         setAttributes(model, by, order, search, computerPage);
         return "dashboard";
@@ -85,7 +90,7 @@ public class ComputerDatabaseController {
             if (optComp.isPresent()) {
                 List<Company> companyList = companyService.getCompanyList();
                 model.addAttribute("companyList", companyList);
-                model.addAttribute("computer", ComputerDTOMapper.INSTANCE.toDTO(optComp.get()));
+                model.addAttribute("computer", computerDTOMapper.toDTO(optComp.get()));
             } else {
                 model.addAttribute("message", "No computer with id " + id);
                 return "404";
@@ -117,7 +122,7 @@ public class ComputerDatabaseController {
             .withIntroduced(computerIntro)
             .withDiscontinued(computerDisc).withCompany(companyDTO);
             logger.info("Call to updateComputer");
-            computerService.updateComputer(ComputerDTOMapper.INSTANCE.toComputer(computerDTOBuilder.build()));
+            computerService.updateComputer(computerDTOMapper.toComputer(computerDTOBuilder.build()));
             return "editComputer";
         } catch (NumberFormatException | ValidatorException e) {
             logger.error("Exception in doPost ", e);
@@ -126,9 +131,9 @@ public class ComputerDatabaseController {
 
     }
 
-    @GetMapping(value = { "/AddComputer" })
+    @GetMapping(value = { "/Add!Computer" })
     public String doGet(ModelMap model) {
-        List<CompanyDTO> companyList = CompanyDTOMapper.INSTANCE.toDTOList(companyService.getCompanyList());
+        List<CompanyDTO> companyList = companyDTOMapper.toDTOList(companyService.getCompanyList());
         model.addAttribute("companyList", companyList);
         return "addComputer";
     }
@@ -147,7 +152,7 @@ public class ComputerDatabaseController {
                     .withDiscontinued(discontinued)
                     .withCompany(companyDTO);
             computerService
-            .createComputer(ComputerDTOMapper.INSTANCE.toComputer(computerDTOBuilder.build()));
+            .createComputer(computerDTOMapper.toComputer(computerDTOBuilder.build()));
         } catch (ValidatorException e) {
             model.addAttribute("res", e.getMessage());
             return "404";

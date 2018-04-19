@@ -5,16 +5,21 @@ import java.time.format.DateTimeParseException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.persistence.implementations.DAOException;
 import com.excilys.java.formation.persistence.interfaces.CompanyDAO;
 import com.excilys.java.formation.persistence.interfaces.ComputerDAO;
 
-public enum ComputerValidator {
+@Component
+public class ComputerValidator {
 
-    INSTANCE;
-    private static final CompanyValidator companyValidator = CompanyValidator.INSTANCE;
+    @Autowired
+    private CompanyValidator companyValidator;
+
+
     private static Logger logger = LoggerFactory.getLogger(ComputerValidator.class);
 
     public void checkName(String name) throws ValidatorException {

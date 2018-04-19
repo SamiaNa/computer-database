@@ -22,13 +22,15 @@ import com.excilys.java.formation.validator.ValidatorException;
 public class ComputerService {
 
     private static Logger logger = LoggerFactory.getLogger(ComputerService.class);
+
     @Autowired
     private ComputerDAOJdbc computerDAO ;
 
     @Autowired
     private CompanyDAOJdbc companyDAO;
 
-    private ComputerValidator computerValidator = ComputerValidator.INSTANCE;
+    @Autowired
+    private ComputerValidator computerValidator;
 
     public List<Computer> getComputerList() {
         return computerDAO.getAll();
@@ -43,12 +45,12 @@ public class ComputerService {
     }
 
     public List<Computer> getByOrder(String orderBy, String by, String name, int offset, int size) throws ValidatorException {
-        ComputerValidator.INSTANCE.checkName(name);
+        computerValidator.checkName(name);
         return computerDAO.getByOrder(orderBy, by, name, offset, size);
     }
 
     public List<Computer> getByName(String name, int offset, int size) throws  ValidatorException {
-        ComputerValidator.INSTANCE.checkName(name);
+        computerValidator.checkName(name);
         return computerDAO.getByName(name, offset, size);
     }
 
@@ -94,7 +96,7 @@ public class ComputerService {
     }
 
     public int count(String name) throws ValidatorException {
-        ComputerValidator.INSTANCE.checkName(name);
+        computerValidator.checkName(name);
         return computerDAO.count(name);
     }
 

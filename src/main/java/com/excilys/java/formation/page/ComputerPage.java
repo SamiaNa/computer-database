@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.service.ComputerService;
@@ -16,6 +17,8 @@ public class ComputerPage extends Page {
 
     private List<Computer> elements;
     private static final Logger logger = LoggerFactory.getLogger(ComputerPage.class);
+
+    @Autowired
     private  ComputerService computerService;
 
     public ComputerPage(ComputerService computerService) {

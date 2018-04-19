@@ -9,14 +9,15 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.persistence.implementations.DAOException;
 
-public enum ComputerMapper {
+@Component
+public class ComputerMapper {
 
-    INSTANCE;
     private static final Logger logger = LoggerFactory.getLogger(ComputerMapper.class);
 
     /**

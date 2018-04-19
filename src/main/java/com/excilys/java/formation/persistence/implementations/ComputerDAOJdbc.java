@@ -52,6 +52,9 @@ public class ComputerDAOJdbc implements ComputerDAO {
 
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    private ComputerRowMapper computerRowMapper;
+
 
 
     @Autowired
@@ -61,17 +64,17 @@ public class ComputerDAOJdbc implements ComputerDAO {
 
     @Override
     public List<Computer> getAll() {
-        return jdbcTemplate.query(SELECT_ALL, new ComputerRowMapper());
+        return jdbcTemplate.query(SELECT_ALL, computerRowMapper);
     }
 
     @Override
     public List<Computer> get(int offset, int size) {
-        return jdbcTemplate.query(SELECT_LIMIT, new ComputerRowMapper(), size, offset);
+        return jdbcTemplate.query(SELECT_LIMIT, computerRowMapper, size, offset);
     }
 
     @Override
     public Optional<Computer> getComputerById(long id) throws DAOException {
-        List<Computer> computer = jdbcTemplate.query(SELECT_BY_ID_JOIN, new ComputerRowMapper(), id);
+        List<Computer> computer = jdbcTemplate.query(SELECT_BY_ID_JOIN, computerRowMapper, id);
         try {
             return Optional.of(computer.get(0));
         } catch (IndexOutOfBoundsException e) {
@@ -82,7 +85,7 @@ public class ComputerDAOJdbc implements ComputerDAO {
     @Override
     public List<Computer> getByName(String name, int offset, int limit) {
         String nameParam = "%" + name + "%";
-        List<Computer> list = jdbcTemplate.query(SELECT_BY_NAME, new ComputerRowMapper(), nameParam, nameParam, limit,
+        List<Computer> list = jdbcTemplate.query(SELECT_BY_NAME, computerRowMapper, nameParam, nameParam, limit,
                 offset);
         return list;
     }

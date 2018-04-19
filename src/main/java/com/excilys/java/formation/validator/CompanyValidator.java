@@ -2,14 +2,15 @@ package com.excilys.java.formation.validator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.persistence.implementations.DAOException;
 import com.excilys.java.formation.persistence.interfaces.CompanyDAO;
 
-public enum CompanyValidator {
+@Component
+public class CompanyValidator {
 
-    INSTANCE;
     private static final Logger logger = LoggerFactory.getLogger(CompanyValidator.class);
     /**
      * Converts string argument to Long

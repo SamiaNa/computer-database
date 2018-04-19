@@ -37,6 +37,11 @@ public class UserInterface {
     @Autowired
     private CompanyService companyService;
 
+    @Autowired
+    private ComputerDTOMapper computerDTOMapper;
+
+
+
 
     private  void printElements(Page page) {
         if (page instanceof ComputerPage) {
@@ -148,7 +153,7 @@ public class UserInterface {
             .withIntroduced(introducedStr)
             .withDiscontinued(discontinuedStr)
             .withCompany(companyDTO);
-            computerService.createComputer(ComputerDTOMapper.INSTANCE.toComputer(computerDTOBuilder.build()));
+            computerService.createComputer(computerDTOMapper.toComputer(computerDTOBuilder.build()));
 
         } catch (ValidatorException e) {
             System.out.println(e.getMessage());
@@ -168,42 +173,36 @@ public class UserInterface {
             System.out.println("No computer found with id " + computerId);
             return;
         }
-        try {
-            ComputerDTO computerDTO = ComputerDTOMapper.INSTANCE.toDTO(optComputer.get());
-            if (updateAttribute("name", computerDTO.getName(), scanner)) {
-                System.out.println("Enter new name");
-                computerDTO.setName(scanner.nextLine());
+        ComputerDTO computerDTO = computerDTOMapper.toDTO(optComputer.get());
+        if (updateAttribute("name", computerDTO.getName(), scanner)) {
+            System.out.println("Enter new name");
+            computerDTO.setName(scanner.nextLine());
+        }
+        if (updateAttribute("date of introduction", computerDTO.getIntroduced(), scanner)) {
+            System.out.println("Enter new date of introduction");
+            computerDTO.setIntroduced(scanner.nextLine());
+        }
+        if (updateAttribute("date of discontinuation", computerDTO.getDiscontinued(), scanner)) {
+            System.out.println("Enter new date of discontinuation");
+            computerDTO.setDiscontinued(scanner.nextLine());
+        }
+        CompanyDTO companyDTO = computerDTO.getCompany();
+        String companyIdStr;
+        if (companyDTO == null) {
+            companyIdStr = "null";
+        }else {
+            companyIdStr = String.valueOf(computerDTO.getCompany().getId());
+        }
+        if (updateAttribute("company id", companyIdStr, scanner)) {
+            System.out.println("Enter company id");
+            companyIdStr = scanner.nextLine();
+            companyDTO = computerDTO.getCompany();
+            try {
+                companyDTO.setId(Long.parseUnsignedLong(companyIdStr));
+            }catch (NumberFormatException | NullPointerException e) {
+                companyDTO = null;
             }
-            if (updateAttribute("date of introduction", computerDTO.getIntroduced(), scanner)) {
-                System.out.println("Enter new date of introduction");
-                computerDTO.setIntroduced(scanner.nextLine());
-            }
-            if (updateAttribute("date of discontinuation", computerDTO.getDiscontinued(), scanner)) {
-                System.out.println("Enter new date of discontinuation");
-                computerDTO.setDiscontinued(scanner.nextLine());
-            }
-            CompanyDTO companyDTO = computerDTO.getCompany();
-            String companyIdStr;
-            if (companyDTO == null) {
-                companyIdStr = "null";
-            }else {
-                companyIdStr = String.valueOf(computerDTO.getCompany().getId());
-            }
-            if (updateAttribute("company id", companyIdStr, scanner)) {
-                System.out.println("Enter company id");
-                companyIdStr = scanner.nextLine();
-                companyDTO = computerDTO.getCompany();
-                try {
-                    companyDTO.setId(Long.parseUnsignedLong(companyIdStr));
-                }catch (NumberFormatException | NullPointerException e) {
-                    companyDTO = null;
-                }
-                computerDTO.setCompany(companyDTO);
-            }
-            computerService.updateComputer(ComputerDTOMapper.INSTANCE.toComputer(computerDTO));
-
-        }catch (ValidatorException e) {
-            System.out.println(e.getMessage());
+            computerDTO.setCompany(companyDTO);
         }
 
     }

@@ -29,6 +29,9 @@ public class CompanyDAOJdbc implements CompanyDAO {
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
+    private CompanyRowMapper companyRowMapper;
+
+    @Autowired
     private ComputerDAOJdbc computerDAO;
 
     @Autowired
@@ -37,22 +40,22 @@ public class CompanyDAOJdbc implements CompanyDAO {
     }
     @Override
     public List<Company> getAll() {
-        return jdbcTemplate.query(SELECT, new CompanyRowMapper());
+        return jdbcTemplate.query(SELECT, companyRowMapper);
     }
 
     @Override
     public List<Company> get(int offset, int size)  {
-        return jdbcTemplate.query(SELECT_LIMIT, new CompanyRowMapper(), size, offset);
+        return jdbcTemplate.query(SELECT_LIMIT, companyRowMapper, size, offset);
     }
 
     @Override
     public List<Company> getByName(String name)  {
-        return jdbcTemplate.query(SELECT_BY_NAME, new CompanyRowMapper(), "%"+name+"%");
+        return jdbcTemplate.query(SELECT_BY_NAME, companyRowMapper, "%"+name+"%");
     }
 
     @Override
     public boolean checkCompanyById(long id) throws DAOException {
-        List<Company> companies =  jdbcTemplate.query(SELECT_BY_ID,  new CompanyRowMapper(), id);
+        List<Company> companies =  jdbcTemplate.query(SELECT_BY_ID,  companyRowMapper, id);
         if (companies.size() == 1) {
             return true;
         }

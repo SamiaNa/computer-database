@@ -5,13 +5,14 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.excilys.java.formation.dto.CompanyDTO;
 import com.excilys.java.formation.entities.Company;
 
-public enum CompanyDTOMapper {
+@Component
+public class CompanyDTOMapper {
 
-    INSTANCE;
     private static final Logger logger = LoggerFactory.getLogger(CompanyDTOMapper.class);
 
 
