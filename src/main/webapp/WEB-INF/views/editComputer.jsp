@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -34,41 +35,37 @@
 						<input type="hidden" value="${param.id}" name="id" id="id" />
 						<fieldset>
 							<div class="form-group">
-								<form:label for="computerName" path="name">Computer name</form:label>
-								<input data-validation="custom"
+								<label for="computerName">Computer name</label> <input
+									data-validation="custom"
 									data-validation-regexp="^[\wÀ-ÿ]+[\wÀ-ÿ_\-'\+\* \.]+$"
 									type="text" class="form-control" id="computerName"
 									placeholder="Computer name" name="name"
 									value="${computer.name}">
 							</div>
 							<div class="form-group">
-								<form:label for="introduced" path="introduced">Introduced date</form:label>
-								<input data-validation="date"
-									data-validation-format="yyyy-mm-dd"
+								<label for="introduced">Introduced date</label> <input
+									data-validation="date" data-validation-format="yyyy-mm-dd"
 									data-validation-optional="true" type="date"
 									class="form-control" id="introduced"
 									placeholder="Introduced date" name="introduced"
 									value="${computer.introduced}">
 							</div>
 							<div class="form-group">
-								<form:label for="discontinued" path="discontinued">Discontinued date</form:label>
-								<input data-validation="date"
-									data-validation-format="yyyy-mm-dd"
+								<label for="discontinued">Discontinued date</label> <input
+									data-validation="date" data-validation-format="yyyy-mm-dd"
 									data-validation-optional="true" type="date"
 									class="form-control" id="discontinued" name="discontinued"
 									placeholder="Discontinued date"
 									value="${computer.discontinued}">
 							</div>
 							<div class="form-group">
-								<form:label for="company" path="company">Company</form:label>
-								<form:select class="form-control" name="companyId"
-									id="companyId" path="company.id">
-									<form:option value="${computer.company.id}">--</form:option>
+								<label for="companyId">Company</label> <select
+									class="form-control" name="companyId" id="companyId">
+									<option value="0">--</option>
 									<c:forEach var="company" items="${companyList}">
 										<c:choose>
 											<c:when test="${company.id == computer.company.id}">
 												<option selected value="${company.id}">${company.name}</option>
-
 											</c:when>
 											<c:otherwise>
 												<option value="${company.id}">${company.name}</option>
@@ -76,7 +73,7 @@
 											</c:otherwise>
 										</c:choose>
 									</c:forEach>
-								</form:select>
+								</select>
 								<c:out value="${res}" />
 							</div>
 						</fieldset>

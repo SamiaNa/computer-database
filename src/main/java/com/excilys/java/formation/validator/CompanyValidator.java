@@ -3,13 +3,15 @@ package com.excilys.java.formation.validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
 
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.persistence.implementations.DAOException;
 import com.excilys.java.formation.persistence.interfaces.CompanyDAO;
 
 @Component
-public class CompanyValidator {
+public class CompanyValidator implements Validator{
 
     private static final Logger logger = LoggerFactory.getLogger(CompanyValidator.class);
     /**
@@ -54,5 +56,16 @@ public class CompanyValidator {
                 throw new ValidatorException(e);
             }
         }
+    }
+
+    @Override
+    public boolean supports(Class<?> clazz) {
+        return Company.class.isAssignableFrom(clazz);
+    }
+
+    @Override
+    public void validate(Object target, Errors errors) {
+        // TODO Auto-generated method stub
+        
     }
 }
