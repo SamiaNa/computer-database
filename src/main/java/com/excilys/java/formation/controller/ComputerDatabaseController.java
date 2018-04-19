@@ -59,7 +59,7 @@ public class ComputerDatabaseController {
         int pageNumber = getUnsignedIntFromParam(pageNumberStr, 1);
         int pageSize = getUnsignedIntFromParam(pageSizeStr, 10);
         if (pageNumber == -1 || pageSize == -1) {
-            return ("redirect:static/views/404.jsp");
+            return ("redirect:404.jsp");
         }
         ComputerDTOPage computerPage = new ComputerDTOPage(computerService, computerDTOMapper);
         computerPage.getPage(by, order, search, pageNumber, pageSize);

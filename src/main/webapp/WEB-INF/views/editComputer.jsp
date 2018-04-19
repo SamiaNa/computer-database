@@ -60,11 +60,21 @@
 									value="${computer.discontinued}">
 							</div>
 							<div class="form-group">
-								<form:label for="companyId" path="company">Company</form:label>
-								<form:select class="form-control" name="companyId" id="companyId" path="company.id">
-									<form:option value="0">--</form:option>
+								<form:label for="company" path="company">Company</form:label>
+								<form:select class="form-control" name="companyId"
+									id="companyId" path="company.id">
+									<form:option value="${computer.company.id}">--</form:option>
 									<c:forEach var="company" items="${companyList}">
-										<option value="${company.id}">${company.name}</option>
+										<c:choose>
+											<c:when test="${company.id == computer.company.id}">
+												<option selected value="${company.id}">${company.name}</option>
+
+											</c:when>
+											<c:otherwise>
+												<option value="${company.id}">${company.name}</option>
+
+											</c:otherwise>
+										</c:choose>
 									</c:forEach>
 								</form:select>
 								<c:out value="${res}" />
