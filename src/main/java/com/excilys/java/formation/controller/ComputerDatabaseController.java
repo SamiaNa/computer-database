@@ -57,6 +57,7 @@ public class ComputerDatabaseController {
             @RequestParam(value = "search", required = false) String search,
             @RequestParam(value = "order", required = false) String order,
             @RequestParam(value = "by", required = false) String by) throws ValidatorException, ServiceException {
+        logger.info("DO get dashboard");
         int pageNumber = getUnsignedIntFromParam(pageNumberStr, 1);
         int pageSize = getUnsignedIntFromParam(pageSizeStr, 10);
         if (pageNumber == -1 || pageSize == -1) {
@@ -74,8 +75,9 @@ public class ComputerDatabaseController {
             @RequestParam(value = "pageSize", required = false) String pageSizeStr,
             @RequestParam(value = "search", required = false) String search,
             @RequestParam(value = "order", required = false) String order,
-            @RequestParam(value = "by", required = false) String by) throws ValidatorException, ServiceException {
-        String checked = (String) model.get("selection");
+            @RequestParam(value = "by", required = false) String by,
+            @RequestParam(value = "selection") String checked) throws ValidatorException, ServiceException {
+        logger.info("   Checked = {}", checked);
         if (checked != null) {
             String[] computerIds = checked.split(",");
             List<Long> ids = new ArrayList<>();

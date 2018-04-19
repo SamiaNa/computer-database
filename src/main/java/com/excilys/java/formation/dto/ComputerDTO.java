@@ -2,9 +2,14 @@ package com.excilys.java.formation.dto;
 
 import java.util.Objects;
 
+import org.springframework.lang.NonNull;
+
+
+
 public class ComputerDTO {
 
     private long id;
+    @NonNull
     private String name;
     private String introduced;
     private String discontinued;
