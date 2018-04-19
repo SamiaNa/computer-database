@@ -11,10 +11,12 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.excilys.java.formation.dto.CompanyDTO;
+import com.excilys.java.formation.dto.ComputerDTO;
 import com.excilys.java.formation.dto.ComputerDTO.Builder;
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.entities.Computer;
@@ -131,8 +133,8 @@ public class ComputerDatabaseController {
 
     }
 
-    @GetMapping(value = { "/Add!Computer" })
-    public String doGet(ModelMap model) {
+    @GetMapping(value = { "/AddComputer" })
+    public String doGet(ModelMap model,  @ModelAttribute("computerDTO") ComputerDTO computerDTO) {
         List<CompanyDTO> companyList = companyDTOMapper.toDTOList(companyService.getCompanyList());
         model.addAttribute("companyList", companyList);
         return "addComputer";
@@ -140,11 +142,13 @@ public class ComputerDatabaseController {
 
     @PostMapping(value = { "/AddComputer" })
     public String doPost(ModelMap model,
-            @RequestParam(value = "companyId") String companyIdStr,
+            @ModelAttribute("computerDTO") ComputerDTO computerDTO
+            /*,@RequestParam(value = "companyId") String companyIdStr,
             @RequestParam(value = "name") String name,
             @RequestParam(value = "introduced") String introduced,
-            @RequestParam(value = "discontinued") String discontinued) {
+            @RequestParam(value = "discontinued") String discontinued*/) {
         try {
+            /*
             CompanyDTO companyDTO = CompanyDTO.getCompanyDTOFromString(companyIdStr);
             Builder computerDTOBuilder =
                     new Builder().withName(name)
@@ -152,7 +156,8 @@ public class ComputerDatabaseController {
                     .withDiscontinued(discontinued)
                     .withCompany(companyDTO);
             computerService
-            .createComputer(computerDTOMapper.toComputer(computerDTOBuilder.build()));
+            .createComputer(computerDTOMapper.toComputer(computerDTOBuilder.build()));*/
+            computerService.createComputer(computerDTOMapper.toComputer(computerDTO));
         } catch (ValidatorException e) {
             model.addAttribute("res", e.getMessage());
             return "404";
