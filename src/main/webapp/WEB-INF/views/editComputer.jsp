@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -28,51 +29,53 @@
 						<c:out value="${param.id}" />
 					</div>
 					<h1>Edit Computer</h1>
-					<form action="EditComputer" method="POST">
+					<form:form action="EditComputer" method="POST"
+						modelAttribute="computerDTO">
 						<input type="hidden" value="${param.id}" name="id" id="id" />
 						<fieldset>
 							<div class="form-group">
-								<label for="computerName">Computer name</label> <input
-									data-validation="custom"
+								<form:label for="computerName" path="name">Computer name</form:label>
+								<input data-validation="custom"
 									data-validation-regexp="^[\wÀ-ÿ]+[\wÀ-ÿ_\-'\+\* \.]+$"
 									type="text" class="form-control" id="computerName"
 									placeholder="Computer name" name="name"
 									value="${computer.name}">
 							</div>
 							<div class="form-group">
-								<label for="introduced">Introduced date</label> <input
-									data-validation="date" data-validation-format="yyyy-mm-dd"
+								<form:label for="introduced" path="introduced">Introduced date</form:label>
+								<input data-validation="date"
+									data-validation-format="yyyy-mm-dd"
 									data-validation-optional="true" type="date"
 									class="form-control" id="introduced"
 									placeholder="Introduced date" name="introduced"
 									value="${computer.introduced}">
 							</div>
 							<div class="form-group">
-								<label for="discontinued">Discontinued date</label> <input
-									data-validation="date" data-validation-format="yyyy-mm-dd"
+								<form:label for="discontinued" path="discontinued">Discontinued date</form:label>
+								<input data-validation="date"
+									data-validation-format="yyyy-mm-dd"
 									data-validation-optional="true" type="date"
 									class="form-control" id="discontinued" name="discontinued"
 									placeholder="Discontinued date"
 									value="${computer.discontinued}">
 							</div>
 							<div class="form-group">
-								<label for="companyId">Company</label> <select
-									class="form-control" name="companyId" id="companyId">
-									<option value="0">--</option>
+								<form:label for="companyId" path="company">Company</form:label>
+								<form:select class="form-control" name="companyId" id="companyId" path="company.id">
+									<form:option value="0">--</form:option>
 									<c:forEach var="company" items="${companyList}">
 										<option value="${company.id}">${company.name}</option>
 									</c:forEach>
-
-								</select>
+								</form:select>
 								<c:out value="${res}" />
 							</div>
 						</fieldset>
 						<div class="actions pull-right">
 							<input type="submit" name="submit" value="Edit"
-								class="btn btn-primary"> or <a
-								href="Dashboard" class="btn btn-default">Cancel</a>
+								class="btn btn-primary"> or <a href="Dashboard"
+								class="btn btn-default">Cancel</a>
 						</div>
-					</form>
+					</form:form>
 				</div>
 			</div>
 		</div>

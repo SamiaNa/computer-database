@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.excilys.java.formation.dto.CompanyDTO;
 import com.excilys.java.formation.dto.ComputerDTO;
-import com.excilys.java.formation.dto.ComputerDTO.Builder;
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.mapper.CompanyDTOMapper;
@@ -51,7 +50,8 @@ public class ComputerDatabaseController {
     private CompanyDTOMapper companyDTOMapper;
 
     @GetMapping(value = { "/", "/Dashboard" })
-    public String doGetDashboard(ModelMap model, @RequestParam(value = "pageNumber", required = false) String pageNumberStr,
+    public String doGetDashboard(ModelMap model,
+            @RequestParam(value = "pageNumber", required = false) String pageNumberStr,
             @RequestParam(value = "pageSize", required = false) String pageSizeStr,
             @RequestParam(value = "search", required = false) String search,
             @RequestParam(value = "order", required = false) String order,
@@ -68,7 +68,8 @@ public class ComputerDatabaseController {
     }
 
     @PostMapping(value = { "/", "/Dashboard" })
-    public String doPostDashboard(ModelMap model, @RequestParam(value = "pageNumber", required = false) String pageNumberStr,
+    public String doPostDashboard(ModelMap model,
+            @RequestParam(value = "pageNumber", required = false) String pageNumberStr,
             @RequestParam(value = "pageSize", required = false) String pageSizeStr,
             @RequestParam(value = "search", required = false) String search,
             @RequestParam(value = "order", required = false) String order,
@@ -85,8 +86,9 @@ public class ComputerDatabaseController {
         return doGetDashboard(model, pageNumberStr, pageSizeStr, search, order, by);
     }
 
-    @GetMapping(value = {"/EditComputer"})
-    protected String doGetEdit(ModelMap model, @RequestParam(value = "id") long id)  {
+    @GetMapping(value = { "/EditComputer" })
+    protected String doGetEdit(ModelMap model, @RequestParam(value = "id") long id,
+            @ModelAttribute("computerDTO") ComputerDTO computerDTO) {
         try {
             Optional<Computer> optComp = computerService.getComputerById(id);
             if (optComp.isPresent()) {
@@ -108,23 +110,10 @@ public class ComputerDatabaseController {
 
     }
 
-    @PostMapping(value = {"/EditComputer"})
-    protected String doPostEdit(ModelMap model,
-            @RequestParam(value = "companyId") String companyIdStr,
-            @RequestParam(value = "id") String computerId,
-            @RequestParam(value = "name") String computerName,
-            @RequestParam(value = "introduced") String computerIntro,
-            @RequestParam(value = "discontinued") String computerDisc
-            )
-    {
+    @PostMapping(value = { "/EditComputer" })
+    protected String doPostEdit(ModelMap model, @ModelAttribute("computerDTO") ComputerDTO computerDTO) {
         try {
-            CompanyDTO companyDTO = CompanyDTO.getCompanyDTOFromString(companyIdStr);
-            Builder computerDTOBuilder = new Builder();
-            computerDTOBuilder.withId(computerId).withName(computerName)
-            .withIntroduced(computerIntro)
-            .withDiscontinued(computerDisc).withCompany(companyDTO);
-            logger.info("Call to updateComputer");
-            computerService.updateComputer(computerDTOMapper.toComputer(computerDTOBuilder.build()));
+            computerService.updateComputer(computerDTOMapper.toComputer(computerDTO));
             return "editComputer";
         } catch (NumberFormatException | ValidatorException e) {
             logger.error("Exception in doPost ", e);
@@ -134,29 +123,15 @@ public class ComputerDatabaseController {
     }
 
     @GetMapping(value = { "/AddComputer" })
-    public String doGet(ModelMap model,  @ModelAttribute("computerDTO") ComputerDTO computerDTO) {
+    public String doGet(ModelMap model, @ModelAttribute("computerDTO") ComputerDTO computerDTO) {
         List<CompanyDTO> companyList = companyDTOMapper.toDTOList(companyService.getCompanyList());
         model.addAttribute("companyList", companyList);
         return "addComputer";
     }
 
     @PostMapping(value = { "/AddComputer" })
-    public String doPost(ModelMap model,
-            @ModelAttribute("computerDTO") ComputerDTO computerDTO
-            /*,@RequestParam(value = "companyId") String companyIdStr,
-            @RequestParam(value = "name") String name,
-            @RequestParam(value = "introduced") String introduced,
-            @RequestParam(value = "discontinued") String discontinued*/) {
+    public String doPost(ModelMap model, @ModelAttribute("computerDTO") ComputerDTO computerDTO) {
         try {
-            /*
-            CompanyDTO companyDTO = CompanyDTO.getCompanyDTOFromString(companyIdStr);
-            Builder computerDTOBuilder =
-                    new Builder().withName(name)
-                    .withIntroduced(introduced)
-                    .withDiscontinued(discontinued)
-                    .withCompany(companyDTO);
-            computerService
-            .createComputer(computerDTOMapper.toComputer(computerDTOBuilder.build()));*/
             computerService.createComputer(computerDTOMapper.toComputer(computerDTO));
         } catch (ValidatorException e) {
             model.addAttribute("res", e.getMessage());
@@ -187,6 +162,5 @@ public class ComputerDatabaseController {
         model.addAttribute(BY, by);
         model.addAttribute("page", page);
     }
-
 
 }

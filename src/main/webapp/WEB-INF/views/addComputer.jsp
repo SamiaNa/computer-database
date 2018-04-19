@@ -58,7 +58,7 @@
 							<form:label for="companyId" path="company" >Company</form:label> 
 							<form:select
 								class="form-control" name="companyId" path="company.id" id="company">
-								<form value="null"></form>
+								<form:option value="null"></form:option>
 								<c:forEach var="company" items="${companyList}">
 									<form:option value="${company.id}">${company.name}</form:option>
 								</c:forEach>
