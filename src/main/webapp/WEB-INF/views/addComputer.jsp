@@ -58,11 +58,11 @@
 							<form:label for="companyId" path="company" >Company</form:label> 
 							<form:select
 								class="form-control" name="companyId" path="company.id" id="company">
-								<form:option value="null"></form:option>
+								<option value="-1"> </option>
 								<c:forEach var="company" items="${companyList}">
 									<form:option value="${company.id}">${company.name}</form:option>
 								</c:forEach>
-							</form:select>
+</form:select>
 						</div>
 					</fieldset>
 					<div class="actions pull-right">

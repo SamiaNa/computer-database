@@ -10,6 +10,9 @@ public abstract class Page {
     protected int size;
     protected int count;
     protected int number;
+    protected String search;
+    protected String orderCriteria;
+    protected String order;
 
     protected static final int DEFAULT_SIZE = 10;
 

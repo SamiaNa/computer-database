@@ -8,7 +8,6 @@ public class ComputerDTO {
     private String name;
     private String introduced;
     private String discontinued;
-
     private CompanyDTO company;
 
     private ComputerDTO(Builder builder) {
@@ -51,21 +50,6 @@ public class ComputerDTO {
         this.company = company;
     }
 
-    public void setCompanyId(long id) {
-        if (this.company == null) {
-            this.company = new CompanyDTO();
-        }
-        this.company.setId(id);
-    }
-
-
-    public long getCompanyID() {
-        return this.company.getId();
-    }
-    public void setId(long id) {
-
-        this.id = id;
-    }
 
     public String getName() {
         return name;

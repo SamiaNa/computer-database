@@ -39,7 +39,7 @@ public class CompanyDTOMapper {
      * @return a Company object
      */
     public Company toCompany(CompanyDTO companyDTO)   {
-        if (companyDTO == null) {
+        if (companyDTO == null || companyDTO.getId() == -1) {
             return null;
         }
         Company company = new Company();

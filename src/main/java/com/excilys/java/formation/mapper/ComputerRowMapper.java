@@ -18,6 +18,7 @@ public class ComputerRowMapper implements RowMapper<Computer>{
 
     @Override
     public Computer mapRow(ResultSet rs, int rowNum) throws SQLException {
+
         Company company = new Company(rs.getLong(5), rs.getString(6));
         if (rs.wasNull()) {
             company = null;

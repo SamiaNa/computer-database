@@ -100,7 +100,7 @@ public class ComputerPage extends Page {
     public void getPage(String orderCriteria, String order, String name, int pageNumber, int pageSize) throws ValidatorException, ServiceException {
         this.number = pageNumber;
         this.size = pageSize;
-        if (StringUtils.isBlank(name)) {
+        if (StringUtils.isBlank(search)) {
             if (StringUtils.isBlank(order)) {
                 getPage(pageNumber, pageSize);
             } else {
