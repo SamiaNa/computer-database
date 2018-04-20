@@ -8,7 +8,6 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -40,8 +39,6 @@ public class ComputerDatabaseController {
     private static final String BY = "by";
 
     @Autowired
-    private MessageSource messageSource;
-    @Autowired
     private ComputerService computerService;
 
     @Autowired
@@ -67,6 +64,7 @@ public class ComputerDatabaseController {
             return ("redirect:404.jsp");
         }
         ComputerDTOPage computerPage = new ComputerDTOPage(computerService, computerDTOMapper);
+        logger.info("Do get computer dashboard : {}, {}, {}, {}, {}", by, order, search, pageNumber, pageSize);
         computerPage.getPage(by, order, search, pageNumber, pageSize);
         setAttributes(model, by, order, search, computerPage);
         return "dashboard";
@@ -79,7 +77,7 @@ public class ComputerDatabaseController {
             @RequestParam(value = "search", required = false) String search,
             @RequestParam(value = "order", required = false) String order,
             @RequestParam(value = "by", required = false) String by,
-            @RequestParam(value = "selection") String checked) throws ValidatorException, ServiceException {
+            @RequestParam(value = "selection", required = false) String checked) throws ValidatorException, ServiceException {
         logger.info("   Checked = {}", checked);
         if (checked != null) {
             String[] computerIds = checked.split(",");
@@ -193,6 +191,7 @@ public class ComputerDatabaseController {
         model.addAttribute(ORDER, order);
         model.addAttribute(SEARCH, search);
         model.addAttribute(BY, by);
+        logger.info("set Attributes page {}", page.getElements());
         model.addAttribute("page", page);
     }
 
