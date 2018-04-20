@@ -2,11 +2,13 @@ package com.excilys.java.formation.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -39,6 +41,8 @@ public class ComputerDatabaseController {
     private static final String BY = "by";
 
     @Autowired
+    private MessageSource messageSource;
+    @Autowired
     private ComputerService computerService;
 
     @Autowired
@@ -51,13 +55,13 @@ public class ComputerDatabaseController {
     private CompanyDTOMapper companyDTOMapper;
 
     @GetMapping(value = { "/", "/Dashboard" })
-    public String doGetDashboard(ModelMap model,
+    public String doGetDashboard(Locale locale, ModelMap model,
             @RequestParam(value = "pageNumber", required = false) String pageNumberStr,
             @RequestParam(value = "pageSize", required = false) String pageSizeStr,
             @RequestParam(value = "search", required = false) String search,
             @RequestParam(value = "order", required = false) String order,
             @RequestParam(value = "by", required = false) String by) throws ValidatorException, ServiceException {
-        logger.info("DO get dashboard");
+
         int pageNumber = getUnsignedIntFromParam(pageNumberStr, 1);
         int pageSize = getUnsignedIntFromParam(pageSizeStr, 10);
         if (pageNumber == -1 || pageSize == -1) {
@@ -70,7 +74,7 @@ public class ComputerDatabaseController {
     }
 
     @PostMapping(value = { "/", "/Dashboard" })
-    public String doPostDashboard(ModelMap model,
+    public String doPostDashboard(Locale locale, ModelMap model,
             @RequestParam(value = "pageNumber", required = false) String pageNumberStr,
             @RequestParam(value = "pageSize", required = false) String pageSizeStr,
             @RequestParam(value = "search", required = false) String search,
@@ -86,7 +90,7 @@ public class ComputerDatabaseController {
             }
             computerService.deleteComputer(ids);
         }
-        return doGetDashboard(model, pageNumberStr, pageSizeStr, search, order, by);
+        return doGetDashboard(locale, model, pageNumberStr, pageSizeStr, search, order, by);
     }
 
     @GetMapping(value = { "/EditComputer" })

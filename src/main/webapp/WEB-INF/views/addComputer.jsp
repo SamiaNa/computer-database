@@ -14,8 +14,7 @@
 <link href="static/css/font-awesome.css" rel="stylesheet" media="screen">
 <link href="static/css/main.css" rel="stylesheet" media="screen">
 </head>
-<body><%@ taglib uri="http://java.sun.com/jsp/jstl/core"
-		prefix="c"%>
+<body>
 
 	<header class="navbar navbar-inverse navbar-fixed-top">
 	<div class="container">
