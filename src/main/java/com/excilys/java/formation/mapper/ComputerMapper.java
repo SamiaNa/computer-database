@@ -73,8 +73,8 @@ public class ComputerMapper {
             return new Computer.ComputerBuilder()
                     .withId(res.getLong(1))
                     .withName(res.getString(2))
-                    .withIntroduced(stringToLocalDateOrNull(res.getDate(3)))
-                    .withDiscontinued(stringToLocalDateOrNull(res.getDate(4)))
+                    .withIntroduced(sqlDateToLocalDateOrNull(res.getDate(3)))
+                    .withDiscontinued(sqlDateToLocalDateOrNull(res.getDate(4)))
                     .withCompany(company)
                     .build();
         } catch (SQLException e) {
@@ -83,7 +83,7 @@ public class ComputerMapper {
         }
     }
 
-    public LocalDate stringToLocalDateOrNull(java.sql.Date date) {
+    public LocalDate sqlDateToLocalDateOrNull(java.sql.Date date) {
         if (date == null) {
             return null;
         }

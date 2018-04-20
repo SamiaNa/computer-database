@@ -100,24 +100,18 @@ public class ComputerPage extends Page {
     public void getPage(String orderCriteria, String order, String name, int pageNumber, int pageSize) throws ValidatorException, ServiceException {
         this.number = pageNumber;
         this.size = pageSize;
-        logger.info("Computer page : {}, {}, {}, {}, {}", orderCriteria, order, name, pageNumber, pageSize);
         if (StringUtils.isBlank(name)) {
             if (StringUtils.isBlank(order)) {
-                logger.info("1");
-
                 getPage(pageNumber, pageSize);
             } else {
-                logger.info("2");
-
+                logger.info("1");
                 getPageOrder(orderCriteria, order, pageNumber, pageSize);
             }
         } else {
             if (StringUtils.isBlank(order)) {
-                logger.info("3. Only search parameter supplied");
                 getPage(name, pageNumber, pageSize);
             } else {
-                logger.info("4");
-
+                logger.info("2");
                 getPageOrder(orderCriteria, order, name, pageNumber, pageSize);
             }
         }

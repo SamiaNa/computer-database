@@ -55,8 +55,6 @@ public class ComputerDAOJdbc implements ComputerDAO {
     @Autowired
     private ComputerRowMapper computerRowMapper;
 
-
-
     @Autowired
     public void init(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
@@ -94,6 +92,7 @@ public class ComputerDAOJdbc implements ComputerDAO {
     public List<Computer> getByOrder(String orderCriteria, String order, int offset, int limit)
             throws ValidatorException {
         checkOrder(order);
+        logger.info(SELECT_ORDER + " ORDER BY " + getColumnName(orderCriteria) + " " + order + " LIMIT ? OFFSET ?;");
         return jdbcTemplate.query(
                 SELECT_ORDER + " ORDER BY " + getColumnName(orderCriteria) + " " + order + " LIMIT ? OFFSET ?;",
                 new ComputerRowMapper(), limit, offset);
@@ -185,6 +184,7 @@ public class ComputerDAOJdbc implements ComputerDAO {
 
     @Override
     public void update(Computer c) {
+        logger.info("Computer {}", c);
         jdbcTemplate.update(UPDATE, c.getName(), c.getIntroduced(), c.getDiscontinued(),
                 (c.getCompany() == null) ? null : c.getCompany().getId(), c.getId());
     }

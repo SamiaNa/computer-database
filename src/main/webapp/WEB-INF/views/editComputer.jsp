@@ -32,7 +32,7 @@
 					<h1><spring:message code="editComputer.editComputer"/></h1>
 					<form:form action="EditComputer" method="POST"
 						modelAttribute="computerDTO">
-						<input type="hidden" value="${param.id}" name="id" id="id" />
+						<form:hidden path="id" value="${param.id}"></form:hidden>
 						<fieldset>
 							<div class="form-group">
 								<label for="computerName"><spring:message code="computer.name"/></label> <input
@@ -59,9 +59,10 @@
 									value="${computer.discontinued}">
 							</div>
 							<div class="form-group">
-								<label for="companyId"><spring:message code="computer.company"/></label> <select
-									class="form-control" name="companyId" id="companyId">
-									<option value="0">--</option>
+								<form:label for="companyId" path="company"><spring:message code="computer.company"/></form:label>
+								 <form:select
+									class="form-control" name="companyId" id="companyId" path="company.id">
+									<form:option value="0">--</form:option>
 									<c:forEach var="company" items="${companyList}">
 										<c:choose>
 											<c:when test="${company.id == computer.company.id}">
@@ -73,7 +74,7 @@
 											</c:otherwise>
 										</c:choose>
 									</c:forEach>
-								</select>
+								</form:select>
 								<c:out value="${res}" />
 							</div>
 						</fieldset>

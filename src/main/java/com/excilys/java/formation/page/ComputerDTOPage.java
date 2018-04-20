@@ -47,7 +47,7 @@ public class ComputerDTOPage extends ComputerPage {
 
     @Override
     public void updateListOrderBy(String orderCriteria, String order) throws ValidatorException, ServiceException {
-        logger.info("Updating computer list (orderBy : {}) page number = {}, page size={}", orderCriteria, offset, size);
+        logger.info("Updating computer list (orderBy : {}) page number = {}, order={},  page size={}", orderCriteria, order, offset, size);
         this.dTOElements = computerDTOMapper
                 .toDTOList(computerService.getByOrder(orderCriteria, order, offset, size));
 

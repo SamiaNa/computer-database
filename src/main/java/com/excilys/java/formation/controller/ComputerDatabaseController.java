@@ -116,7 +116,7 @@ public class ComputerDatabaseController {
 
 
     @PostMapping(value = { "/EditComputer" })
-    protected String doPostEdit(ModelMap model, @ModelAttribute("computerDTO") ComputerDTO computerDTO) {
+    protected String doPostEdit( ModelMap model, @ModelAttribute("computerDTO") ComputerDTO computerDTO) {
         try {
             computerService.updateComputer(computerDTOMapper.toComputer(computerDTO));
             return "editComputer";
