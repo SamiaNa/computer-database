@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http:
 //www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -18,8 +19,7 @@
 
 	<header class="navbar navbar-inverse navbar-fixed-top">
 	<div class="container">
-		<a class="navbar-brand" href="Dashboard"> Application -
-			Computer Database </a>
+		<a class="navbar-brand" href="Dashboard"> <spring:message code="application.applicationName"/> </a>
 	</div>
 	</header>
 
@@ -30,31 +30,31 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-xs-8 col-xs-offset-2 box">
-				<h1>Add Computer</h1>
+				<h1><spring:message code="addComputer.addComputer"/></h1>
 				<form:form action="AddComputer" method="POST" modelAttribute="computerDTO">
 					<fieldset>
 						<div class="form-group">
-							<form:label for="computerName" path="name">Computer name</form:label> 
+							<form:label for="computerName" path="name"> <spring:message code="computer.name"/></form:label> 
 							<input data-validation="custom" data-validation-regexp="^[\wÀ-ÿ]+[\wÀ-ÿ_\-'\+\* \.]+$" 
 								type="text" class="form-control" name="name" id="computerName"
 								placeholder="Computer name">
 						</div>
 						<div class="form-group">
-							<form:label for="introduced" path="introduced">Introduced date</form:label> 
+							<form:label for="introduced" path="introduced"><spring:message code="computer.introducedDate"/></form:label> 
 							<input data-validation="date" data-validation-format="yyyy-mm-dd"
 								data-validation-optional="true"
 								type="date" class="form-control" name="introduced"
 								id="introduced" placeholder="Introduced date">
 						</div> 
 						<div class="form-group">
-							<form:label for="discontinued" path="discontinued">Discontinued date</form:label> 
+							<form:label for="discontinued" path="discontinued"><spring:message code="computer.discontinuedDate"/></form:label> 
 							<input data-validation="date" data-validation-format="yyyy-mm-dd"
 								data-validation-optional="true"
 								type="date" class="form-control" name="discontinued"
 								id="discontinued" placeholder="Discontinued date">
 						</div>
 						<div class="form-group">
-							<form:label for="company" path="company" >Company</form:label> 
+							<form:label for="company" path="company" ><spring:message code="computer.company"/></form:label> 
 							<form:select
 								class="form-control" name="companyId" path="company.id" id="companyId">
 									<form:option value="-1">--</form:option>
@@ -65,9 +65,9 @@
 						</div>
 					</fieldset>
 					<div class="actions pull-right">
-						<input type="submit" name="submit" value="Add"
-							class="btn btn-primary"> or <a
-							href="Dashboard" class="btn btn-default">Cancel</a>
+						<input type="submit" name="submit" value=<spring:message code="addComputer.add"/>
+							class="btn btn-primary"> <spring:message code="addComputer.or"/> <a
+							href="Dashboard" class="btn btn-default"><spring:message code="addComputer.cancel"/></a>
 					</div>
 				</form:form>
 				${res}

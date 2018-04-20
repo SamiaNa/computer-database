@@ -3,6 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="mylib" uri="/WEB-INF/mylib.tld"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -18,14 +19,13 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 	<div class="container">
-		<a class="navbar-brand" href="Dashboard"> Application -
-			Computer Database </a>
+		<a class="navbar-brand" href="Dashboard"> <spring:message code="application.applicationName"/> </a>
 	</div>
 	</header>
 	<section id="main">
 	<div class="container">
 		<h1 id="homeTitle">
-			<c:out value="${page.count} Computers found" />
+			<c:out value="${page.count}"/> <spring:message code="dashboard.computersFound"/>
 		</h1>
 		<div id="actions" class="form-horizontal">
 			<div class="pull-left">
@@ -33,16 +33,16 @@
 					action="Dashboard?pageNumber=${page.number}&pageSize=${page.size}search=${search}&by=${by}&order=${order}"
 					method="GET" class="form-inline">
 					<input type="search" id="searchbox" name="search"
-						class="form-control" placeholder="Search name" /> <input
+						class="form-control" placeholder=<spring:message code="dashboard.searchByName"/> /> <input
 						type="submit" id="searchsubmit" name="submit"
-						value="Filter by name" class="btn btn-primary" />
+						value=<spring:message code="dashboard.filterByName"/>  class="btn btn-primary" />
 				</form>
 			</div>
 			<div class="pull-right">
 				<a class="btn btn-success" id="addComputer"
 					href="AddComputer"><spring:message code="dashboard.addComputer"/></a> <a
 					class="btn btn-default" id="deleteComputer" href="#"
-					onclick="$.fn.toggleEditMode();">Delete</a>
+					onclick="$.fn.toggleEditMode();"><spring:message code="dashboard.delete"/></a>
 			</div>
 		</div>
 	</div>
@@ -66,16 +66,16 @@
 						</a>
 					</span></th>
 					
-					<th>Computer name <mylib:orderBy page="${page}"
+					<th><spring:message code="computer.name"/> <mylib:orderBy page="${page}"
 							target="Dashboard" by="namecomputer" search="${search}" />
 					</th>
-					<th>Introduced date <mylib:orderBy page="${page}"
+					<th><spring:message code="computer.introducedDate"/> <mylib:orderBy page="${page}"
 							target="Dashboard" by="introcomputer" search="${search}" /></th>
 					<!-- Table header for Discontinued Date -->
-					<th>Discontinued date <mylib:orderBy page="${page}"
+					<th><spring:message code="computer.discontinuedDate"/> <mylib:orderBy page="${page}"
 							target="Dashboard" by="disccomputer" search="${search}" /></th>
 					<!-- Table header for Company -->
-					<th>Company <mylib:orderBy page="${page}" target="Dashboard"
+					<th><spring:message code="computer.company"/> <mylib:orderBy page="${page}" target="Dashboard"
 							by="namecompany" search="${search}" /></th>
 				</tr>
 			</thead>
