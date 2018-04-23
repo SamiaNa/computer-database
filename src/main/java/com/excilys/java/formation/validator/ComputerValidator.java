@@ -5,15 +5,21 @@ import java.time.format.DateTimeParseException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.excilys.java.formation.entities.Computer;
-import com.excilys.java.formation.persistence.implementations.ComputerDAOImpl;
+import com.excilys.java.formation.persistence.implementations.CompanyDAOJdbc;
+import com.excilys.java.formation.persistence.implementations.ComputerDAOJdbc;
 import com.excilys.java.formation.persistence.implementations.DAOException;
 
-public enum ComputerValidator {
+@Component
+public class ComputerValidator {
 
-    INSTANCE;
-    private static final CompanyValidator companyValidator = CompanyValidator.INSTANCE;
+    @Autowired
+    private CompanyValidator companyValidator;
+
+
     private static Logger logger = LoggerFactory.getLogger(ComputerValidator.class);
 
     public void checkName(String name) throws ValidatorException {
@@ -46,10 +52,10 @@ public enum ComputerValidator {
         }
     }
 
-    public Long checkComputerId(String strId) throws ValidatorException {
+    public Long checkComputerId(String strId, ComputerDAOJdbc computerDAO) throws ValidatorException {
         try {
             long id = Long.parseLong(strId);
-            ComputerDAOImpl.INSTANCE.getComputerById(id);
+            computerDAO.getComputerById(id);
             return id;
         } catch (NumberFormatException e) {
             logger.error("Failed to parse {} as a Long in checkComputerId", strId);
@@ -60,10 +66,10 @@ public enum ComputerValidator {
         }
     }
 
-    public void checkComputer (Computer computer) throws ValidatorException {
+    public void checkComputer (CompanyDAOJdbc companyDAO, Computer computer) throws ValidatorException {
         checkDates(computer);
         checkName(computer.getName());
-        companyValidator.checkCompanyOrNull(computer.getCompany());
+        companyValidator.checkCompanyOrNull(companyDAO, computer.getCompany());
     }
 
 }

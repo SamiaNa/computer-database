@@ -49,6 +49,7 @@ public class OrderByTag extends SimpleTagSupport {
     @Override
     public void doTag() throws IOException {
         JspWriter out = getJspContext().getOut();
+        logger.info("Order by tag {}", this.page);
         String href = "<a href=\"" + this.target + "?pageNumber=" + this.page.getNumber() + "&by=" + this.by
                 + "&search=" + this.search;
         String ascending = href + "&order=ASC&pageSize=" + this.page.getSize()

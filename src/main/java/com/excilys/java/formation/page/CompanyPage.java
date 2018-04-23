@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.service.CompanyService;
@@ -13,19 +14,24 @@ import com.excilys.java.formation.service.ServiceException;
 public class CompanyPage extends Page {
 
     private List<Company> elements;
-    private static final Logger logger = LoggerFactory.getLogger(CompanyPage.class);
-    private static final CompanyService companyService = CompanyService.INSTANCE;
 
-    public CompanyPage() {
+    private static final Logger logger = LoggerFactory.getLogger(CompanyPage.class);
+
+    @Autowired
+    private CompanyService companyService;
+
+    public CompanyPage(CompanyService companyService) {
         this.offset = 0;
         this.size = DEFAULT_SIZE;
         this.elements = new ArrayList<>();
+        this.companyService = companyService;
     }
 
-    public CompanyPage(int pageNumber, int size) {
+    public CompanyPage(CompanyService companyService, int pageNumber, int size) {
         this.offset = pageNumber;
         this.size = size;
         this.elements = new ArrayList<>();
+        this.companyService = companyService;
     }
 
     public void updateList() throws ServiceException  {

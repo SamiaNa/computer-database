@@ -4,10 +4,12 @@ import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.lang.NonNull;
 
 public class CompanyDTO {
 
     private String name;
+    @NonNull
     private long id;
 
     private static Logger logger = LoggerFactory.getLogger(CompanyDTO.class);

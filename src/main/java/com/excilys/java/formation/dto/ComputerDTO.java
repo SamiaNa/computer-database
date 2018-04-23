@@ -2,10 +2,18 @@ package com.excilys.java.formation.dto;
 
 import java.util.Objects;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+
 public class ComputerDTO {
 
     private long id;
+
+    @NotNull
+    @Size(min=1, max=5)
     private String name;
+
     private String introduced;
     private String discontinued;
     private CompanyDTO company;
@@ -18,10 +26,17 @@ public class ComputerDTO {
         this.company = builder.company;
     }
 
+    private ComputerDTO() {
+
+    }
+
     public long getId() {
         return id;
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
     public String getIntroduced() {
         return introduced;
     }
@@ -46,9 +61,6 @@ public class ComputerDTO {
         this.company = company;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;

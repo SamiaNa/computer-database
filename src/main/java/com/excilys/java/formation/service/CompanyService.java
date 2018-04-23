@@ -4,55 +4,44 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.java.formation.entities.Company;
-import com.excilys.java.formation.persistence.implementations.CompanyDAOImpl;
+import com.excilys.java.formation.persistence.implementations.CompanyDAOJdbc;
 import com.excilys.java.formation.persistence.implementations.DAOException;
 import com.excilys.java.formation.persistence.interfaces.CompanyDAO;
 
-public enum CompanyService {
+@Service
+@EnableTransactionManagement
+public class CompanyService {
 
-    INSTANCE;
     private static Logger logger = LoggerFactory.getLogger(CompanyService.class);
-    private static final CompanyDAO companyDAO = CompanyDAOImpl.INSTANCE;
 
-    public List<Company> getCompanyList() throws ServiceException {
-        try {
-            return companyDAO.getAll();
-        } catch (DAOException e) {
-            logger.error("Exception in getCompanyList", e);
-            throw new ServiceException(e);
-        }
+    @Autowired
+    private CompanyDAOJdbc companyDAO;
+
+
+    public List<Company> getCompanyList() {
+        return companyDAO.getAll();
     }
 
-    public List<Company> getCompanyList(int offset, int size) throws ServiceException {
-        try {
-            return companyDAO.get(offset, size);
-        } catch (DAOException e) {
-            logger.error("Exception in getCompanyList ({}, {})", offset, size, e);
-            throw new ServiceException(e);
-        }
+    public List<Company> getCompanyList(int offset, int size) {
+        return companyDAO.get(offset, size);
     }
 
-    public int count() throws ServiceException {
-        try {
-            return companyDAO.count();
-        } catch (DAOException e) {
-            logger.error("Exception in count", e);
-            throw new ServiceException(e);
-        }
+    public int count()  {
+        return companyDAO.count();
     }
 
-    public List<Company> getCompaniesByName(String name) throws ServiceException {
-        try {
-            return companyDAO.getByName(name);
-        } catch (DAOException e) {
-            logger.error("Exception in getCompaniesByName({})", name, e);
-            throw new ServiceException(e);
-        }
+    public List<Company> getCompaniesByName(String name) {
+        return companyDAO.getByName(name);
     }
 
-    public void delete (long id) throws ServiceException {
+    @Transactional(rollbackFor=Exception.class)
+    public void delete (long id) throws ServiceException{
         try {
             companyDAO.delete(id);
         }catch (DAOException e) {

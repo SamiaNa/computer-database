@@ -5,6 +5,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.stereotype.Component;
+
+import com.excilys.java.formation.configuration.cli.CLIConfiguration;
 import com.excilys.java.formation.dto.CompanyDTO;
 import com.excilys.java.formation.dto.ComputerDTO;
 import com.excilys.java.formation.dto.ComputerDTO.Builder;
@@ -20,12 +26,24 @@ import com.excilys.java.formation.service.ComputerService;
 import com.excilys.java.formation.service.ServiceException;
 import com.excilys.java.formation.validator.ValidatorException;
 
-
+@Component
 public class UserInterface {
 
     private static final int PAGE_SIZE = 10;
 
-    private static void printElements(Page page) {
+    @Autowired
+    private ComputerService computerService;
+
+    @Autowired
+    private CompanyService companyService;
+
+    @Autowired
+    private ComputerDTOMapper computerDTOMapper;
+
+
+
+
+    private  void printElements(Page page) {
         if (page instanceof ComputerPage) {
             ComputerPage computerPage = (ComputerPage) page;
             for (Computer c : computerPage.getElements()) {
@@ -39,7 +57,7 @@ public class UserInterface {
             }
         }
     }
-    private static void printPagedList(Scanner scanner, Page page) throws ValidatorException, ServiceException {
+    private  void printPagedList(Scanner scanner, Page page) throws ValidatorException, ServiceException {
         scanner.nextLine();
         page.setNumber(1);
         page.setSize(PAGE_SIZE);
@@ -68,7 +86,7 @@ public class UserInterface {
         }
     }
 
-    private static void findCompanyByName(Scanner scanner, CompanyService companyService ) throws ServiceException   {
+    private  void findCompanyByName(Scanner scanner, CompanyService companyService ) throws ServiceException   {
         System.out.println("Enter name :");
         scanner.nextLine();
         List<Company> companies = companyService.getCompaniesByName(scanner.nextLine());
@@ -90,7 +108,7 @@ public class UserInterface {
      * @throws DAOException
      * @throws ConnectionException
      */
-    private static void printComputerByID(Scanner scanner, ComputerService computerService) throws ServiceException
+    private  void printComputerByID(Scanner scanner, ComputerService computerService) throws ServiceException
     {
         System.out.println("Enter id of computer : ");
         try {
@@ -116,7 +134,7 @@ public class UserInterface {
      * @throws ConnectionException
      * @throws ValidatorException
      */
-    private static void createComputer(Scanner scanner, ComputerService computerService) throws ServiceException {
+    private  void createComputer(Scanner scanner, ComputerService computerService) throws ServiceException {
         scanner.nextLine();
         System.out.println("Enter name");
         String name = scanner.nextLine();
@@ -138,71 +156,61 @@ public class UserInterface {
             .withIntroduced(introducedStr)
             .withDiscontinued(discontinuedStr)
             .withCompany(companyDTO);
-            Optional<Computer> optComp = computerService.createComputer(ComputerDTOMapper.INSTANCE.toComputer(computerDTOBuilder.build()));
-            if (optComp.isPresent()) {
-                System.out.println("Successful creation with id " + optComp.get().getId());
-            } else {
-                System.out.println("Constraint violation, make sure company exists in database");
-            }
+            computerService.createComputer(computerDTOMapper.toComputer(computerDTOBuilder.build()));
+
         } catch (ValidatorException e) {
             System.out.println(e.getMessage());
         }
     }
 
-    private static boolean updateAttribute(String attributeName, String varValue, Scanner scanner) {
+    private  boolean updateAttribute(String attributeName, String varValue, Scanner scanner) {
         System.out.println("Current " + attributeName + " : " + varValue + ". Do you want do update ? (y/n)");
         String validation = scanner.next();
         scanner.nextLine();
         return validation.toLowerCase().equals("y");
     }
 
-    private static void updateAttributes(Scanner scanner, ComputerService computerService, Long computerId) throws  ServiceException {
+    private  void updateAttributes(Scanner scanner, ComputerService computerService, Long computerId) throws  ServiceException {
         Optional<Computer> optComputer = computerService.getComputerById(computerId);
         if (!optComputer.isPresent()) {
             System.out.println("No computer found with id " + computerId);
             return;
         }
-        try {
-            ComputerDTO computerDTO = ComputerDTOMapper.INSTANCE.toDTO(optComputer.get());
-            if (updateAttribute("name", computerDTO.getName(), scanner)) {
-                System.out.println("Enter new name");
-                computerDTO.setName(scanner.nextLine());
+        ComputerDTO computerDTO = computerDTOMapper.toDTO(optComputer.get());
+        if (updateAttribute("name", computerDTO.getName(), scanner)) {
+            System.out.println("Enter new name");
+            computerDTO.setName(scanner.nextLine());
+        }
+        if (updateAttribute("date of introduction", computerDTO.getIntroduced(), scanner)) {
+            System.out.println("Enter new date of introduction");
+            computerDTO.setIntroduced(scanner.nextLine());
+        }
+        if (updateAttribute("date of discontinuation", computerDTO.getDiscontinued(), scanner)) {
+            System.out.println("Enter new date of discontinuation");
+            computerDTO.setDiscontinued(scanner.nextLine());
+        }
+        CompanyDTO companyDTO = computerDTO.getCompany();
+        String companyIdStr;
+        if (companyDTO == null) {
+            companyIdStr = "null";
+        }else {
+            companyIdStr = String.valueOf(computerDTO.getCompany().getId());
+        }
+        if (updateAttribute("company id", companyIdStr, scanner)) {
+            System.out.println("Enter company id");
+            companyIdStr = scanner.nextLine();
+            companyDTO = computerDTO.getCompany();
+            try {
+                companyDTO.setId(Long.parseUnsignedLong(companyIdStr));
+            }catch (NumberFormatException | NullPointerException e) {
+                companyDTO = null;
             }
-            if (updateAttribute("date of introduction", computerDTO.getIntroduced(), scanner)) {
-                System.out.println("Enter new date of introduction");
-                computerDTO.setIntroduced(scanner.nextLine());
-            }
-            if (updateAttribute("date of discontinuation", computerDTO.getDiscontinued(), scanner)) {
-                System.out.println("Enter new date of discontinuation");
-                computerDTO.setDiscontinued(scanner.nextLine());
-            }
-            CompanyDTO companyDTO = computerDTO.getCompany();
-            String companyIdStr;
-            if (companyDTO == null) {
-                companyIdStr = "null";
-            }else {
-                companyIdStr = String.valueOf(computerDTO.getCompany().getId());
-            }
-            if (updateAttribute("company id", companyIdStr, scanner)) {
-                System.out.println("Enter company id");
-                companyIdStr = scanner.nextLine();
-                companyDTO = computerDTO.getCompany();
-                try {
-                    companyDTO.setId(Long.parseUnsignedLong(companyIdStr));
-                }catch (NumberFormatException | NullPointerException e) {
-                    companyDTO = null;
-                }
-                computerDTO.setCompany(companyDTO);
-            }
-            computerService.updateComputer(ComputerDTOMapper.INSTANCE.toComputer(computerDTO));
-
-        }catch (ValidatorException e) {
-            System.out.println(e.getMessage());
+            computerDTO.setCompany(companyDTO);
         }
 
     }
 
-    private static void updateComputer(Scanner scanner, ComputerService computerService) throws  ServiceException {
+    private  void updateComputer(Scanner scanner, ComputerService computerService) throws  ServiceException {
         System.out.println("Enter id of computer to update");
         try {
             Long computerId = scanner.nextLong();
@@ -213,7 +221,7 @@ public class UserInterface {
 
     }
 
-    private static void deleteComputer(Scanner scanner, ComputerService computerService) throws ServiceException{
+    private  void deleteComputer(Scanner scanner, ComputerService computerService) throws ServiceException{
         System.out.println("Enter id of computer : ");
         try {
             Long computerId = scanner.nextLong();
@@ -224,7 +232,7 @@ public class UserInterface {
         }
     }
 
-    private static void deleteCompany(Scanner scanner, CompanyService companyService) throws ServiceException{
+    private  void deleteCompany(Scanner scanner, CompanyService companyService) throws ServiceException{
         System.out.println("Enter id of company to delete :");
         try {
             Long companyId = scanner.nextLong();
@@ -234,7 +242,7 @@ public class UserInterface {
         }
     }
 
-    public static void startUI(Scanner scanner) throws ServiceException,  ValidatorException {
+    public  void startUI(Scanner scanner) throws ServiceException,  ValidatorException {
         while (true) {
             System.out.println("Computer database application\n" + "Select operation:\n" + "1. List computers\n"
                     + "2. List companies\n" + "3. Show computer details (by id)\n" + "4. Create a computer\n"
@@ -242,8 +250,7 @@ public class UserInterface {
                     + "8. Delete company by id\n" + "9. Quit"
                     );
 
-            ComputerService computerService = ComputerService.INSTANCE;
-            CompanyService companyService = CompanyService.INSTANCE;
+
             int featureChoice = 0;
             try {
                 featureChoice = scanner.nextInt();
@@ -252,10 +259,10 @@ public class UserInterface {
             }
             switch (CLIActionEnum.values()[featureChoice]) {
             case LIST_COMPUTERS:
-                printPagedList(scanner, new ComputerPage(1, PAGE_SIZE));
+                printPagedList(scanner, new ComputerPage(computerService, 1, PAGE_SIZE));
                 break;
             case LIST_COMPANIES:
-                printPagedList(scanner, new CompanyPage(1, PAGE_SIZE));
+                printPagedList(scanner, new CompanyPage(companyService, 1, PAGE_SIZE));
                 break;
             case COMPUTER_DETAILS:
                 printComputerByID(scanner, computerService);
@@ -289,9 +296,8 @@ public class UserInterface {
     }
 
     public static void main(String[] args) throws ValidatorException, ServiceException {
-        Scanner scanner = new Scanner(System.in);
-        startUI(scanner);
-        scanner.close();
+        ApplicationContext context = new AnnotationConfigApplicationContext(CLIConfiguration.class);
+        context.getBean(UserInterface.class).startUI(new Scanner(System.in));
     }
 
 }

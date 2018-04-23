@@ -2,14 +2,17 @@ package com.excilys.java.formation.validator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
 
 import com.excilys.java.formation.entities.Company;
-import com.excilys.java.formation.persistence.implementations.CompanyDAOImpl;
+import com.excilys.java.formation.persistence.implementations.CompanyDAOJdbc;
 import com.excilys.java.formation.persistence.implementations.DAOException;
 
-public enum CompanyValidator {
+@Component
+public class CompanyValidator implements Validator{
 
-    INSTANCE;
     private static final Logger logger = LoggerFactory.getLogger(CompanyValidator.class);
     /**
      * Converts string argument to Long
@@ -32,20 +35,20 @@ public enum CompanyValidator {
         }
     }
 
-    public Long checkCompanyIdOrNull(String strId) throws ValidatorException {
+    public Long checkCompanyIdOrNull(CompanyDAOJdbc companyDAO, String strId) throws ValidatorException {
         Long id = getLongId(strId);
         if (id != null) {
-            checkCompanyOrNull(new Company(id, null));
+            checkCompanyOrNull(companyDAO, new Company(id, null));
         }
         return id;
     }
 
-    public void checkCompanyOrNull(Company company) throws ValidatorException {
+    public void checkCompanyOrNull(CompanyDAOJdbc companyDAO, Company company) throws ValidatorException {
         logger.info("Check company or null {}", company);
         if (company != null) {
             long id = company.getId();
             try {
-                if (!CompanyDAOImpl.INSTANCE.checkCompanyById(id)) {
+                if (!companyDAO.checkCompanyById(id)) {
                     throw new ValidatorException(("No existing company with id " + id));
                 }
             }catch(DAOException e) {
@@ -53,5 +56,16 @@ public enum CompanyValidator {
                 throw new ValidatorException(e);
             }
         }
+    }
+
+    @Override
+    public boolean supports(Class<?> clazz) {
+        return Company.class.isAssignableFrom(clazz);
+    }
+
+    @Override
+    public void validate(Object target, Errors errors) {
+        // TODO Auto-generated method stub
+
     }
 }

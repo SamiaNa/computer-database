@@ -2,9 +2,7 @@ package com.excilys.java.formation.service;
 
 public class ServiceException extends Exception {
 
-    /**
-     *
-     */
+
     private static final long serialVersionUID = 8283515884116900605L;
 
     public ServiceException() {

@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.excilys.java.formation.dto.ComputerDTO;
 import com.excilys.java.formation.dto.ComputerDTO.Builder;
@@ -13,12 +15,18 @@ import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.validator.ComputerValidator;
 import com.excilys.java.formation.validator.ValidatorException;
 
-public enum ComputerDTOMapper {
+@Component
+public class ComputerDTOMapper {
 
-    INSTANCE;
     private static final String EMPTY = "";
     private static final Logger logger = LoggerFactory.getLogger(ComputerDTOMapper.class);
-    private static final ComputerValidator computerValidator = ComputerValidator.INSTANCE;
+
+    @Autowired
+    private CompanyDTOMapper companyDTOMapper;
+
+    @Autowired
+    private ComputerValidator computerValidator;
+
 
     /**
      * Maps a Computer object to a ComputerDTO object
@@ -31,7 +39,7 @@ public enum ComputerDTOMapper {
         .withId(computer.getId())
         .withIntroduced(localDateToString(computer.getIntroduced()))
         .withDiscontinued(localDateToString(computer.getDiscontinued()))
-        .withCompany(CompanyDTOMapper.INSTANCE.toDTO(computer.getCompany()));
+        .withCompany(companyDTOMapper.toDTO(computer.getCompany()));
         logger.debug("Computer {} mapped to ComputerDTO {}", computer, cDTO);
         return cDTO.build();
     }
@@ -49,7 +57,7 @@ public enum ComputerDTOMapper {
                 .withName(computerDTO.getName())
                 .withIntroduced(stringToLocalDate(computerDTO.getIntroduced()))
                 .withDiscontinued(stringToLocalDate(computerDTO.getDiscontinued()))
-                .withCompany(CompanyDTOMapper.INSTANCE.toCompany(computerDTO.getCompany()))
+                .withCompany(companyDTOMapper.toCompany(computerDTO.getCompany()))
                 .build();
         computerValidator.checkDates(computer);
         computerValidator.checkName(computer.getName());
