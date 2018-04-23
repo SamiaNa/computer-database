@@ -48,7 +48,8 @@ public class ComputerDatabaseController {
     private CompanyDTOMapper companyDTOMapper;
 
     @Autowired
-    public ComputerDatabaseController(ComputerService computerService, CompanyService companyService, ComputerDTOMapper computerDTOMapper, CompanyDTOMapper companyDTOMapper) {
+    public ComputerDatabaseController(ComputerService computerService, CompanyService companyService,
+            ComputerDTOMapper computerDTOMapper, CompanyDTOMapper companyDTOMapper) {
         this.computerService = computerService;
         this.companyService = companyService;
         this.computerDTOMapper = computerDTOMapper;

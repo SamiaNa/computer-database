@@ -12,7 +12,7 @@ import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.mapper.CompanyRowMapper;
 
 @Repository
-public class CompanyDAOJdbc{
+public class CompanyDAOJdbc {
 
     private static final String SELECT = "SELECT id, name FROM company;";
     private static final String SELECT_LIMIT = "SELECT id, name FROM company LIMIT ? OFFSET ?;";
@@ -26,43 +26,42 @@ public class CompanyDAOJdbc{
     private ComputerDAOJdbc computerDAO;
 
     @Autowired
-    public CompanyDAOJdbc (CompanyRowMapper companyRowMapper, ComputerDAOJdbc computerDAO) {
+    public CompanyDAOJdbc(CompanyRowMapper companyRowMapper, ComputerDAOJdbc computerDAO) {
         this.companyRowMapper = companyRowMapper;
         this.computerDAO = computerDAO;
     }
+
     @Autowired
     public void init(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
+
     public List<Company> getAll() {
         return jdbcTemplate.query(SELECT, companyRowMapper);
     }
 
-    public List<Company> get(int offset, int size)  {
+    public List<Company> get(int offset, int size) {
         return jdbcTemplate.query(SELECT_LIMIT, companyRowMapper, size, offset);
     }
 
-
-    public List<Company> getByName(String name)  {
-        return jdbcTemplate.query(SELECT_BY_NAME, companyRowMapper, "%"+name+"%");
+    public List<Company> getByName(String name) {
+        return jdbcTemplate.query(SELECT_BY_NAME, companyRowMapper, "%" + name + "%");
     }
 
-
     public boolean checkCompanyById(long id) throws DAOException {
-        List<Company> companies =  jdbcTemplate.query(SELECT_BY_ID,  companyRowMapper, id);
+        List<Company> companies = jdbcTemplate.query(SELECT_BY_ID, companyRowMapper, id);
         if (companies.size() == 1) {
             return true;
         }
         if (companies.isEmpty()) {
             return false;
         }
-        throw new DAOException("Expected number of rows : 0 or 1, actual number of rows "+companies.size());
+        throw new DAOException("Expected number of rows : 0 or 1, actual number of rows " + companies.size());
     }
 
-    public int count()  {
+    public int count() {
         return jdbcTemplate.queryForObject(COUNT, Integer.class);
     }
-
 
     public void delete(long id) throws DAOException {
         computerDAO.deleteCompany(id);

@@ -69,7 +69,7 @@ public class ComputerValidator {
         }
     }
 
-    public void checkComputer (CompanyDAOJdbc companyDAO, Computer computer) throws ValidatorException {
+    public void checkComputer(CompanyDAOJdbc companyDAO, Computer computer) throws ValidatorException {
         checkDates(computer);
         checkName(computer.getName());
         companyValidator.checkCompanyOrNull(companyDAO, computer.getCompany());

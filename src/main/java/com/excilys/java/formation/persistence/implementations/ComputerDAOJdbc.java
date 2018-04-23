@@ -24,7 +24,7 @@ import com.excilys.java.formation.validator.ValidatorException;
 import com.mysql.cj.api.jdbc.Statement;
 
 @Repository
-public class ComputerDAOJdbc{
+public class ComputerDAOJdbc {
 
     private static final String SELECT_ALL = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id;";
     private static final String SELECT_ORDER = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id";
@@ -48,12 +48,11 @@ public class ComputerDAOJdbc{
     private static final String DESCENDING = "DESC";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     private JdbcTemplate jdbcTemplate;
     private ComputerRowMapper computerRowMapper;
 
     @Autowired
-    private ComputerDAOJdbc (ComputerRowMapper computerRowMapper) {
+    private ComputerDAOJdbc(ComputerRowMapper computerRowMapper) {
         this.computerRowMapper = computerRowMapper;
     }
 
@@ -65,6 +64,7 @@ public class ComputerDAOJdbc{
     public ComputerDAOJdbc() {
         super();
     }
+
     public List<Computer> getAll() {
         return jdbcTemplate.query(SELECT_ALL, computerRowMapper);
     }
@@ -88,7 +88,6 @@ public class ComputerDAOJdbc{
                 offset);
         return list;
     }
-
 
     public List<Computer> getByOrder(String orderCriteria, String order, int offset, int limit)
             throws ValidatorException {
@@ -181,13 +180,11 @@ public class ComputerDAOJdbc{
         return keyHolder.getKey().longValue();
     }
 
-
     public void update(Computer c) {
         logger.info("Computer {}", c);
         jdbcTemplate.update(UPDATE, c.getName(), c.getIntroduced(), c.getDiscontinued(),
                 (c.getCompany() == null) ? null : c.getCompany().getId(), c.getId());
     }
-
 
     public void delete(long id) {
         jdbcTemplate.update(DELETE, id);
@@ -197,18 +194,15 @@ public class ComputerDAOJdbc{
         jdbcTemplate.update(DELETE_BY_COMPANY, id);
     }
 
-
     public void delete(List<Long> ids) {
         for (long id : ids) {
             jdbcTemplate.update(DELETE, id);
         }
     }
 
-
     public int count() {
         return jdbcTemplate.queryForObject(COUNT, Integer.class);
     }
-
 
     public int count(String name) {
         return jdbcTemplate.queryForObject(COUNT_NAME, Integer.class, "%" + name + "%", "%" + name + "%");

@@ -25,7 +25,7 @@ public class ComputerDatabaseInitializer extends AbstractAnnotationConfigDispatc
     }
 
     @Override
-    protected FrameworkServlet createDispatcherServlet (WebApplicationContext wac) {
+    protected FrameworkServlet createDispatcherServlet(WebApplicationContext wac) {
         DispatcherServlet ds = new DispatcherServlet(wac);
         ds.setThrowExceptionIfNoHandlerFound(true);
         return ds;

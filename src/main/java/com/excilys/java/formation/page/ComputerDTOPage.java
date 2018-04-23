@@ -18,18 +18,15 @@ import com.excilys.java.formation.validator.ValidatorException;
 public class ComputerDTOPage extends ComputerPage {
 
     private List<ComputerDTO> dTOElements;
-
     private static final Logger logger = LoggerFactory.getLogger(ComputerDTOPage.class);
-
     private ComputerDTOMapper computerDTOMapper;
-
     private ComputerService computerService;
 
     @Autowired
     public ComputerDTOPage(ComputerService computerService, ComputerDTOMapper computerDTOMapper) {
         super(computerService);
         this.dTOElements = new ArrayList<>();
-        this.computerService  = computerService;
+        this.computerService = computerService;
         this.computerDTOMapper = computerDTOMapper;
     }
 
@@ -38,8 +35,8 @@ public class ComputerDTOPage extends ComputerPage {
     }
 
     @Override
-    public void updateList() throws  ServiceException {
-        logger.info("Updating computer list : page number = {}, page size={}", offset ,size);
+    public void updateList() throws ServiceException {
+        logger.info("Updating computer list : page number = {}, page size={}", offset, size);
         this.dTOElements = computerDTOMapper.toDTOList(computerService.getComputerList(offset, size));
     }
 
@@ -51,9 +48,9 @@ public class ComputerDTOPage extends ComputerPage {
 
     @Override
     public void updateListOrderBy(String orderCriteria, String order) throws ValidatorException, ServiceException {
-        logger.info("Updating computer list (orderBy : {}) page number = {}, order={},  page size={}", orderCriteria, order, offset, size);
-        this.dTOElements = computerDTOMapper
-                .toDTOList(computerService.getByOrder(orderCriteria, order, offset, size));
+        logger.info("Updating computer list (orderBy : {}) page number = {}, order={},  page size={}", orderCriteria,
+                order, offset, size);
+        this.dTOElements = computerDTOMapper.toDTOList(computerService.getByOrder(orderCriteria, order, offset, size));
 
     }
 
@@ -65,7 +62,6 @@ public class ComputerDTOPage extends ComputerPage {
         this.dTOElements = computerDTOMapper
                 .toDTOList(computerService.getByOrder(orderCriteria, order, search, offset, size));
     }
-
 
     public List<ComputerDTO> getDTOElements() {
         return this.dTOElements;

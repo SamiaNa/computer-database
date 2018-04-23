@@ -22,18 +22,20 @@ public class ComputerMapper {
 
     /**
      * Creates a list of computer from a computer ResultSet
-     * @param a Computer ResultSet
+     *
+     * @param a
+     *            Computer ResultSet
      * @return a list of computers
      * @throws DAOException
      */
-    public List<Computer> createComputerListFromResultSet(ResultSet res) throws  DAOException {
+    public List<Computer> createComputerListFromResultSet(ResultSet res) throws DAOException {
         List<Computer> computers = new ArrayList<>();
         try {
             while (res.next()) {
                 computers.add(createComputerAfterNext(res));
             }
             return computers;
-        }catch(SQLException e) {
+        } catch (SQLException e) {
             logger.error("Exception in createComputerListFromResultSet", e);
             throw new DAOException(e.getMessage());
         }
@@ -41,7 +43,9 @@ public class ComputerMapper {
 
     /**
      * Creates a computer from a ResultSet
-     * @param a ResultSet
+     *
+     * @param a
+     *            ResultSet
      * @return an Optional of Computer
      * @throws DAOException
      */
@@ -52,7 +56,7 @@ public class ComputerMapper {
             } else {
                 return Optional.ofNullable(null);
             }
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             logger.error("Exception in createComputerFromResultSet", e);
             throw new DAOException(e.getMessage());
         }
@@ -60,7 +64,9 @@ public class ComputerMapper {
 
     /**
      * Creates a computer from a ResultSet after a call to next
-     * @param a ResultSet
+     *
+     * @param a
+     *            ResultSet
      * @return a Computer
      * @throws DAOException
      */
@@ -70,13 +76,9 @@ public class ComputerMapper {
             if (res.wasNull()) {
                 company = null;
             }
-            return new Computer.ComputerBuilder()
-                    .withId(res.getLong(1))
-                    .withName(res.getString(2))
+            return new Computer.ComputerBuilder().withId(res.getLong(1)).withName(res.getString(2))
                     .withIntroduced(sqlDateToLocalDateOrNull(res.getDate(3)))
-                    .withDiscontinued(sqlDateToLocalDateOrNull(res.getDate(4)))
-                    .withCompany(company)
-                    .build();
+                    .withDiscontinued(sqlDateToLocalDateOrNull(res.getDate(4))).withCompany(company).build();
         } catch (SQLException e) {
             logger.error("Exception in createComputerAfterNext", e);
             throw new DAOException(e.getMessage());

@@ -15,11 +15,8 @@ import com.excilys.java.formation.validator.ValidatorException;
 public class CompanyPage extends Page {
 
     private List<Company> elements;
-
     private static final Logger logger = LoggerFactory.getLogger(CompanyPage.class);
-
     private CompanyService companyService;
-
 
     @Autowired
     public CompanyPage(CompanyService companyService) {
@@ -36,7 +33,7 @@ public class CompanyPage extends Page {
         this.companyService = companyService;
     }
 
-    public void updateList() throws ServiceException  {
+    public void updateList() throws ServiceException {
         logger.debug("Updating company list, page number = {}, page size = {}", offset, size);
         this.elements = companyService.getCompanyList(offset, size);
     }
@@ -51,7 +48,7 @@ public class CompanyPage extends Page {
     }
 
     @Override
-    public void nextPage() throws ServiceException  {
+    public void nextPage() throws ServiceException {
         this.count = companyService.count();
         super.offsetNextPage(count);
         logger.debug("Getting page {} with page size={}", offset, size);
@@ -59,22 +56,21 @@ public class CompanyPage extends Page {
     }
 
     @Override
-    public void prevPage() throws ServiceException  {
+    public void prevPage() throws ServiceException {
         super.offsetPrevPage();
         logger.debug("Getting page {} with page size={}", offset, size);
         updateList();
 
     }
 
-    public List<Company> getElements(){
+    public List<Company> getElements() {
         return this.elements;
     }
 
-
     @Override
-    public void getPage(String orderCriteria, String order, String search, int pageNumber, int pageSize) throws ValidatorException, ServiceException {
+    public void getPage(String orderCriteria, String order, String search, int pageNumber, int pageSize)
+            throws ValidatorException, ServiceException {
 
     }
-
 
 }

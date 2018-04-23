@@ -11,7 +11,7 @@ import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.entities.Computer;
 
 @Component
-public class ComputerRowMapper implements RowMapper<Computer>{
+public class ComputerRowMapper implements RowMapper<Computer> {
 
     @Override
     public Computer mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -19,13 +19,9 @@ public class ComputerRowMapper implements RowMapper<Computer>{
         if (rs.wasNull()) {
             company = null;
         }
-        return new Computer.ComputerBuilder()
-                .withId(rs.getLong(1))
-                .withName(rs.getString(2))
+        return new Computer.ComputerBuilder().withId(rs.getLong(1)).withName(rs.getString(2))
                 .withIntroduced(sqlDateToLocalDateOrNull(rs.getDate(3)))
-                .withDiscontinued(sqlDateToLocalDateOrNull(rs.getDate(4)))
-                .withCompany(company)
-                .build();
+                .withDiscontinued(sqlDateToLocalDateOrNull(rs.getDate(4))).withCompany(company).build();
     }
 
     public LocalDate sqlDateToLocalDateOrNull(java.sql.Date date) {

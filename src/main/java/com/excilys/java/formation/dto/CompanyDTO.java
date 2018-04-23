@@ -11,7 +11,6 @@ public class CompanyDTO {
     private String name;
     @NonNull
     private long id;
-
     private static Logger logger = LoggerFactory.getLogger(CompanyDTO.class);
 
     public String getName() {

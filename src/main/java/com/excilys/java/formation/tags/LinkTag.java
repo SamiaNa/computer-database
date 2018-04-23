@@ -42,8 +42,8 @@ public class LinkTag extends SimpleTagSupport {
     @Override
     public void doTag() throws IOException {
         JspWriter out = getJspContext().getOut();
-        String href = "\"" + this.target + "?pageNumber=" + this.page.getNumber() + "&by=" + this.by + "&order="+ this.order + "&search=" + this.search + "&pageSize="
-                + this.page.getSize() + "\"";
+        String href = "\"" + this.target + "?pageNumber=" + this.page.getNumber() + "&by=" + this.by + "&order="
+                + this.order + "&search=" + this.search + "&pageSize=" + this.page.getSize() + "\"";
         logger.info(href);
         out.write(href);
     }
@@ -63,7 +63,5 @@ public class LinkTag extends SimpleTagSupport {
     public void setOrder(String order) {
         this.order = order;
     }
-
-
 
 }
