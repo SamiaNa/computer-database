@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <!DOCTYPE html>
@@ -30,9 +29,9 @@
 						<c:out value="${param.id}" />
 					</div>
 					<h1><spring:message code="editComputer.editComputer"/></h1>
-					<form:form action="EditComputer" method="POST"
-						modelAttribute="computerDTO">
-						<form:hidden path="id" value="${param.id}"></form:hidden>
+					<form action="EditComputer" method="POST">
+				
+						<input type="hidden" name="id" id="id" value="${param.id}"></input>
 						<fieldset>
 							<div class="form-group">
 								<label for="computerName"><spring:message code="computer.name"/></label> <input
@@ -59,12 +58,14 @@
 									value="${computer.discontinued}">
 							</div>
 							<div class="form-group">
-								<form:label for="companyId" path="company"><spring:message code="computer.company"/></form:label>
-								 <form:select
+								<label for="companyId" path="company"><spring:message code="computer.company"/></label>
+								 <select
 									class="form-control" name="companyId" id="companyId" path="company.id">
-									<form:option value="0">--</form:option>
+									<option value="0">--</option>
 									<c:forEach var="company" items="${companyList}">
-										<c:choose>
+													<option value="${company.id}">${company.name}</option>
+										
+									<!--  	<c:choose>
 											<c:when test="${company.id == computer.company.id}">
 												<option selected value="${company.id}">${company.name}</option>
 											</c:when>
@@ -73,8 +74,9 @@
 
 											</c:otherwise>
 										</c:choose>
+										-->
 									</c:forEach>
-								</form:select>
+								</select>
 								<c:out value="${res}" />
 							</div>
 						</fieldset>
@@ -83,7 +85,7 @@
 								class="btn btn-primary"> <spring:message code="editComputer.or"/> <a href="Dashboard"
 								class="btn btn-default"><spring:message code="editComputer.cancel"/></a>
 						</div>
-					</form:form>
+					</form>
 				</div>
 			</div>
 		</div>

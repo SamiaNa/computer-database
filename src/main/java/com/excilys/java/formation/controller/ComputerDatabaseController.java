@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.excilys.java.formation.dto.CompanyDTO;
 import com.excilys.java.formation.dto.ComputerDTO;
+import com.excilys.java.formation.dto.ComputerDTO.Builder;
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.mapper.CompanyDTOMapper;
@@ -114,10 +115,11 @@ public class ComputerDatabaseController {
 
     }
 
-
+    /*
     @PostMapping(value = { "/EditComputer" })
     protected String doPostEdit( ModelMap model, @ModelAttribute("computerDTO") ComputerDTO computerDTO) {
         try {
+            logger.info("Edit Computer {}", computerDTO);
             computerService.updateComputer(computerDTOMapper.toComputer(computerDTO));
             return "editComputer";
         } catch (NumberFormatException | ValidatorException e) {
@@ -125,10 +127,10 @@ public class ComputerDatabaseController {
             return "404";
         }
 
-    }
+    }*/
 
 
-    /*  @PostMapping(value = {"/EditComputer"})
+    @PostMapping(value = {"/EditComputer"})
     protected String doPostEdit(ModelMap model,
             @RequestParam(value = "companyId") String companyIdStr,
             @RequestParam(value = "id") String computerId,
@@ -151,7 +153,7 @@ public class ComputerDatabaseController {
             return "404";
         }
 
-    }*/
+    }
 
     @GetMapping(value = { "/AddComputer" })
     public String doGet(ModelMap model, @ModelAttribute("computerDTO") ComputerDTO computerDTO) {
