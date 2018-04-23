@@ -9,14 +9,15 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.persistence.implementations.DAOException;
 
-public enum ComputerMapper {
+@Component
+public class ComputerMapper {
 
-    INSTANCE;
     private static final Logger logger = LoggerFactory.getLogger(ComputerMapper.class);
 
     /**
@@ -72,8 +73,8 @@ public enum ComputerMapper {
             return new Computer.ComputerBuilder()
                     .withId(res.getLong(1))
                     .withName(res.getString(2))
-                    .withIntroduced(stringToLocalDateOrNull(res.getDate(3)))
-                    .withDiscontinued(stringToLocalDateOrNull(res.getDate(4)))
+                    .withIntroduced(sqlDateToLocalDateOrNull(res.getDate(3)))
+                    .withDiscontinued(sqlDateToLocalDateOrNull(res.getDate(4)))
                     .withCompany(company)
                     .build();
         } catch (SQLException e) {
@@ -82,7 +83,7 @@ public enum ComputerMapper {
         }
     }
 
-    public LocalDate stringToLocalDateOrNull(java.sql.Date date) {
+    public LocalDate sqlDateToLocalDateOrNull(java.sql.Date date) {
         if (date == null) {
             return null;
         }

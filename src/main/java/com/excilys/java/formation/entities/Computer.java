@@ -12,7 +12,7 @@ public class Computer  {
     private Company company;
 
     public Computer() {
-        
+
     }
     public Computer(long id, String name, LocalDate introduced, LocalDate discontinued, Company company) {
         this.id = id;
@@ -99,39 +99,39 @@ public class Computer  {
     public int hashCode() {
         return Objects.hash(id, name, introduced, discontinued, company);
     }
-    
+
     public static class ComputerBuilder{
         private long id;
         private String name;
         private LocalDate introduced;
         private LocalDate discontinued;
         private Company company;
-        
+
         public ComputerBuilder withId(long id) {
             this.id = id;
             return this;
         }
-        
+
         public ComputerBuilder withName(String name) {
             this.name = name;
             return this;
         }
-        
+
         public ComputerBuilder withIntroduced(LocalDate introduced) {
             this.introduced = introduced;
             return this;
         }
-        
+
         public ComputerBuilder withDiscontinued(LocalDate discontinued) {
             this.discontinued = discontinued;
             return this;
         }
-        
+
         public ComputerBuilder withCompany(Company company) {
             this.company = company;
             return this;
         }
-        
+
         public Computer build() {
             Computer computer = new Computer();
             computer.setId(id);
@@ -141,7 +141,7 @@ public class Computer  {
             computer.setCompany(company);
             return computer;
         }
-        
+
     }
 
 }

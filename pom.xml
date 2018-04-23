@@ -27,6 +27,7 @@
         <slf4j.version>1.7.25</slf4j.version>
         <logback.version>1.2.3</logback.version>
 
+        <failOnMissingWebXml>false</failOnMissingWebXml>
 
         <!-- runtime -->
         <mysql.version>5.1.38</mysql.version>
@@ -36,7 +37,7 @@
         <selenium.version>3.11.0</selenium.version>
         <tomcat7.version>2.2</tomcat7.version>
         <tomcat-catalina.version>8.0.1</tomcat-catalina.version>
-        <javax.servlet.version>2.5</javax.servlet.version>
+        <javax.version>4.0.0</javax.version>
         <jstl.version>1.2</jstl.version>
         <java.version>1.8</java.version>
         <javaee.version>8.0</javaee.version>
@@ -47,6 +48,7 @@
         <jquery.version>3.3.1</jquery.version>
         <!-- maven -->
 
+        <javax.validation.version>2.0.1.Final</javax.validation.version>
         <maven-compiler.version>3.5.1</maven-compiler.version>
         <maven-plugins.version>3.0.2</maven-plugins.version>
         <maven-surefire.version>2.19.1</maven-surefire.version>
@@ -57,6 +59,7 @@
         <lombok.version>1.16.20</lombok.version>
         <commons-dbcp.version>1.4</commons-dbcp.version>
         <jcl-over-slf4j.version>1.8.0-beta2</jcl-over-slf4j.version>
+        <maven.war.plugin>2.4</maven.war.plugin>
 
         <!-- spring -->
 
@@ -112,10 +115,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire.version}</version>
-                <!-- <dependencies> <dependency> <groupId>org.junit.platform</groupId> 
-                    <artifactId>junit-platform-surefire-provider</artifactId> <version>${junit-platform.version}</version> 
-                    </dependency> <dependency> <groupId>org.junit.jupiter</groupId> <artifactId>junit-jupiter-engine</artifactId> 
-                    <version>${junit.version}</version> </dependency> </dependencies> -->
             </plugin>
 
             <plugin>
@@ -173,7 +172,7 @@
 
         </plugins>
 
-
+        <finalName>computer-database</finalName>
     </build>
     <dependencies>
 
@@ -195,12 +194,6 @@
             <version>${maven-war.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>${javax.servlet.version}</version>
-            <scope>provided</scope>
-        </dependency>
 
         <dependency>
             <groupId>jstl</groupId>
@@ -225,6 +218,13 @@
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-catalina</artifactId>
             <version>${tomcat-catalina.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>${javax.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- tests -->
@@ -293,6 +293,12 @@
         </dependency>
 
         <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.webjars.bower</groupId>
             <artifactId>jquery</artifactId>
             <version>${jquery.version}</version>
@@ -312,6 +318,12 @@
             </exclusions>
         </dependency>
 
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>${javax.validation.version}</version>
+        </dependency>
+
 
         <dependency>
             <groupId>org.springframework</groupId>
@@ -328,7 +340,7 @@
 
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
+            <artifactId>spring-orm</artifactId>
             <version>${spring.version}</version>
         </dependency>
 
@@ -349,7 +361,6 @@
             <artifactId>spring-webmvc</artifactId>
             <version>${spring.version}</version>
         </dependency>
-
     </dependencies>
 
     <reporting>
@@ -362,6 +373,17 @@
                     <configLocation>checkstyle.xml</configLocation>
                     <suppressionsLocation>suppressions.xml</suppressionsLocation>
                     <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>${maven.war.plugin}</version>
+                <configuration>
+                    <warSourceDirectory>target</warSourceDirectory>
+                    <warName>computer-database</warName>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
             </plugin>
 

@@ -6,9 +6,11 @@ import java.util.Optional;
 import java.util.Scanner;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.stereotype.Controller;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.stereotype.Component;
 
+import com.excilys.java.formation.configuration.cli.CLIConfiguration;
 import com.excilys.java.formation.dto.CompanyDTO;
 import com.excilys.java.formation.dto.ComputerDTO;
 import com.excilys.java.formation.dto.ComputerDTO.Builder;
@@ -24,7 +26,7 @@ import com.excilys.java.formation.service.ComputerService;
 import com.excilys.java.formation.service.ServiceException;
 import com.excilys.java.formation.validator.ValidatorException;
 
-@Controller
+@Component
 public class UserInterface {
 
     private static final int PAGE_SIZE = 10;
@@ -34,6 +36,12 @@ public class UserInterface {
 
     @Autowired
     private CompanyService companyService;
+
+    @Autowired
+    private ComputerDTOMapper computerDTOMapper;
+
+
+
 
     private  void printElements(Page page) {
         if (page instanceof ComputerPage) {
@@ -145,7 +153,7 @@ public class UserInterface {
             .withIntroduced(introducedStr)
             .withDiscontinued(discontinuedStr)
             .withCompany(companyDTO);
-            computerService.createComputer(ComputerDTOMapper.INSTANCE.toComputer(computerDTOBuilder.build()));
+            computerService.createComputer(computerDTOMapper.toComputer(computerDTOBuilder.build()));
 
         } catch (ValidatorException e) {
             System.out.println(e.getMessage());
@@ -165,42 +173,36 @@ public class UserInterface {
             System.out.println("No computer found with id " + computerId);
             return;
         }
-        try {
-            ComputerDTO computerDTO = ComputerDTOMapper.INSTANCE.toDTO(optComputer.get());
-            if (updateAttribute("name", computerDTO.getName(), scanner)) {
-                System.out.println("Enter new name");
-                computerDTO.setName(scanner.nextLine());
+        ComputerDTO computerDTO = computerDTOMapper.toDTO(optComputer.get());
+        if (updateAttribute("name", computerDTO.getName(), scanner)) {
+            System.out.println("Enter new name");
+            computerDTO.setName(scanner.nextLine());
+        }
+        if (updateAttribute("date of introduction", computerDTO.getIntroduced(), scanner)) {
+            System.out.println("Enter new date of introduction");
+            computerDTO.setIntroduced(scanner.nextLine());
+        }
+        if (updateAttribute("date of discontinuation", computerDTO.getDiscontinued(), scanner)) {
+            System.out.println("Enter new date of discontinuation");
+            computerDTO.setDiscontinued(scanner.nextLine());
+        }
+        CompanyDTO companyDTO = computerDTO.getCompany();
+        String companyIdStr;
+        if (companyDTO == null) {
+            companyIdStr = "null";
+        }else {
+            companyIdStr = String.valueOf(computerDTO.getCompany().getId());
+        }
+        if (updateAttribute("company id", companyIdStr, scanner)) {
+            System.out.println("Enter company id");
+            companyIdStr = scanner.nextLine();
+            companyDTO = computerDTO.getCompany();
+            try {
+                companyDTO.setId(Long.parseUnsignedLong(companyIdStr));
+            }catch (NumberFormatException | NullPointerException e) {
+                companyDTO = null;
             }
-            if (updateAttribute("date of introduction", computerDTO.getIntroduced(), scanner)) {
-                System.out.println("Enter new date of introduction");
-                computerDTO.setIntroduced(scanner.nextLine());
-            }
-            if (updateAttribute("date of discontinuation", computerDTO.getDiscontinued(), scanner)) {
-                System.out.println("Enter new date of discontinuation");
-                computerDTO.setDiscontinued(scanner.nextLine());
-            }
-            CompanyDTO companyDTO = computerDTO.getCompany();
-            String companyIdStr;
-            if (companyDTO == null) {
-                companyIdStr = "null";
-            }else {
-                companyIdStr = String.valueOf(computerDTO.getCompany().getId());
-            }
-            if (updateAttribute("company id", companyIdStr, scanner)) {
-                System.out.println("Enter company id");
-                companyIdStr = scanner.nextLine();
-                companyDTO = computerDTO.getCompany();
-                try {
-                    companyDTO.setId(Long.parseUnsignedLong(companyIdStr));
-                }catch (NumberFormatException | NullPointerException e) {
-                    companyDTO = null;
-                }
-                computerDTO.setCompany(companyDTO);
-            }
-            computerService.updateComputer(ComputerDTOMapper.INSTANCE.toComputer(computerDTO));
-
-        }catch (ValidatorException e) {
-            System.out.println(e.getMessage());
+            computerDTO.setCompany(companyDTO);
         }
 
     }
@@ -291,13 +293,8 @@ public class UserInterface {
     }
 
     public static void main(String[] args) throws ValidatorException, ServiceException {
-        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("/applicationContext.xml", UserInterface.class);
-        UserInterface ui = context.getBean(UserInterface.class);
-        Scanner scanner = new Scanner(System.in);
-        ui.startUI(scanner);
-        scanner.close();
-        context.close();
-
+        ApplicationContext context = new AnnotationConfigApplicationContext(CLIConfiguration.class);
+        context.getBean(UserInterface.class).startUI(new Scanner(System.in));
     }
 
 }
