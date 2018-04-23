@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.excilys.java.formation.dto.CompanyDTO;
 import com.excilys.java.formation.dto.ComputerDTO;
-import com.excilys.java.formation.dto.ComputerDTO.Builder;
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.mapper.CompanyDTOMapper;
@@ -93,7 +92,7 @@ public class ComputerDatabaseController {
 
     @GetMapping(value = { "/EditComputer" })
     protected String doGetEdit(ModelMap model, @RequestParam(value = "id") long id,
-            @ModelAttribute("computerDTO") ComputerDTO computerDTO) {
+            @ModelAttribute("computer") ComputerDTO computerDTO) {
         try {
             Optional<Computer> optComp = computerService.getComputerById(id);
             if (optComp.isPresent()) {
@@ -115,45 +114,22 @@ public class ComputerDatabaseController {
 
     }
 
-    /*
+
     @PostMapping(value = { "/EditComputer" })
-    protected String doPostEdit( ModelMap model, @ModelAttribute("computerDTO") ComputerDTO computerDTO) {
+    protected String doPostEdit( ModelMap model, @RequestParam(value = "id") long id, @ModelAttribute("computer") ComputerDTO computerDTO) {
         try {
+            computerDTO.setId(id);
+            model.addAttribute("id", id);
             logger.info("Edit Computer {}", computerDTO);
             computerService.updateComputer(computerDTOMapper.toComputer(computerDTO));
-            return "editComputer";
-        } catch (NumberFormatException | ValidatorException e) {
-            logger.error("Exception in doPost ", e);
-            return "404";
-        }
-
-    }*/
-
-
-    @PostMapping(value = {"/EditComputer"})
-    protected String doPostEdit(ModelMap model,
-            @RequestParam(value = "companyId") String companyIdStr,
-            @RequestParam(value = "id") String computerId,
-            @RequestParam(value = "name") String computerName,
-            @RequestParam(value = "introduced") String computerIntro,
-            @RequestParam(value = "discontinued") String computerDisc
-            )
-    {
-        try {
-            CompanyDTO companyDTO = CompanyDTO.getCompanyDTOFromString(companyIdStr);
-            Builder computerDTOBuilder = new Builder();
-            computerDTOBuilder.withId(computerId).withName(computerName)
-            .withIntroduced(computerIntro)
-            .withDiscontinued(computerDisc).withCompany(companyDTO);
-            logger.info("Call to updateComputer");
-            computerService.updateComputer(computerDTOMapper.toComputer(computerDTOBuilder.build()));
-            return "editComputer";
+            return "redirect:/EditComputer";
         } catch (NumberFormatException | ValidatorException e) {
             logger.error("Exception in doPost ", e);
             return "404";
         }
 
     }
+
 
     @GetMapping(value = { "/AddComputer" })
     public String doGet(ModelMap model, @ModelAttribute("computerDTO") ComputerDTO computerDTO) {

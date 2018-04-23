@@ -31,6 +31,9 @@ public class ComputerDTO {
         return id;
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
     public String getIntroduced() {
         return introduced;
     }
