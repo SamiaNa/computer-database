@@ -30,17 +30,17 @@ import com.excilys.java.formation.validator.ValidatorException;
 public class UserInterface {
 
     private static final int PAGE_SIZE = 10;
-
-    @Autowired
     private ComputerService computerService;
-
-    @Autowired
     private CompanyService companyService;
-
-    @Autowired
     private ComputerDTOMapper computerDTOMapper;
 
+    @Autowired
+    public UserInterface(ComputerService computerService, CompanyService companyService, ComputerDTOMapper computerDTOMapper) {
+        this.computerService = computerService;
+        this.companyService = companyService;
+        this.computerDTOMapper = computerDTOMapper;
 
+    }
 
 
     private  void printElements(Page page) {

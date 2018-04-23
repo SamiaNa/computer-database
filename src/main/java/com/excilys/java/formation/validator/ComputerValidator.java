@@ -16,9 +16,12 @@ import com.excilys.java.formation.persistence.implementations.DAOException;
 @Component
 public class ComputerValidator {
 
-    @Autowired
     private CompanyValidator companyValidator;
 
+    @Autowired
+    public ComputerValidator(CompanyValidator companyValidator) {
+        this.companyValidator = companyValidator;
+    }
 
     private static Logger logger = LoggerFactory.getLogger(ComputerValidator.class);
 

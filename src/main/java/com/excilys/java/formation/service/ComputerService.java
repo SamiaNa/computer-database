@@ -22,15 +22,16 @@ import com.excilys.java.formation.validator.ValidatorException;
 public class ComputerService {
 
     private static Logger logger = LoggerFactory.getLogger(ComputerService.class);
-
-    @Autowired
     private ComputerDAOJdbc computerDAO ;
-
-    @Autowired
     private CompanyDAOJdbc companyDAO;
+    private ComputerValidator computerValidator;
 
     @Autowired
-    private ComputerValidator computerValidator;
+    public ComputerService(ComputerDAOJdbc computerDAO, CompanyDAOJdbc companyDAO, ComputerValidator computerValidator) {
+        this.computerDAO = computerDAO;
+        this.companyDAO = companyDAO;
+        this.computerValidator = computerValidator;
+    }
 
     public List<Computer> getComputerList() {
         return computerDAO.getAll();

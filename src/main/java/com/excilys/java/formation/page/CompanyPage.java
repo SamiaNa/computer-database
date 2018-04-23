@@ -18,9 +18,10 @@ public class CompanyPage extends Page {
 
     private static final Logger logger = LoggerFactory.getLogger(CompanyPage.class);
 
-    @Autowired
     private CompanyService companyService;
 
+
+    @Autowired
     public CompanyPage(CompanyService companyService) {
         this.offset = 0;
         this.size = DEFAULT_SIZE;

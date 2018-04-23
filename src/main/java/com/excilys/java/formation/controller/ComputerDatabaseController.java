@@ -42,17 +42,18 @@ public class ComputerDatabaseController {
     private static final String ORDER = "order";
     private static final String BY = "by";
 
-    @Autowired
     private ComputerService computerService;
-
-    @Autowired
     private CompanyService companyService;
-
-    @Autowired
     private ComputerDTOMapper computerDTOMapper;
+    private CompanyDTOMapper companyDTOMapper;
 
     @Autowired
-    private CompanyDTOMapper companyDTOMapper;
+    public ComputerDatabaseController(ComputerService computerService, CompanyService companyService, ComputerDTOMapper computerDTOMapper, CompanyDTOMapper companyDTOMapper) {
+        this.computerService = computerService;
+        this.companyService = companyService;
+        this.computerDTOMapper = computerDTOMapper;
+        this.companyDTOMapper = companyDTOMapper;
+    }
 
     @GetMapping(value = { "/", "/Dashboard" })
     public String doGetDashboard(Locale locale, ModelMap model,
@@ -137,9 +138,7 @@ public class ComputerDatabaseController {
     }
 
     @GetMapping(value = { "/AddComputer" })
-    public String doGet(ModelMap model,
-            @Valid
-            @ModelAttribute("computerDTO") ComputerDTO computerDTO,
+    public String doGet(ModelMap model, @Valid @ModelAttribute("computerDTO") ComputerDTO computerDTO,
             BindingResult bindingResult) {
         logger.info("Binding Result {} ", bindingResult);
         if (bindingResult.hasErrors()) {
@@ -153,9 +152,7 @@ public class ComputerDatabaseController {
     }
 
     @PostMapping(value = { "/AddComputer" })
-    public String doPost(ModelMap model,
-            @Valid
-            @ModelAttribute("computerDTO") ComputerDTO computerDTO,
+    public String doPost(ModelMap model, @Valid @ModelAttribute("computerDTO") ComputerDTO computerDTO,
             BindingResult bindingResult) {
         try {
             logger.info("Binding Result {} ", bindingResult);

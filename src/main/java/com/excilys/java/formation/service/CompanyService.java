@@ -19,8 +19,12 @@ public class CompanyService {
 
     private static Logger logger = LoggerFactory.getLogger(CompanyService.class);
 
-    @Autowired
     private CompanyDAOJdbc companyDAO;
+
+    @Autowired
+    public CompanyService(CompanyDAOJdbc companyDAO) {
+        this.companyDAO = companyDAO;
+    }
 
 
     public List<Company> getCompanyList() {

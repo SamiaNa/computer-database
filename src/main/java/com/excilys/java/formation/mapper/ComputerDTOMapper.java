@@ -21,11 +21,14 @@ public class ComputerDTOMapper {
     private static final String EMPTY = "";
     private static final Logger logger = LoggerFactory.getLogger(ComputerDTOMapper.class);
 
-    @Autowired
     private CompanyDTOMapper companyDTOMapper;
+    private ComputerValidator computerValidator;
 
     @Autowired
-    private ComputerValidator computerValidator;
+    private ComputerDTOMapper(CompanyDTOMapper companyDTOMapper, ComputerValidator computerValidator) {
+        this.companyDTOMapper = companyDTOMapper;
+        this.computerValidator = computerValidator;
+    }
 
 
     /**

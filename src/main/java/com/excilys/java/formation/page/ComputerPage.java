@@ -18,9 +18,9 @@ public class ComputerPage extends Page {
     private List<Computer> elements;
     private static final Logger logger = LoggerFactory.getLogger(ComputerPage.class);
 
-    @Autowired
     private  ComputerService computerService;
 
+    @Autowired
     public ComputerPage(ComputerService computerService) {
         this.offset = 0;
         this.size = DEFAULT_SIZE;

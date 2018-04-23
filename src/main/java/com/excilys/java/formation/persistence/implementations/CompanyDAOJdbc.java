@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -23,16 +21,15 @@ public class CompanyDAOJdbc{
     private static final String COUNT = "SELECT COUNT(id) FROM company;";
     private static final String DELETE = "DELETE FROM company WHERE id = ?;";
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     private JdbcTemplate jdbcTemplate;
-
-    @Autowired
     private CompanyRowMapper companyRowMapper;
-
-    @Autowired
     private ComputerDAOJdbc computerDAO;
 
+    @Autowired
+    public CompanyDAOJdbc (CompanyRowMapper companyRowMapper, ComputerDAOJdbc computerDAO) {
+        this.companyRowMapper = companyRowMapper;
+        this.computerDAO = computerDAO;
+    }
     @Autowired
     public void init(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);

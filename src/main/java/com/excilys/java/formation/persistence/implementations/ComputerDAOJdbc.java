@@ -50,15 +50,21 @@ public class ComputerDAOJdbc{
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private JdbcTemplate jdbcTemplate;
+    private ComputerRowMapper computerRowMapper;
 
     @Autowired
-    private ComputerRowMapper computerRowMapper;
+    private ComputerDAOJdbc (ComputerRowMapper computerRowMapper) {
+        this.computerRowMapper = computerRowMapper;
+    }
 
     @Autowired
     public void init(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
+    public ComputerDAOJdbc() {
+        super();
+    }
     public List<Computer> getAll() {
         return jdbcTemplate.query(SELECT_ALL, computerRowMapper);
     }

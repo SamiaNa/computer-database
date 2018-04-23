@@ -4,9 +4,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
@@ -16,10 +13,6 @@ import com.excilys.java.formation.entities.Computer;
 @Component
 public class ComputerRowMapper implements RowMapper<Computer>{
 
-    @Autowired
-    private ComputerMapper computerMapper;
-
-    private Logger logger = LoggerFactory.getLogger("ComputerRowMapper.class");
     @Override
     public Computer mapRow(ResultSet rs, int rowNum) throws SQLException {
         Company company = new Company(rs.getLong(5), rs.getString(6));
