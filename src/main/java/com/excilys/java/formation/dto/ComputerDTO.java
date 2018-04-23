@@ -2,15 +2,18 @@ package com.excilys.java.formation.dto;
 
 import java.util.Objects;
 
-import org.springframework.lang.NonNull;
-
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 
 public class ComputerDTO {
 
     private long id;
-    @NonNull
+
+    @NotNull
+    @Size(min=1, max=5)
     private String name;
+
     private String introduced;
     private String discontinued;
     private CompanyDTO company;

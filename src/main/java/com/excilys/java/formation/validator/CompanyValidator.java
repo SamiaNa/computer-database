@@ -7,8 +7,8 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import com.excilys.java.formation.entities.Company;
+import com.excilys.java.formation.persistence.implementations.CompanyDAOJdbc;
 import com.excilys.java.formation.persistence.implementations.DAOException;
-import com.excilys.java.formation.persistence.interfaces.CompanyDAO;
 
 @Component
 public class CompanyValidator implements Validator{
@@ -35,7 +35,7 @@ public class CompanyValidator implements Validator{
         }
     }
 
-    public Long checkCompanyIdOrNull(CompanyDAO companyDAO, String strId) throws ValidatorException {
+    public Long checkCompanyIdOrNull(CompanyDAOJdbc companyDAO, String strId) throws ValidatorException {
         Long id = getLongId(strId);
         if (id != null) {
             checkCompanyOrNull(companyDAO, new Company(id, null));
@@ -43,7 +43,7 @@ public class CompanyValidator implements Validator{
         return id;
     }
 
-    public void checkCompanyOrNull(CompanyDAO companyDAO, Company company) throws ValidatorException {
+    public void checkCompanyOrNull(CompanyDAOJdbc companyDAO, Company company) throws ValidatorException {
         logger.info("Check company or null {}", company);
         if (company != null) {
             long id = company.getId();
@@ -66,6 +66,6 @@ public class CompanyValidator implements Validator{
     @Override
     public void validate(Object target, Errors errors) {
         // TODO Auto-generated method stub
-        
+
     }
 }

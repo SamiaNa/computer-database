@@ -12,10 +12,9 @@ import org.springframework.stereotype.Repository;
 
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.mapper.CompanyRowMapper;
-import com.excilys.java.formation.persistence.interfaces.CompanyDAO;
 
 @Repository
-public class CompanyDAOJdbc implements CompanyDAO {
+public class CompanyDAOJdbc{
 
     private static final String SELECT = "SELECT id, name FROM company;";
     private static final String SELECT_LIMIT = "SELECT id, name FROM company LIMIT ? OFFSET ?;";
@@ -38,22 +37,20 @@ public class CompanyDAOJdbc implements CompanyDAO {
     public void init(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
-    @Override
     public List<Company> getAll() {
         return jdbcTemplate.query(SELECT, companyRowMapper);
     }
 
-    @Override
     public List<Company> get(int offset, int size)  {
         return jdbcTemplate.query(SELECT_LIMIT, companyRowMapper, size, offset);
     }
 
-    @Override
+
     public List<Company> getByName(String name)  {
         return jdbcTemplate.query(SELECT_BY_NAME, companyRowMapper, "%"+name+"%");
     }
 
-    @Override
+
     public boolean checkCompanyById(long id) throws DAOException {
         List<Company> companies =  jdbcTemplate.query(SELECT_BY_ID,  companyRowMapper, id);
         if (companies.size() == 1) {
@@ -65,12 +62,11 @@ public class CompanyDAOJdbc implements CompanyDAO {
         throw new DAOException("Expected number of rows : 0 or 1, actual number of rows "+companies.size());
     }
 
-    @Override
     public int count()  {
         return jdbcTemplate.queryForObject(COUNT, Integer.class);
     }
 
-    @Override
+
     public void delete(long id) throws DAOException {
         computerDAO.deleteCompany(id);
         jdbcTemplate.update(DELETE, id);

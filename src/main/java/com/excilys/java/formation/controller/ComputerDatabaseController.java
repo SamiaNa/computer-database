@@ -5,12 +5,16 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -61,7 +65,7 @@ public class ComputerDatabaseController {
         int pageNumber = getUnsignedIntFromParam(pageNumberStr, 1);
         int pageSize = getUnsignedIntFromParam(pageSizeStr, 10);
         if (pageNumber == -1 || pageSize == -1) {
-            return ("redirect:404.jsp");
+            return ("404");
         }
         ComputerDTOPage computerPage = new ComputerDTOPage(computerService, computerDTOMapper);
         logger.info("Do get computer dashboard : {}, {}, {}, {}, {}", by, order, search, pageNumber, pageSize);
@@ -77,7 +81,8 @@ public class ComputerDatabaseController {
             @RequestParam(value = "search", required = false) String search,
             @RequestParam(value = "order", required = false) String order,
             @RequestParam(value = "by", required = false) String by,
-            @RequestParam(value = "selection", required = false) String checked) throws ValidatorException, ServiceException {
+            @RequestParam(value = "selection", required = false) String checked)
+                    throws ValidatorException, ServiceException {
         logger.info("   Checked = {}", checked);
         if (checked != null) {
             String[] computerIds = checked.split(",");
@@ -92,7 +97,7 @@ public class ComputerDatabaseController {
 
     @GetMapping(value = { "/EditComputer" })
     protected String doGetEdit(ModelMap model, @RequestParam(value = "id") long id,
-            @ModelAttribute("computer") ComputerDTO computerDTO) {
+            @ModelAttribute("computer") @Validated(ComputerDTO.class) ComputerDTO computerDTO) {
         try {
             Optional<Computer> optComp = computerService.getComputerById(id);
             if (optComp.isPresent()) {
@@ -109,14 +114,15 @@ public class ComputerDatabaseController {
             return "500";
         } catch (NumberFormatException e) {
             logger.error("Exception in doGet EditComputer", e);
-            return "redirect:404";
+            return "404";
         }
 
     }
 
-
     @PostMapping(value = { "/EditComputer" })
-    protected String doPostEdit( ModelMap model, @RequestParam(value = "id") long id, @ModelAttribute("computer") ComputerDTO computerDTO) {
+    protected String doPostEdit(ModelMap model, @RequestParam(value = "id") long id,
+            @ModelAttribute("computer") @Validated(ComputerDTO.class) ComputerDTO computerDTO,
+            BindingResult bindingResult) {
         try {
             computerDTO.setId(id);
             model.addAttribute("id", id);
@@ -130,18 +136,35 @@ public class ComputerDatabaseController {
 
     }
 
-
     @GetMapping(value = { "/AddComputer" })
-    public String doGet(ModelMap model, @ModelAttribute("computerDTO") ComputerDTO computerDTO) {
+    public String doGet(ModelMap model,
+            @Valid
+            @ModelAttribute("computerDTO") ComputerDTO computerDTO,
+            BindingResult bindingResult) {
+        logger.info("Binding Result {} ", bindingResult);
+        if (bindingResult.hasErrors()) {
+            logger.error("Error in binding result");
+            return "404";
+
+        }
         List<CompanyDTO> companyList = companyDTOMapper.toDTOList(companyService.getCompanyList());
         model.addAttribute("companyList", companyList);
         return "addComputer";
     }
 
     @PostMapping(value = { "/AddComputer" })
-    public String doPost(ModelMap model, @ModelAttribute("computerDTO") ComputerDTO computerDTO) {
+    public String doPost(ModelMap model,
+            @Valid
+            @ModelAttribute("computerDTO") ComputerDTO computerDTO,
+            BindingResult bindingResult) {
         try {
+            logger.info("Binding Result {} ", bindingResult);
             computerService.createComputer(computerDTOMapper.toComputer(computerDTO));
+            if (bindingResult.hasErrors()) {
+                logger.error("Error in binding result");
+                return "404";
+
+            }
         } catch (ValidatorException e) {
             model.addAttribute("res", e.getMessage());
             return "404";

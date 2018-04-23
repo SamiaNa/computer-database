@@ -9,9 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.excilys.java.formation.entities.Computer;
+import com.excilys.java.formation.persistence.implementations.CompanyDAOJdbc;
+import com.excilys.java.formation.persistence.implementations.ComputerDAOJdbc;
 import com.excilys.java.formation.persistence.implementations.DAOException;
-import com.excilys.java.formation.persistence.interfaces.CompanyDAO;
-import com.excilys.java.formation.persistence.interfaces.ComputerDAO;
 
 @Component
 public class ComputerValidator {
@@ -52,7 +52,7 @@ public class ComputerValidator {
         }
     }
 
-    public Long checkComputerId(String strId, ComputerDAO computerDAO) throws ValidatorException {
+    public Long checkComputerId(String strId, ComputerDAOJdbc computerDAO) throws ValidatorException {
         try {
             long id = Long.parseLong(strId);
             computerDAO.getComputerById(id);
@@ -66,7 +66,7 @@ public class ComputerValidator {
         }
     }
 
-    public void checkComputer (CompanyDAO companyDAO, Computer computer) throws ValidatorException {
+    public void checkComputer (CompanyDAOJdbc companyDAO, Computer computer) throws ValidatorException {
         checkDates(computer);
         checkName(computer.getName());
         companyValidator.checkCompanyOrNull(companyDAO, computer.getCompany());

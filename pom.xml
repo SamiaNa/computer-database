@@ -48,6 +48,7 @@
         <jquery.version>3.3.1</jquery.version>
         <!-- maven -->
 
+        <javax.validation.version>2.0.1.Final</javax.validation.version>
         <maven-compiler.version>3.5.1</maven-compiler.version>
         <maven-plugins.version>3.0.2</maven-plugins.version>
         <maven-surefire.version>2.19.1</maven-surefire.version>
@@ -315,6 +316,12 @@
                     <artifactId>commons-logging</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>${javax.validation.version}</version>
         </dependency>
 
 

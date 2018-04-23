@@ -20,12 +20,11 @@ import org.springframework.stereotype.Repository;
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.mapper.ComputerRowMapper;
-import com.excilys.java.formation.persistence.interfaces.ComputerDAO;
 import com.excilys.java.formation.validator.ValidatorException;
 import com.mysql.cj.api.jdbc.Statement;
 
 @Repository
-public class ComputerDAOJdbc implements ComputerDAO {
+public class ComputerDAOJdbc{
 
     private static final String SELECT_ALL = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id;";
     private static final String SELECT_ORDER = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id";
@@ -60,17 +59,14 @@ public class ComputerDAOJdbc implements ComputerDAO {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    @Override
     public List<Computer> getAll() {
         return jdbcTemplate.query(SELECT_ALL, computerRowMapper);
     }
 
-    @Override
     public List<Computer> get(int offset, int size) {
         return jdbcTemplate.query(SELECT_LIMIT, computerRowMapper, size, offset);
     }
 
-    @Override
     public Optional<Computer> getComputerById(long id) throws DAOException {
         List<Computer> computer = jdbcTemplate.query(SELECT_BY_ID_JOIN, computerRowMapper, id);
         try {
@@ -80,7 +76,6 @@ public class ComputerDAOJdbc implements ComputerDAO {
         }
     }
 
-    @Override
     public List<Computer> getByName(String name, int offset, int limit) {
         String nameParam = "%" + name + "%";
         List<Computer> list = jdbcTemplate.query(SELECT_BY_NAME, computerRowMapper, nameParam, nameParam, limit,
@@ -88,7 +83,7 @@ public class ComputerDAOJdbc implements ComputerDAO {
         return list;
     }
 
-    @Override
+
     public List<Computer> getByOrder(String orderCriteria, String order, int offset, int limit)
             throws ValidatorException {
         checkOrder(order);
@@ -126,7 +121,6 @@ public class ComputerDAOJdbc implements ComputerDAO {
 
     }
 
-    @Override
     public List<Computer> getByOrder(String orderCriteria, String order, String search, int offset, int limit)
             throws ValidatorException {
         checkOrder(order);
@@ -164,7 +158,6 @@ public class ComputerDAOJdbc implements ComputerDAO {
         }
     }
 
-    @Override
     public long createComputer(Computer c) throws DAOException {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -182,14 +175,14 @@ public class ComputerDAOJdbc implements ComputerDAO {
         return keyHolder.getKey().longValue();
     }
 
-    @Override
+
     public void update(Computer c) {
         logger.info("Computer {}", c);
         jdbcTemplate.update(UPDATE, c.getName(), c.getIntroduced(), c.getDiscontinued(),
                 (c.getCompany() == null) ? null : c.getCompany().getId(), c.getId());
     }
 
-    @Override
+
     public void delete(long id) {
         jdbcTemplate.update(DELETE, id);
     }
@@ -198,19 +191,19 @@ public class ComputerDAOJdbc implements ComputerDAO {
         jdbcTemplate.update(DELETE_BY_COMPANY, id);
     }
 
-    @Override
+
     public void delete(List<Long> ids) {
         for (long id : ids) {
             jdbcTemplate.update(DELETE, id);
         }
     }
 
-    @Override
+
     public int count() {
         return jdbcTemplate.queryForObject(COUNT, Integer.class);
     }
 
-    @Override
+
     public int count(String name) {
         return jdbcTemplate.queryForObject(COUNT_NAME, Integer.class, "%" + name + "%", "%" + name + "%");
     }
