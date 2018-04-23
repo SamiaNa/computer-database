@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.service.CompanyService;
 import com.excilys.java.formation.service.ServiceException;
+import com.excilys.java.formation.validator.ValidatorException;
 
 public class CompanyPage extends Page {
 
@@ -40,13 +41,6 @@ public class CompanyPage extends Page {
     }
 
     @Override
-    public void getPage() throws ServiceException {
-        this.count = companyService.count();
-        offsetGetPage(this.number, this.count);
-        logger.debug("Getting page {} with page size= {}", number, size);
-        updateList();
-    }
-
     public void getPage(int pageNumber, int pageSize) throws ServiceException {
         this.count = companyService.count();
         this.size = pageSize;
@@ -76,7 +70,10 @@ public class CompanyPage extends Page {
     }
 
 
+    @Override
+    public void getPage(String orderCriteria, String order, String search, int pageNumber, int pageSize) throws ValidatorException, ServiceException {
 
+    }
 
 
 }

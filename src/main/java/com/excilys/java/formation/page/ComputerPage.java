@@ -65,23 +65,51 @@ public class ComputerPage extends Page {
         logger.debug("Getting page {} with page size={}", this.number, this.size);
     }
 
+    @Override
+    public void getPage(int pageNumber, int pageSize) throws ValidatorException, ServiceException {
+        this.count = computerService.count();
+        getPageHelper(pageNumber, pageSize);
+        updateList();
+    }
+
+    public void getPage(String name, int pageNumber, int pageSize) throws ValidatorException, ServiceException {
+        this.count = computerService.count(name);
+        getPageHelper(pageNumber, pageSize);
+        updateList(name);
+        logger.info("List size {}", this.elements.size());
+    }
+
+    public void getPageOrder(String orderCriteria, String order, int pageNumber, int pageSize)
+            throws ValidatorException, ServiceException {
+        this.count = computerService.count();
+        getPageHelper(pageNumber, pageSize);
+        updateListOrderBy(orderCriteria, order);
+        logger.info("List size {}", this.elements.size());
+    }
+
+    public void getPageOrder(String orderCriteria, String order, String name, int pageNumber, int pageSize)
+            throws ValidatorException, ServiceException {
+        this.count = computerService.count(name);
+        getPageHelper(pageNumber, pageSize);
+        updateListOrderBy(orderCriteria, order, name);
+        logger.info("getPageOrder({}, {}, {}, {}, {}) List size {}", orderCriteria, order, name, pageNumber, pageSize,
+                this.elements.size());
+    }
 
     @Override
-    public void getPage() throws ValidatorException, ServiceException {
-        if (StringUtils.isBlank(search)) {
-            this.count = computerService.count();
-            setOffsetAndPageNumber();
+    public void getPage(String orderCriteria, String order, String name, int pageNumber, int pageSize) throws ValidatorException, ServiceException {
+        this.number = pageNumber;
+        this.size = pageSize;
+        if (StringUtils.isBlank(name)) {
             if (StringUtils.isBlank(order)) {
-                this.elements = computerService.getComputerList(offset, size);
+                getPage(pageNumber, pageSize);
             } else {
                 logger.info("1");
                 getPageOrder(orderCriteria, order, pageNumber, pageSize);
             }
         } else {
-            this.count = computerService.count(search);
-            setOffsetAndPageNumber();
             if (StringUtils.isBlank(order)) {
-                this.elements = computerService.getByName(search, offset, size);
+                getPage(name, pageNumber, pageSize);
             } else {
                 logger.info("2");
                 getPageOrder(orderCriteria, order, name, pageNumber, pageSize);

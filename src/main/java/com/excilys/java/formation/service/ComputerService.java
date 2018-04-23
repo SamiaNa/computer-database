@@ -14,7 +14,6 @@ import com.excilys.java.formation.entities.Computer;
 import com.excilys.java.formation.persistence.implementations.CompanyDAOJdbc;
 import com.excilys.java.formation.persistence.implementations.ComputerDAOJdbc;
 import com.excilys.java.formation.persistence.implementations.DAOException;
-import com.excilys.java.formation.persistence.interfaces.ComputerDAO;
 import com.excilys.java.formation.validator.ComputerValidator;
 import com.excilys.java.formation.validator.ValidatorException;
 

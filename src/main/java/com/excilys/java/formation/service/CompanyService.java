@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.excilys.java.formation.entities.Company;
 import com.excilys.java.formation.persistence.implementations.CompanyDAOJdbc;
 import com.excilys.java.formation.persistence.implementations.DAOException;
-import com.excilys.java.formation.persistence.interfaces.CompanyDAO;
 
 @Service
 @EnableTransactionManagement

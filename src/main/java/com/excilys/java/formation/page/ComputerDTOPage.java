@@ -3,7 +3,8 @@ package com.excilys.java.formation.page;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.excilys.java.formation.dto.ComputerDTO;
 import com.excilys.java.formation.mapper.ComputerDTOMapper;
@@ -14,7 +15,7 @@ import com.excilys.java.formation.validator.ValidatorException;
 public class ComputerDTOPage extends ComputerPage {
 
     private List<ComputerDTO> dTOElements;
-    private static final ComputerService computerService = ComputerService.INSTANCE;
+    private static final Logger logger = LoggerFactory.getLogger(ComputerDTOPage.class);
 
 
     private ComputerDTOMapper computerDTOMapper;

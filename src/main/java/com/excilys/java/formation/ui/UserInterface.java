@@ -59,9 +59,7 @@ public class UserInterface {
     }
     private  void printPagedList(Scanner scanner, Page page) throws ValidatorException, ServiceException {
         scanner.nextLine();
-        page.setNumber(1);
-        page.setSize(PAGE_SIZE);
-        page.getPage();
+        page.getPage(1, PAGE_SIZE);
         while (true) {
             printElements(page);
             System.out.println("p : previous page, n : next page, q : quit, g : goto page");
@@ -74,8 +72,7 @@ public class UserInterface {
                 break;
             case GOTO:
                 System.out.println("Enter page number");
-                page.setNumber(scanner.nextInt());
-                page.getPage();
+                page.getPage(scanner.nextInt(), PAGE_SIZE);
                 scanner.nextLine();
                 break;
             case EXIT:

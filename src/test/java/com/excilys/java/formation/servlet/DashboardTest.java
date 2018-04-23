@@ -43,5 +43,4 @@ public class DashboardTest {
         element.click();
         assertEquals("http://localhost:8080/computer-database/AddComputer", driver.getCurrentUrl());
     }
-
 }
