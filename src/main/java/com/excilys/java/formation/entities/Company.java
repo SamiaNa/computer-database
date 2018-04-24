@@ -8,7 +8,7 @@ public class Company {
     private String name;
 
     public Company() {
-
+        super();
     }
 
     public long getId() {
@@ -48,8 +48,7 @@ public class Company {
             return false;
         }
         Company company = (Company) o;
-        return (this.id == company.id &&
-                this.name.equals(company.name));
+        return (this.id == company.id && this.name.equals(company.name));
     }
 
     @Override

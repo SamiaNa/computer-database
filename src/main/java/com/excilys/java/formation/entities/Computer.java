@@ -12,8 +12,9 @@ public class Computer  {
     private Company company;
 
     public Computer() {
-
+        super();
     }
+
     public Computer(long id, String name, LocalDate introduced, LocalDate discontinued, Company company) {
         this.id = id;
         this.name = name;

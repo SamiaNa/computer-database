@@ -20,23 +20,25 @@ public class ComputerDTOMapper {
 
     private static final String EMPTY = "";
     private static final Logger logger = LoggerFactory.getLogger(ComputerDTOMapper.class);
-
-    @Autowired
     private CompanyDTOMapper companyDTOMapper;
-
-    @Autowired
     private ComputerValidator computerValidator;
 
+    @Autowired
+    private ComputerDTOMapper(CompanyDTOMapper companyDTOMapper, ComputerValidator computerValidator) {
+        this.companyDTOMapper = companyDTOMapper;
+        this.computerValidator = computerValidator;
+    }
 
     /**
      * Maps a Computer object to a ComputerDTO object
-     * @param a Computer
+     *
+     * @param a
+     *            Computer
      * @return a ComputerDTO
      */
     public ComputerDTO toDTO(Computer computer) {
         Builder cDTO = new Builder();
-        cDTO.withName(computer.getName())
-        .withId(computer.getId())
+        cDTO.withName(computer.getName()).withId(computer.getId())
         .withIntroduced(localDateToString(computer.getIntroduced()))
         .withDiscontinued(localDateToString(computer.getDiscontinued()))
         .withCompany(companyDTOMapper.toDTO(computer.getCompany()));
@@ -44,21 +46,19 @@ public class ComputerDTOMapper {
         return cDTO.build();
     }
 
-
     /**
      * Maps a ComputerDTO object to a Computer object
-     * @param a ComputerDTO
+     *
+     * @param a
+     *            ComputerDTO
      * @return a Computer
      */
     public Computer toComputer(ComputerDTO computerDTO) throws ValidatorException {
         logger.debug("ComputerDTO {} mapped to computer", computerDTO);
-        Computer computer = new Computer.ComputerBuilder()
-                .withId(computerDTO.getId())
-                .withName(computerDTO.getName())
+        Computer computer = new Computer.ComputerBuilder().withId(computerDTO.getId()).withName(computerDTO.getName())
                 .withIntroduced(stringToLocalDate(computerDTO.getIntroduced()))
                 .withDiscontinued(stringToLocalDate(computerDTO.getDiscontinued()))
-                .withCompany(companyDTOMapper.toCompany(computerDTO.getCompany()))
-                .build();
+                .withCompany(companyDTOMapper.toCompany(computerDTO.getCompany())).build();
         computerValidator.checkDates(computer);
         computerValidator.checkName(computer.getName());
         return computer;
@@ -66,10 +66,12 @@ public class ComputerDTOMapper {
 
     /**
      * Maps a ComputerDTO list to a Computer list
-     * @param a ComputerDTO list
+     *
+     * @param a
+     *            ComputerDTO list
      * @return a Computer list
      */
-    public List<ComputerDTO> toDTOList(List<Computer> computers)  {
+    public List<ComputerDTO> toDTOList(List<Computer> computers) {
         List<ComputerDTO> computersDTO = new ArrayList<>();
         for (Computer c : computers) {
             computersDTO.add(toDTO(c));
@@ -77,10 +79,11 @@ public class ComputerDTOMapper {
         return computersDTO;
     }
 
-
     /**
      * Maps a Computer list to a ComputerDTO list
-     * @param a Computer list
+     *
+     * @param a
+     *            Computer list
      * @return a ComputerDTO list
      */
     public List<Computer> toComputerList(List<ComputerDTO> computersDTO) throws ValidatorException {
@@ -105,6 +108,5 @@ public class ComputerDTOMapper {
         }
         return LocalDate.parse(str);
     }
-
 
 }

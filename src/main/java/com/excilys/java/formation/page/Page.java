@@ -5,7 +5,6 @@ import com.excilys.java.formation.validator.ValidatorException;
 
 public abstract class Page {
 
-
     protected int offset;
     protected int size;
     protected int count;

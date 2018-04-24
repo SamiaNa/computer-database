@@ -5,13 +5,12 @@ import java.util.Objects;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-
 public class ComputerDTO {
 
     private long id;
 
     @NotNull
-    @Size(min=1, max=5)
+    @Size(min = 1, max = 5)
     private String name;
 
     private String introduced;
@@ -27,7 +26,7 @@ public class ComputerDTO {
     }
 
     private ComputerDTO() {
-
+        super();
     }
 
     public long getId() {
@@ -37,6 +36,7 @@ public class ComputerDTO {
     public void setId(long id) {
         this.id = id;
     }
+
     public String getIntroduced() {
         return introduced;
     }
@@ -60,7 +60,6 @@ public class ComputerDTO {
     public void setCompany(CompanyDTO company) {
         this.company = company;
     }
-
 
     public String getName() {
         return name;
