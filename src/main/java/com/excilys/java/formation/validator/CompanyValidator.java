@@ -11,9 +11,10 @@ import com.excilys.java.formation.persistence.implementations.CompanyDAOJdbc;
 import com.excilys.java.formation.persistence.implementations.DAOException;
 
 @Component
-public class CompanyValidator implements Validator{
+public class CompanyValidator implements Validator {
 
     private static final Logger logger = LoggerFactory.getLogger(CompanyValidator.class);
+
     /**
      * Converts string argument to Long
      *
@@ -51,7 +52,7 @@ public class CompanyValidator implements Validator{
                 if (!companyDAO.checkCompanyById(id)) {
                     throw new ValidatorException(("No existing company with id " + id));
                 }
-            }catch(DAOException e) {
+            } catch (DAOException e) {
                 logger.error("Exception in checkCompanyOrNull({})", id, e);
                 throw new ValidatorException(e);
             }

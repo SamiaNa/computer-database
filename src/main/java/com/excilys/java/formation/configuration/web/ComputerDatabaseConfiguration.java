@@ -40,9 +40,9 @@ import org.springframework.web.servlet.view.JstlView;
 @EnableWebMvc
 @EnableTransactionManagement
 @ComponentScan(basePackages = { "com.excilys.java.formation" })
-@PropertySource(value= {"classpath:datasource.properties"})
+@PropertySource(value = { "classpath:datasource.properties" })
 @Profile("!CLI")
-public class ComputerDatabaseConfiguration  implements WebMvcConfigurer{
+public class ComputerDatabaseConfiguration implements WebMvcConfigurer {
 
     @Value("${driver}")
     private String driver;
@@ -67,6 +67,7 @@ public class ComputerDatabaseConfiguration  implements WebMvcConfigurer{
         dataSource.setPassword(pass);
         return dataSource;
     }
+
     @Bean
     public LocaleResolver localeResolver() {
         CookieLocaleResolver localeResolver = new CookieLocaleResolver();
@@ -74,7 +75,7 @@ public class ComputerDatabaseConfiguration  implements WebMvcConfigurer{
     }
 
     @Bean
-    public ReloadableResourceBundleMessageSource messageSource () {
+    public ReloadableResourceBundleMessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setDefaultEncoding("UTF-8");
         messageSource.setBasename("classpath:messages/messages");
@@ -82,7 +83,7 @@ public class ComputerDatabaseConfiguration  implements WebMvcConfigurer{
     }
 
     @Bean
-    public LocaleChangeInterceptor localeInterceptor(){
+    public LocaleChangeInterceptor localeInterceptor() {
         LocaleChangeInterceptor interceptor = new LocaleChangeInterceptor();
         interceptor.setParamName("lang");
         return interceptor;
@@ -106,7 +107,6 @@ public class ComputerDatabaseConfiguration  implements WebMvcConfigurer{
         return txManager;
     }
 
-
     @Bean
     public ViewResolver viewResolver() {
         InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
@@ -117,8 +117,7 @@ public class ComputerDatabaseConfiguration  implements WebMvcConfigurer{
     }
 
     @Bean
-    public static PropertySourcesPlaceholderConfigurer
-    propertySourcesPlaceholderConfigurer() {
+    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
         return new PropertySourcesPlaceholderConfigurer();
     }
 
@@ -131,11 +130,10 @@ public class ComputerDatabaseConfiguration  implements WebMvcConfigurer{
         p.setProperty(ConversionNotSupportedException.class.getName(), "500");
         s.setExceptionMappings(p);
         s.addStatusCode("404", HttpStatus.NOT_FOUND.value());
-        s.addStatusCode("403",HttpStatus.FORBIDDEN.value());
+        s.addStatusCode("403", HttpStatus.FORBIDDEN.value());
         s.addStatusCode("500", HttpStatus.INTERNAL_SERVER_ERROR.value());
         s.setOrder(Ordered.HIGHEST_PRECEDENCE);
         return s;
     }
-
 
 }

@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.excilys.java.formation.page.Page;
 
-public class PaginationTag extends SimpleTagSupport{
+public class PaginationTag extends SimpleTagSupport {
 
     private Page page;
     private String target;
@@ -44,13 +44,13 @@ public class PaginationTag extends SimpleTagSupport{
     }
 
     public String getHref(int pageNumber, int pageSize) {
-        return "\"" + this.target + "?pageNumber=" + pageNumber + "&by="+ this.by + "&order=" + this.order + "&search=" + this.search +"&pageSize="+ pageSize +"\"";
+        return "\"" + this.target + "?pageNumber=" + pageNumber + "&by=" + this.by + "&order=" + this.order + "&search="
+                + this.search + "&pageSize=" + pageSize + "\"";
     }
-    public void getPrev (JspWriter out) throws IOException {
+
+    public void getPrev(JspWriter out) throws IOException {
         if (page.getNumber() > 1) {
-            out.write(new StringBuilder()
-                    .append("<li><a href=")
-                    .append(getHref(page.getNumber() - 1, page.getSize()))
+            out.write(new StringBuilder().append("<li><a href=").append(getHref(page.getNumber() - 1, page.getSize()))
                     .append("aria-label=\"Previous\"> <span aria-hidden=\"true\">&laquo;</span>\n </a></li>")
                     .toString());
         }
@@ -60,26 +60,22 @@ public class PaginationTag extends SimpleTagSupport{
         logger.info("Number of pages  {} ", page.getNumberOfPages());
         logger.info("page number {}", page.getNumber());
         logger.info("Page Size {}", page.getSize());
-        for (int i = Math.max(1, page.getNumber() - 3); i <= Math.min(page.getNumber() + 3, page.getNumberOfPages()) ; i++) {
-            if ((( i  <= page.getCount() / page.getSize()) && page.getCount() % page.getSize() == 0)
-                    || ( i <= (page.getCount() /page.getSize()) + 1 && page.getCount() % page.getSize() != 0)){
-                out.write(new StringBuilder()
-                        .append("<li><a href=")
-                        .append(getHref(i, page.getSize())+">")
-                        .append(i +" </a></li>")
-                        .toString());
+        for (int i = Math.max(1, page.getNumber() - 3); i <= Math.min(page.getNumber() + 3,
+                page.getNumberOfPages()); i++) {
+            if (((i <= page.getCount() / page.getSize()) && page.getCount() % page.getSize() == 0)
+                    || (i <= (page.getCount() / page.getSize()) + 1 && page.getCount() % page.getSize() != 0)) {
+                out.write(new StringBuilder().append("<li><a href=").append(getHref(i, page.getSize()) + ">")
+                        .append(i + " </a></li>").toString());
             }
         }
     }
 
     public void getNext(JspWriter out) throws IOException {
-        if (((page.getNumber() + 1  <= page.getCount() / page.getSize()) && page.getCount() % page.getSize() == 0)
-                || (page.getNumber() + 1 <= (page.getCount() /page.getSize()) + 1 && page.getCount() % page.getSize() != 0)){
-            out.write(new StringBuilder()
-                    .append("<li><a href=")
-                    .append(getHref(page.getNumber() + 1, page.getSize()))
-                    .append("aria-label=\"Next\"> <span aria-hidden=\"true\">&raquo;</span>\n </a></li>")
-                    .toString());
+        if (((page.getNumber() + 1 <= page.getCount() / page.getSize()) && page.getCount() % page.getSize() == 0)
+                || (page.getNumber() + 1 <= (page.getCount() / page.getSize()) + 1
+                && page.getCount() % page.getSize() != 0)) {
+            out.write(new StringBuilder().append("<li><a href=").append(getHref(page.getNumber() + 1, page.getSize()))
+                    .append("aria-label=\"Next\"> <span aria-hidden=\"true\">&raquo;</span>\n </a></li>").toString());
         }
     }
 

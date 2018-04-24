@@ -15,13 +15,14 @@ public class CompanyDTOMapper {
 
     private static final Logger logger = LoggerFactory.getLogger(CompanyDTOMapper.class);
 
-
     /**
      * Maps a Company object to a CompanyDTO object
-     * @param a Company object
+     *
+     * @param a
+     *            Company object
      * @return a CompanyDTO object
      */
-    public CompanyDTO toDTO(Company company)   {
+    public CompanyDTO toDTO(Company company) {
         CompanyDTO companyDTO = new CompanyDTO();
         if (company == null) {
             companyDTO = null;
@@ -35,10 +36,12 @@ public class CompanyDTOMapper {
 
     /**
      * Maps a CompanyDTO object to a Company object
-     * @param a CompanyDTO object
+     *
+     * @param a
+     *            CompanyDTO object
      * @return a Company object
      */
-    public Company toCompany(CompanyDTO companyDTO)   {
+    public Company toCompany(CompanyDTO companyDTO) {
         if (companyDTO == null || companyDTO.getId() == -1) {
             return null;
         }
@@ -51,10 +54,12 @@ public class CompanyDTOMapper {
 
     /**
      * Maps a CompanyDTO list to a Company list
-     * @param a list of CompanyDTO objects
+     *
+     * @param a
+     *            list of CompanyDTO objects
      * @return a list of Company objects
      */
-    public List<CompanyDTO> toDTOList(List<Company> companies)   {
+    public List<CompanyDTO> toDTOList(List<Company> companies) {
         List<CompanyDTO> companiesDTO = new ArrayList<>();
         for (Company c : companies) {
             companiesDTO.add(toDTO(c));
@@ -64,10 +69,12 @@ public class CompanyDTOMapper {
 
     /**
      * Maps a Company list to a CompanyDTO list
-     * @param a list of Company objects
+     *
+     * @param a
+     *            list of Company objects
      * @return a list of CompanyDTO objects
      */
-    public List<Company> toCompanyList(List<CompanyDTO> companiesDTO)   {
+    public List<Company> toCompanyList(List<CompanyDTO> companiesDTO) {
         List<Company> companies = new ArrayList<>();
         for (CompanyDTO c : companiesDTO) {
             companies.add(toCompany(c));

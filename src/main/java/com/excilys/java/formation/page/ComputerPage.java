@@ -17,10 +17,9 @@ public class ComputerPage extends Page {
 
     private List<Computer> elements;
     private static final Logger logger = LoggerFactory.getLogger(ComputerPage.class);
+    private ComputerService computerService;
 
     @Autowired
-    private  ComputerService computerService;
-
     public ComputerPage(ComputerService computerService) {
         this.offset = 0;
         this.size = DEFAULT_SIZE;
@@ -97,7 +96,8 @@ public class ComputerPage extends Page {
     }
 
     @Override
-    public void getPage(String orderCriteria, String order, String name, int pageNumber, int pageSize) throws ValidatorException, ServiceException {
+    public void getPage(String orderCriteria, String order, String name, int pageNumber, int pageSize)
+            throws ValidatorException, ServiceException {
         this.number = pageNumber;
         this.size = pageSize;
         if (StringUtils.isBlank(name)) {

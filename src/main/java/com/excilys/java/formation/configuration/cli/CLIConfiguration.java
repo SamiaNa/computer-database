@@ -14,8 +14,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
 @Profile("CLI")
-@ComponentScan(basePackages= { "com.excilys.java.formation"})
-@PropertySource(value= {"classpath:datasource.properties"})
+@ComponentScan(basePackages = { "com.excilys.java.formation" })
+@PropertySource(value = { "classpath:datasource.properties" })
 public class CLIConfiguration {
 
     @Value("${driver}")
@@ -47,6 +47,5 @@ public class CLIConfiguration {
         txManager.setDataSource(dataSource());
         return txManager;
     }
-
 
 }

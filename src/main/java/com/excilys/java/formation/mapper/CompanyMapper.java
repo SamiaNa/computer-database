@@ -19,7 +19,9 @@ public class CompanyMapper {
 
     /**
      * Creates an ArrayList of companies from a ResultSet
-     * @param a ResultSet of companies
+     *
+     * @param a
+     *            ResultSet of companies
      * @return an list of companies
      * @throws SQLException
      */
@@ -34,10 +36,13 @@ public class CompanyMapper {
 
     /**
      * Creates a Company object from a ResultSet
-     * @param a ResultSet of companies
+     *
+     * @param a
+     *            ResultSet of companies
      * @return a Company
      * @throws SQLException
-     * @throws NoComputerInResultSetException if the resultSet is empty
+     * @throws NoComputerInResultSetException
+     *             if the resultSet is empty
      */
     public Company createCompanyFromResultSet(ResultSet res) throws SQLException, NoComputerInResultSetException {
         if (res.next()) {

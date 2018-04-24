@@ -19,9 +19,12 @@ public class CompanyService {
 
     private static Logger logger = LoggerFactory.getLogger(CompanyService.class);
 
-    @Autowired
     private CompanyDAOJdbc companyDAO;
 
+    @Autowired
+    public CompanyService(CompanyDAOJdbc companyDAO) {
+        this.companyDAO = companyDAO;
+    }
 
     public List<Company> getCompanyList() {
         return companyDAO.getAll();
@@ -31,7 +34,7 @@ public class CompanyService {
         return companyDAO.get(offset, size);
     }
 
-    public int count()  {
+    public int count() {
         return companyDAO.count();
     }
 
@@ -39,11 +42,11 @@ public class CompanyService {
         return companyDAO.getByName(name);
     }
 
-    @Transactional(rollbackFor=Exception.class)
-    public void delete (long id) throws ServiceException{
+    @Transactional(rollbackFor = Exception.class)
+    public void delete(long id) throws ServiceException {
         try {
             companyDAO.delete(id);
-        }catch (DAOException e) {
+        } catch (DAOException e) {
             logger.error("Exception in delete ({})", id, e);
             throw new ServiceException(e);
         }
