@@ -30,6 +30,7 @@ public class ComputerDTOPage extends ComputerPage {
         this.computerDTOMapper = computerDTOMapper;
     }
 
+
     public ComputerDTOPage(ComputerService computerService, int pageNumber, int size) {
         super(computerService, pageNumber, size);
     }
