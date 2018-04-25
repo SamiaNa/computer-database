@@ -1,4 +1,4 @@
-package com.excilys.formation.mappers;
+package com.excilys.formation.binding.mappers;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -7,8 +7,8 @@ import java.time.LocalDate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
-import com.excilys.formation.entities.Company;
-import com.excilys.formation.entities.Computer;
+import com.excilys.formation.core.entities.Company;
+import com.excilys.formation.core.entities.Computer;
 
 @Component
 public class ComputerRowMapper implements RowMapper<Computer> {

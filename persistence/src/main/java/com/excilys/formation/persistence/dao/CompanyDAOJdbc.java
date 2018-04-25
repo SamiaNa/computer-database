@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.excilys.formation.entities.Company;
-import com.excilys.formation.mappers.CompanyRowMapper;
+import com.excilys.formation.binding.mappers.CompanyRowMapper;
+import com.excilys.formation.core.entities.Company;
 import com.excilys.formation.persistence.daoexceptions.DAOException;
 
 @Repository

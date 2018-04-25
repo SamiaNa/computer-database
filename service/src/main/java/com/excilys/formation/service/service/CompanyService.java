@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.excilys.formation.entities.Company;
+import com.excilys.formation.core.entities.Company;
 import com.excilys.formation.persistence.dao.CompanyDAOJdbc;
 
 @Service

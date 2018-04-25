@@ -18,9 +18,9 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import com.excilys.formation.entities.Company;
-import com.excilys.formation.entities.Computer;
-import com.excilys.formation.mappers.ComputerRowMapper;
+import com.excilys.formation.binding.mappers.ComputerRowMapper;
+import com.excilys.formation.core.entities.Company;
+import com.excilys.formation.core.entities.Computer;
 import com.excilys.formation.persistence.daoexceptions.DAOException;
 
 

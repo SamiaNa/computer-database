@@ -1,4 +1,4 @@
-package com.excilys.formation.entities;
+package com.excilys.formation.core.entities;
 
 import java.time.LocalDate;
 import java.util.Objects;

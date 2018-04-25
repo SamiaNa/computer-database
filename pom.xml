@@ -103,7 +103,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<mainClass>com.excilys.formation.ui.UserInterface</mainClass>
+					<mainClass>com.excilys.formation.console.ui.UserInterface</mainClass>
 				</configuration>
 			</plugin>
 
@@ -114,7 +114,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>com.excilys.formation.ui.UserInterface</mainClass>
+							<mainClass>com.excilys.formation.console.ui.UserInterface</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
@@ -147,7 +147,6 @@
 
 	<dependencyManagement>
 		<dependencies>
-
 			<dependency>
 				<groupId>mysql</groupId>
 				<artifactId>mysql-connector-java</artifactId>

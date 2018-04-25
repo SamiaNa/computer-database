@@ -1,4 +1,4 @@
-package com.excilys.formation.ui;
+package com.excilys.formation.console.ui;
 
 import java.util.HashMap;
 import java.util.Map;

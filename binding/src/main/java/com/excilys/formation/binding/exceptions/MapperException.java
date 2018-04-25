@@ -1,4 +1,4 @@
-package com.excilys.formation.exceptions;
+package com.excilys.formation.binding.exceptions;
 
 public class MapperException extends Exception{
 	

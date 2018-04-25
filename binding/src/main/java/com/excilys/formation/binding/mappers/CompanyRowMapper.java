@@ -1,4 +1,4 @@
-package com.excilys.formation.mappers;
+package com.excilys.formation.binding.mappers;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
-import com.excilys.formation.entities.Company;
+import com.excilys.formation.core.entities.Company;
 
 
 @Component

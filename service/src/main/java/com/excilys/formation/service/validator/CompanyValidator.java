@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import com.excilys.formation.entities.Company;
+import com.excilys.formation.core.entities.Company;
 import com.excilys.formation.persistence.dao.CompanyDAOJdbc;
 import com.excilys.formation.persistence.daoexceptions.DAOException;
 

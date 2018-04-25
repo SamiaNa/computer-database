@@ -1,4 +1,4 @@
-package com.excilys.formation.dtos;
+package com.excilys.formation.core.dtos;
 
 import java.util.Objects;
 

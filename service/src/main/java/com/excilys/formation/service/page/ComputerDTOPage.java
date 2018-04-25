@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.excilys.formation.dtos.ComputerDTO;
-import com.excilys.formation.mappers.ComputerDTOMapper;
+import com.excilys.formation.binding.mappers.ComputerDTOMapper;
+import com.excilys.formation.core.dtos.ComputerDTO;
 import com.excilys.formation.persistence.daoexceptions.DAOException;
 import com.excilys.formation.service.service.ComputerService;
 import com.excilys.formation.service.validator.ValidatorException;

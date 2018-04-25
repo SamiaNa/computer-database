@@ -1,4 +1,4 @@
-package com.excilys.formation.ui;
+package com.excilys.formation.console.ui;
 
 import java.util.InputMismatchException;
 import java.util.List;
@@ -10,13 +10,13 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
 
-import com.excilys.formation.configuration.CLIConfiguration;
-import com.excilys.formation.dtos.CompanyDTO;
-import com.excilys.formation.dtos.ComputerDTO;
-import com.excilys.formation.dtos.ComputerDTO.Builder;
-import com.excilys.formation.entities.Company;
-import com.excilys.formation.entities.Computer;
-import com.excilys.formation.mappers.ComputerDTOMapper;
+import com.excilys.formation.binding.mappers.ComputerDTOMapper;
+import com.excilys.formation.console.configuration.CLIConfiguration;
+import com.excilys.formation.core.dtos.CompanyDTO;
+import com.excilys.formation.core.dtos.ComputerDTO;
+import com.excilys.formation.core.dtos.ComputerDTO.Builder;
+import com.excilys.formation.core.entities.Company;
+import com.excilys.formation.core.entities.Computer;
 import com.excilys.formation.persistence.daoexceptions.DAOException;
 import com.excilys.formation.service.page.CompanyPage;
 import com.excilys.formation.service.page.ComputerPage;

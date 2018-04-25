@@ -20,12 +20,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.excilys.formation.dtos.CompanyDTO;
-import com.excilys.formation.dtos.ComputerDTO;
-import com.excilys.formation.entities.Company;
-import com.excilys.formation.entities.Computer;
-import com.excilys.formation.mappers.CompanyDTOMapper;
-import com.excilys.formation.mappers.ComputerDTOMapper;
+import com.excilys.formation.binding.mappers.CompanyDTOMapper;
+import com.excilys.formation.binding.mappers.ComputerDTOMapper;
+import com.excilys.formation.core.dtos.CompanyDTO;
+import com.excilys.formation.core.dtos.ComputerDTO;
+import com.excilys.formation.core.entities.Company;
+import com.excilys.formation.core.entities.Computer;
 import com.excilys.formation.persistence.daoexceptions.DAOException;
 import com.excilys.formation.service.page.ComputerDTOPage;
 import com.excilys.formation.service.service.CompanyService;

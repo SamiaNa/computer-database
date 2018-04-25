@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.formation.service.validator.ComputerValidator;
 import com.excilys.formation.service.validator.ValidatorException;
-import com.excilys.formation.entities.Computer;
+import com.excilys.formation.core.entities.Computer;
 import com.excilys.formation.persistence.dao.CompanyDAOJdbc;
 import com.excilys.formation.persistence.dao.ComputerDAOJdbc;
 import com.excilys.formation.persistence.daoexceptions.DAOException;

@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.excilys.formation.entities.Computer;
+import com.excilys.formation.core.entities.Computer;
 import com.excilys.formation.persistence.dao.CompanyDAOJdbc;
 import com.excilys.formation.persistence.dao.ComputerDAOJdbc;
 

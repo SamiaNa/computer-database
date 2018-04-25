@@ -8,5 +8,5 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan(basePackages = { "com.excilys.formation.service" })
 public class ServiceConfiguration {
 
-
+	  
 }
