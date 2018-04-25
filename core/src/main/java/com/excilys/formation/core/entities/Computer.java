@@ -3,12 +3,23 @@ package com.excilys.formation.core.entities;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+
+
+@Entity
 public class Computer  {
 
+	@Id
+	@GeneratedValue
     private long id;
     private String name;
     private LocalDate introduced;
     private LocalDate discontinued;
+    @ManyToOne
     private Company company;
 
     public Computer() {

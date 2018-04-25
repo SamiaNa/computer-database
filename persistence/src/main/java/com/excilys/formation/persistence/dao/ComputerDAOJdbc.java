@@ -8,6 +8,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.sql.DataSource;
 
 import org.slf4j.Logger;
@@ -22,6 +25,9 @@ import com.excilys.formation.binding.mappers.ComputerRowMapper;
 import com.excilys.formation.core.entities.Company;
 import com.excilys.formation.core.entities.Computer;
 import com.excilys.formation.persistence.daoexceptions.DAOException;
+import com.querydsl.jpa.hibernate.HibernateQuery;
+import com.querydsl.jpa.hibernate.HibernateQueryFactory;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 
 
 @Repository
@@ -75,7 +81,8 @@ public class ComputerDAOJdbc {
     }
 
     public Optional<Computer> getComputerById(long id) {
-        List<Computer> computer = jdbcTemplate.query(SELECT_BY_ID_JOIN, computerRowMapper, id);
+    	
+    	List<Computer> computer = jdbcTemplate.query(SELECT_BY_ID_JOIN, computerRowMapper, id);
         try {
             return Optional.of(computer.get(0));
         } catch (IndexOutOfBoundsException e) {

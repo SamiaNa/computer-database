@@ -42,7 +42,7 @@ import com.excilys.formation.service.configuration.ServiceConfiguration;
 @Configuration
 @EnableWebMvc
 @EnableTransactionManagement
-@ComponentScan(basePackages = { "com.excilys.formation" })
+@ComponentScan(basePackages = { "com.excilys.formation"})
 @PropertySource(value = { "classpath:datasource.properties" })
 @Import(ServiceConfiguration.class)
 @Profile("!CLI")

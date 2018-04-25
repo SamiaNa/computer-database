@@ -2,15 +2,21 @@ package com.excilys.formation.persistence.dao;
 
 import java.util.List;
 
+import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.orm.hibernate5.SessionFactoryUtils;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.formation.binding.mappers.CompanyRowMapper;
 import com.excilys.formation.core.entities.Company;
+import com.excilys.formation.core.entities.QCompany;
 import com.excilys.formation.persistence.daoexceptions.DAOException;
+import com.querydsl.jpa.hibernate.HibernateQuery;
 
 @Repository
 public class CompanyDAOJdbc {
@@ -25,11 +31,14 @@ public class CompanyDAOJdbc {
     private JdbcTemplate jdbcTemplate;
     private CompanyRowMapper companyRowMapper;
     private ComputerDAOJdbc computerDAO;
+    private LocalSessionFactoryBean sessionFactory;
+    
 
     @Autowired
-    public CompanyDAOJdbc(CompanyRowMapper companyRowMapper, ComputerDAOJdbc computerDAO) {
+    public CompanyDAOJdbc(CompanyRowMapper companyRowMapper, ComputerDAOJdbc computerDAO, LocalSessionFactoryBean sessionFactory) {
         this.companyRowMapper = companyRowMapper;
         this.computerDAO = computerDAO;
+        this.sessionFactory = sessionFactory;
     }
 
     @Autowired
@@ -38,7 +47,11 @@ public class CompanyDAOJdbc {
     }
 
     public List<Company> getAll() {
-        return jdbcTemplate.query(SELECT, companyRowMapper);
+    	Session session = sessionFactory.getObject().openSession();
+    	HibernateQuery<Company> query = new HibernateQuery<>(session);
+    	QCompany qcompany = QCompany.company;
+    	return query.from(qcompany).fetch();
+    	//close
     }
 
     public List<Company> get(int offset, int size) {
@@ -61,7 +74,10 @@ public class CompanyDAOJdbc {
     }
 
     public int count() {
-        return jdbcTemplate.queryForObject(COUNT, Integer.class);
+    	Session session = sessionFactory.getObject().openSession();
+    	HibernateQuery<Company> query = new HibernateQuery<>(session);
+    	QCompany qcompany = QCompany.company;
+    	return (int) query.from(qcompany).fetchCount();
     }
 
     public void delete(long id) {
