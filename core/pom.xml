@@ -74,6 +74,7 @@
 			<artifactId>hibernate-java8</artifactId>
 		</dependency>
 
+
 	</dependencies>
 
 

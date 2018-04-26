@@ -66,7 +66,7 @@ public class PersistenceConfiguration {
        /* hibernateProperties.setProperty(
           "hibernate.hbm2ddl.auto", "create-drop");*/
         hibernateProperties.setProperty(
-          "hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+          "hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
  
         return hibernateProperties;
     }

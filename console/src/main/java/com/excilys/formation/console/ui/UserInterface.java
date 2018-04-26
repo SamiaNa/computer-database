@@ -165,7 +165,7 @@ public class UserInterface {
     }
 
     private void updateAttributes(Scanner scanner, ComputerService computerService, Long computerId)
-            throws ServiceException {
+            throws ServiceException, ValidatorException {
         Optional<Computer> optComputer = computerService.getComputerById(computerId);
         if (!optComputer.isPresent()) {
             System.out.println("No computer found with id " + computerId);
@@ -202,10 +202,10 @@ public class UserInterface {
             }
             computerDTO.setCompany(companyDTO);
         }
-
+        computerService.updateComputer(computerDTOMapper.toComputer(computerDTO));
     }
 
-    private void updateComputer(Scanner scanner, ComputerService computerService) throws ServiceException {
+    private void updateComputer(Scanner scanner, ComputerService computerService) throws ServiceException, ValidatorException {
         System.out.println("Enter id of computer to update");
         try {
             Long computerId = scanner.nextLong();

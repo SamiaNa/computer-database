@@ -58,6 +58,6 @@ public class CompanyDAOJdbc {
     public void delete(long id) {
     	QCompany company = QCompany.company;
         computerDAO.deleteCompany(id);
-        queryFactory.delete(QCompany.company).where(company.id.eq(id));
+        queryFactory.delete(QCompany.company).where(company.id.eq(id)).execute();
     }
 }
