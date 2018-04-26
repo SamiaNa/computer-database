@@ -1,5 +1,6 @@
 package com.excilys.formation.core.entities;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -10,7 +11,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="company")
-public class Company {
+public class Company implements Serializable{
 	
 	@Id
 	@GeneratedValue

@@ -13,6 +13,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.sql.DataSource;
 
+import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,8 @@ import org.springframework.stereotype.Repository;
 import com.excilys.formation.binding.mappers.ComputerRowMapper;
 import com.excilys.formation.core.entities.Company;
 import com.excilys.formation.core.entities.Computer;
+import com.excilys.formation.core.entities.QCompany;
+import com.excilys.formation.core.entities.QComputer;
 import com.excilys.formation.persistence.daoexceptions.DAOException;
 import com.querydsl.jpa.hibernate.HibernateQuery;
 import com.querydsl.jpa.hibernate.HibernateQueryFactory;
@@ -58,10 +61,20 @@ public class ComputerDAOJdbc {
     private JdbcTemplate jdbcTemplate;
     private ComputerRowMapper computerRowMapper;
 
+
+    private HibernateQueryFactory queryFactory;
+    
+
     @Autowired
-    private ComputerDAOJdbc(ComputerRowMapper computerRowMapper) {
+    public ComputerDAOJdbc( SessionFactory sessionFactory, ComputerRowMapper computerRowMapper) {
+        this.queryFactory = new HibernateQueryFactory(sessionFactory.openSession());
         this.computerRowMapper = computerRowMapper;
     }
+    
+   /*@Autowired
+    private ComputerDAOJdbc(ComputerRowMapper computerRowMapper) {
+        this.computerRowMapper = computerRowMapper;
+    }*/
 
     @Autowired
     public void init(DataSource dataSource) {
@@ -77,7 +90,8 @@ public class ComputerDAOJdbc {
     }
 
     public List<Computer> get(int offset, int size) {
-        return jdbcTemplate.query(SELECT_LIMIT, computerRowMapper, size, offset);
+    	return (List<Computer>) queryFactory.from(QComputer.computer).offset(offset).limit(size).fetch();
+    	//return jdbcTemplate.query(SELECT_LIMIT, computerRowMapper, size, offset);
     }
 
     public Optional<Computer> getComputerById(long id) {
@@ -192,6 +206,7 @@ public class ComputerDAOJdbc {
 
     public void update(Computer c) {
         logger.info("Computer {}", c);
+        
         jdbcTemplate.update(UPDATE, c.getName(), c.getIntroduced(), c.getDiscontinued(),
                 (c.getCompany() == null) ? null : c.getCompany().getId(), c.getId());
     }

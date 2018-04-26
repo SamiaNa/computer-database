@@ -13,6 +13,7 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.excilys.formation.core.entities.Company;
+import com.excilys.formation.core.entities.Computer;
 
 @Configuration
 @ComponentScan(basePackages = { "com.excilys.formation.persistence" })
@@ -35,7 +36,7 @@ public class PersistenceConfiguration {
     public LocalSessionFactoryBean sessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());
-        sessionFactory.setAnnotatedClasses(Company.class);
+        sessionFactory.setAnnotatedClasses(Company.class, Computer.class);
         sessionFactory.setPackagesToScan("com.excilys.formation.core.entities" );
         sessionFactory.setHibernateProperties(hibernateProperties());
         return sessionFactory;
@@ -62,8 +63,8 @@ public class PersistenceConfiguration {
     
     private final Properties hibernateProperties() {
         Properties hibernateProperties = new Properties();
-        hibernateProperties.setProperty(
-          "hibernate.hbm2ddl.auto", "create-drop");
+       /* hibernateProperties.setProperty(
+          "hibernate.hbm2ddl.auto", "create-drop");*/
         hibernateProperties.setProperty(
           "hibernate.dialect", "org.hibernate.dialect.H2Dialect");
  
