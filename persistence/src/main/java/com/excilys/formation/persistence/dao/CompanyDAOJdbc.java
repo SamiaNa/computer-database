@@ -2,68 +2,46 @@ package com.excilys.formation.persistence.dao;
 
 import java.util.List;
 
-import javax.persistence.PersistenceContext;
-import javax.sql.DataSource;
-
-import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
-import org.springframework.orm.hibernate5.SessionFactoryUtils;
 import org.springframework.stereotype.Repository;
-
-import com.excilys.formation.binding.mappers.CompanyRowMapper;
 import com.excilys.formation.core.entities.Company;
 import com.excilys.formation.core.entities.QCompany;
 import com.excilys.formation.persistence.daoexceptions.DAOException;
-import com.querydsl.jpa.hibernate.HibernateQuery;
+import com.querydsl.jpa.hibernate.HibernateQueryFactory;
 
 @Repository
 public class CompanyDAOJdbc {
 
-    private static final String SELECT = "SELECT id, name FROM company;";
-    private static final String SELECT_LIMIT = "SELECT id, name FROM company LIMIT ? OFFSET ?;";
-    private static final String SELECT_BY_NAME = "SELECT id, name FROM company WHERE name LIKE ?;";
-    private static final String SELECT_BY_ID = "SELECT id, name FROM company WHERE id = ?;";
-    private static final String COUNT = "SELECT COUNT(id) FROM company;";
-    private static final String DELETE = "DELETE FROM company WHERE id = ?;";
-
-    private JdbcTemplate jdbcTemplate;
-    private CompanyRowMapper companyRowMapper;
+   
     private ComputerDAOJdbc computerDAO;
-    private LocalSessionFactoryBean sessionFactory;
+    private HibernateQueryFactory queryFactory;
     
 
     @Autowired
-    public CompanyDAOJdbc(CompanyRowMapper companyRowMapper, ComputerDAOJdbc computerDAO, LocalSessionFactoryBean sessionFactory) {
-        this.companyRowMapper = companyRowMapper;
+    public CompanyDAOJdbc(ComputerDAOJdbc computerDAO, SessionFactory sessionFactory) {
         this.computerDAO = computerDAO;
-        this.sessionFactory = sessionFactory;
+        this.queryFactory = new HibernateQueryFactory(sessionFactory.openSession());
     }
 
-    @Autowired
-    public void init(DataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
-    }
 
     public List<Company> getAll() {
-    	Session session = sessionFactory.getObject().openSession();
-    	HibernateQuery<Company> query = new HibernateQuery<>(session);
-    	QCompany qcompany = QCompany.company;
-    	return query.from(qcompany).fetch();
-    	//close
+    	return (List<Company>) queryFactory.from(QCompany.company).fetch();
     }
 
     public List<Company> get(int offset, int size) {
-        return jdbcTemplate.query(SELECT_LIMIT, companyRowMapper, size, offset);
+    	return (List<Company>) queryFactory.from(QCompany.company).offset(offset).limit(size).fetch();
+   
     }
 
     public List<Company> getByName(String name) {
-        return jdbcTemplate.query(SELECT_BY_NAME, companyRowMapper, "%" + name + "%");
+    	QCompany company = QCompany.company;
+    	return (List<Company>) queryFactory.from(company).where(company.name.like("%"+name+"%")).fetch();
     }
 
     public boolean checkCompanyById(long id) throws DAOException {
-        List<Company> companies = jdbcTemplate.query(SELECT_BY_ID, companyRowMapper, id);
+    	QCompany company = QCompany.company;
+        List<Company> companies = (List<Company>) queryFactory.from(company).where(company.id.eq(id)).fetch();
         if (companies.size() == 1) {
             return true;
         }
@@ -74,14 +52,12 @@ public class CompanyDAOJdbc {
     }
 
     public int count() {
-    	Session session = sessionFactory.getObject().openSession();
-    	HibernateQuery<Company> query = new HibernateQuery<>(session);
-    	QCompany qcompany = QCompany.company;
-    	return (int) query.from(qcompany).fetchCount();
+    	return (int) queryFactory.from(QCompany.company).fetchCount();
     }
 
     public void delete(long id) {
+    	QCompany company = QCompany.company;
         computerDAO.deleteCompany(id);
-        jdbcTemplate.update(DELETE, id);
+        queryFactory.delete(QCompany.company).where(company.id.eq(id));
     }
 }

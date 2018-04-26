@@ -2,16 +2,22 @@ package com.excilys.formation.core.entities;
 
 import java.util.Objects;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
+@Table(name="company")
 public class Company {
 	
 	@Id
 	@GeneratedValue
+	@Column(name="id")
     private long id;
+	
+	@Column(name="name")
     private String name;
 
     public Company() {
