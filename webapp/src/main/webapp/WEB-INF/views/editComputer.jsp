@@ -74,8 +74,8 @@
 									data-validation-format="yyyy-mm-dd"
 									data-validation-optional="true" type="date"
 									class="form-control" id="discontinued" name="discontinued"
-									placeholder="Discontinued date"
-									value="${discontinuedDateMessage}">
+									placeholder="${discontinuedDateMessage}"
+									value="${computer.discontinued}">
 							</div>
 							<div class="form-group">
 								<form:label for="companyId" path="company">

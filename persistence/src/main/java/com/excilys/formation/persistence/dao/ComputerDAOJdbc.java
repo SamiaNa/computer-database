@@ -172,13 +172,9 @@ public class ComputerDAOJdbc {
 	@Transactional
 	public void update(Computer c) {
 		try (Session session = sessionFactory.openSession()) {
-			HibernateUpdateClause update = new HibernateUpdateClause(session, qComputer);
-			update.where(qComputer.id.eq(c.getId())).set(qComputer, c).execute();
+			session.update(c);
+			session.flush();
 		}	
-		/* set(computer.name, c.getName()) .set(computer.longroduced,
-		 * c.getIntroduced()).set(computer.discontinued, c.getDiscontinued())
-		 * .set(computer.company, c.getCompany()) .execute();
-		 */
 	}
 
 	@Transactional
