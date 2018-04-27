@@ -31,7 +31,7 @@ public class ComputerDTOPage extends ComputerPage {
     }
 
 
-    public ComputerDTOPage(ComputerService computerService, int pageNumber, int size) {
+    public ComputerDTOPage(ComputerService computerService, long pageNumber, long size) {
         super(computerService, pageNumber, size);
     }
 

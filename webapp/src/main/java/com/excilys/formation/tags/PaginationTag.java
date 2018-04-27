@@ -44,7 +44,7 @@ public class PaginationTag extends SimpleTagSupport {
         this.search = search;
     }
 
-    public String getHref(int pageNumber, int pageSize) {
+    public String getHref(long pageNumber, long pageSize) {
         return "\"" + this.target + "?pageNumber=" + pageNumber + "&by=" + this.by + "&order=" + this.order + "&search="
                 + this.search + "&pageSize=" + pageSize + "\"";
     }
@@ -61,7 +61,7 @@ public class PaginationTag extends SimpleTagSupport {
         logger.info("Number of pages  {} ", page.getNumberOfPages());
         logger.info("page number {}", page.getNumber());
         logger.info("Page Size {}", page.getSize());
-        for (int i = Math.max(1, page.getNumber() - 3); i <= Math.min(page.getNumber() + 3,
+        for (long i = Math.max(1, page.getNumber() - 3); i <= Math.min(page.getNumber() + 3,
                 page.getNumberOfPages()); i++) {
             if (((i <= page.getCount() / page.getSize()) && page.getCount() % page.getSize() == 0)
                     || (i <= (page.getCount() / page.getSize()) + 1 && page.getCount() % page.getSize() != 0)) {

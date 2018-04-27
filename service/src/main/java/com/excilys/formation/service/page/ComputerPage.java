@@ -30,7 +30,7 @@ public class ComputerPage extends Page {
         this.computerService = computerService;
     }
 
-    public ComputerPage(ComputerService computerService, int pageNumber, int size) {
+    public ComputerPage(ComputerService computerService, long pageNumber, long size) {
         this.offset = pageNumber;
         this.size = size;
         this.elements = new ArrayList<>();
@@ -60,7 +60,7 @@ public class ComputerPage extends Page {
         this.elements = computerService.getByOrder(orderCriteria, order, search, offset, size);
     }
 
-    public void getPageHelper(int pageNumber, int pageSize) {
+    public void getPageHelper(long pageNumber, long pageSize) {
         this.size = pageSize;
         this.offset = super.offsetGetPage(pageNumber, count);
         this.number = Math.min(pageNumber, this.getNumberOfPages());
@@ -68,20 +68,20 @@ public class ComputerPage extends Page {
     }
 
     @Override
-    public void getPage(int pageNumber, int pageSize) throws ServiceException {
+    public void getPage(long pageNumber, long pageSize)  {
         this.count = computerService.count();
         getPageHelper(pageNumber, pageSize);
         updateList();
     }
 
-    public void getPage(String name, int pageNumber, int pageSize) throws ValidatorException, ServiceException {
+    public void getPage(String name, long pageNumber, long pageSize) throws ValidatorException {
         this.count = computerService.count(name);
         getPageHelper(pageNumber, pageSize);
         updateList(name);
         logger.info("List size {}", this.elements.size());
     }
 
-    public void getPageOrder(String orderCriteria, String order, int pageNumber, int pageSize)
+    public void getPageOrder(String orderCriteria, String order, long pageNumber, long pageSize)
             throws DAOException {
         this.count = computerService.count();
         getPageHelper(pageNumber, pageSize);
@@ -89,7 +89,7 @@ public class ComputerPage extends Page {
         logger.info("List size {}", this.elements.size());
     }
 
-    public void getPageOrder(String orderCriteria, String order, String name, int pageNumber, int pageSize)
+    public void getPageOrder(String orderCriteria, String order, String name, long pageNumber, long pageSize)
             throws DAOException, ValidatorException {
         this.count = computerService.count(name);
         getPageHelper(pageNumber, pageSize);
@@ -99,8 +99,8 @@ public class ComputerPage extends Page {
     }
 
     @Override
-    public void getPage(String orderCriteria, String order, String name, int pageNumber, int pageSize)
-            throws ValidatorException, ServiceException, DAOException {
+    public void getPage(String orderCriteria, String order, String name, long pageNumber, long pageSize)
+            throws ValidatorException, DAOException, ServiceException {
         this.number = pageNumber;
         this.size = pageSize;
         if (StringUtils.isBlank(name)) {
@@ -121,7 +121,7 @@ public class ComputerPage extends Page {
     }
 
     @Override
-    public void nextPage() throws ValidatorException, ServiceException {
+    public void nextPage() throws ValidatorException {
         this.count = computerService.count();
         super.offsetNextPage(count);
         logger.debug("Getting page {} with page size = {}", offset, size);
@@ -129,7 +129,7 @@ public class ComputerPage extends Page {
     }
 
     @Override
-    public void prevPage() throws ValidatorException, ServiceException {
+    public void prevPage() throws ValidatorException {
         super.offsetPrevPage();
         logger.debug("Getting page {} with page size = {}", offset, size);
         updateList();

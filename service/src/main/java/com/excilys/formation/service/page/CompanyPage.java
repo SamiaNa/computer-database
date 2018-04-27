@@ -28,7 +28,7 @@ public class CompanyPage extends Page {
         this.companyService = companyService;
     }
 
-    public CompanyPage(CompanyService companyService, int pageNumber, int size) {
+    public CompanyPage(CompanyService companyService, long pageNumber, long size) {
         this.offset = pageNumber;
         this.size = size;
         this.elements = new ArrayList<>();
@@ -41,7 +41,7 @@ public class CompanyPage extends Page {
     }
 
     @Override
-    public void getPage(int pageNumber, int pageSize) throws ServiceException {
+    public void getPage(long pageNumber, long pageSize) throws ServiceException {
         this.count = companyService.count();
         this.size = pageSize;
         super.offsetGetPage(pageNumber, count);
@@ -70,7 +70,7 @@ public class CompanyPage extends Page {
     }
 
     @Override
-    public void getPage(String orderCriteria, String order, String search, int pageNumber, int pageSize)
+    public void getPage(String orderCriteria, String order, String search, long pageNumber, long pageSize)
             throws ValidatorException, ServiceException {
 
     }

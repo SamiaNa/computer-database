@@ -165,9 +165,6 @@ public class ComputerDatabaseController {
         } catch (ValidatorException e) {
             model.addAttribute("res", e.getMessage());
             return "404";
-        } catch (ServiceException e) {
-            logger.error("Exception in doPost AddCompanyServlet", e);
-            return "404";
         }
         return ("addComputer");
     }

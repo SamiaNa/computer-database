@@ -25,7 +25,7 @@ public class CompanyService {
         return companyDAO.getAll();
     }
 
-    public List<Company> getCompanyList(int offset, int size) {
+    public List<Company> getCompanyList(long offset, long size) {
         return companyDAO.get(offset, size);
     }
 

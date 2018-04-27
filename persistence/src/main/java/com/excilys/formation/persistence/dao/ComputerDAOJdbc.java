@@ -1,194 +1,228 @@
 package com.excilys.formation.persistence.dao;
 
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-
-import javax.sql.DataSource;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.excilys.formation.binding.mappers.ComputerRowMapper;
-import com.excilys.formation.core.entities.Company;
 import com.excilys.formation.core.entities.Computer;
+import com.excilys.formation.core.entities.QCompany;
 import com.excilys.formation.core.entities.QComputer;
 import com.excilys.formation.persistence.daoexceptions.DAOException;
 import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.Path;
-import com.querydsl.core.types.dsl.NumberPath;
-import com.querydsl.jpa.hibernate.HibernateQueryFactory;
-
+import com.querydsl.jpa.hibernate.HibernateDeleteClause;
+import com.querydsl.jpa.hibernate.HibernateQuery;
+import com.querydsl.jpa.hibernate.HibernateUpdateClause;
 
 @Repository
+@Transactional
 public class ComputerDAOJdbc {
 
-    private static final String SELECT_ALL = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id;";
-    private static final String SELECT_ORDER = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id";
-    private static final String SELECT_BY_ID_JOIN = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id = ? ;";
-    private static final String SELECT_BY_NAME = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE (computer.name LIKE ? OR company.name LIKE ?) LIMIT ? OFFSET ?;";
+	private static final String COMPUTER_ID = "idcomputer";
+	private static final String COMPUTER_NAME = "namecomputer";
+	private static final String COMPUTER_INTRO = "introcomputer";
+	private static final String COMPUTER_DISC = "disccomputer";
+	private static final String COMPUTER_COMPANY = "namecompany";
 
-    private static final String COMPUTER_ID = "idcomputer";
-    private static final String COMPUTER_NAME = "namecomputer";
-    private static final String COMPUTER_INTRO = "introcomputer";
-    private static final String COMPUTER_DISC = "disccomputer";
-    private static final String COMPUTER_COMPANY = "namecompany";
+	private static final String ASCENDING = "ASC";
+	private static final String DESCENDING = "DESC";
 
-    private static final String ASCENDING = "ASC";
-    private static final String DESCENDING = "DESC";
-    
-    private static final QComputer qComputer = QComputer.computer;
+	private static final QComputer qComputer = QComputer.computer;
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private JdbcTemplate jdbcTemplate;
-    private ComputerRowMapper computerRowMapper;
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+	private SessionFactory sessionFactory;
 
-    private HibernateQueryFactory queryFactory;
-    private SessionFactory sessionFactory;
-    
-    @Autowired
-    public ComputerDAOJdbc( SessionFactory sessionFactory, ComputerRowMapper computerRowMapper) {
-        this.queryFactory = new HibernateQueryFactory(sessionFactory.openSession());
-        this.computerRowMapper = computerRowMapper;
-        this.sessionFactory = sessionFactory;
-    }
-    
+	@Autowired
+	public ComputerDAOJdbc(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
+	}
 
+	public ComputerDAOJdbc() {
+		super();
+	}
 
-    @Autowired
-    public void init(DataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
-    }
+	@Transactional
+	public List<Computer> getAll() {
+		try (Session session = sessionFactory.openSession()) {
+			HibernateQuery<Computer> query = new HibernateQuery<>(session);
+			return query.from(qComputer).fetch();
+		}
 
-    public ComputerDAOJdbc() {
-        super();
-    }
+	}
+	
+	@Transactional
+	public List<Computer> get(long offset, long size) {
+		try (Session session = sessionFactory.openSession()) {
+			HibernateQuery<Computer> query = new HibernateQuery<>(session);
+			return query.from(qComputer).offset(offset).limit(size).fetch();
+		}
+	}
 
-    public List<Computer> getAll() {
-    	return (List<Computer>) queryFactory.from(qComputer).fetch();
-    }
+	@Transactional
+	public Optional<Computer> getComputerById(long id) {
+		try (Session session = sessionFactory.openSession()) {
+			HibernateQuery<Computer> query = new HibernateQuery<>(session);
+			List<Computer> computer = query.from(qComputer).where(qComputer.id.eq(id)).fetch();
+			try {
+				return Optional.of(computer.get(0));
+			} catch (IndexOutOfBoundsException e) {
+				return Optional.empty();
+			}
+		}
+	}
 
-    public List<Computer> get(int offset, int size) {
-    	return (List<Computer>) queryFactory.from(qComputer).offset(offset).limit(size).fetch();
-    }
+	@Transactional
+	public List<Computer> getByName(String name, long offset, long limit) {
+		try (Session session = sessionFactory.openSession()) {
+			HibernateQuery<Computer> query = new HibernateQuery<>(session);
+			String search = "%" + name + "%";
+			return query.from(qComputer).where(qComputer.name.like(search).or(QCompany.company.name.like(search)))
+					.limit(limit).offset(offset).fetch();
+		}
+	}
 
+	@Transactional
+	public List<Computer> getByOrder(String orderCriteria, String order, long offset, long limit) throws DAOException {
+		checkOrder(order);
+		try (Session session = sessionFactory.openSession()) {
+			HibernateQuery<Computer> query = new HibernateQuery<>(session);
+			return query.from(qComputer).orderBy(getColumnName(orderCriteria, order)).limit(limit).offset(offset)
+					.fetch();
+		}
+	}
 
-    public Optional<Computer> getComputerById(long id) {
-    	List<Computer> computer = (List<Computer>) queryFactory.from(qComputer).where(qComputer.id.eq(id)).fetch();
-        try {
-            return Optional.of(computer.get(0));
-        } catch (IndexOutOfBoundsException e) {
-            return Optional.empty();
-        }
-    }
+	private OrderSpecifier<?> getColumnName(String orderCriteria, String order) throws DAOException {
+		if (order.equals(ASCENDING)) {
+			switch (orderCriteria) {
+			case COMPUTER_ID:
+				return qComputer.id.asc();
+			case COMPUTER_NAME:
+				return qComputer.name.asc();
+			case COMPUTER_INTRO:
+				return qComputer.introduced.asc();
+			case COMPUTER_DISC:
+				return qComputer.discontinued.asc();
+			case COMPUTER_COMPANY:
+				return qComputer.company.name.asc();
+			default:
+				String message = "Unknown order criteria : " + orderCriteria;
+				logger.error(message);
+				throw new DAOException(message);
+			}
+		} else if (order.equals(DESCENDING)) {
+			switch (orderCriteria) {
+			case COMPUTER_ID:
+				return qComputer.id.desc();
+			case COMPUTER_NAME:
+				return qComputer.name.desc();
+			case COMPUTER_INTRO:
+				return qComputer.introduced.desc();
+			case COMPUTER_DISC:
+				return qComputer.discontinued.desc();
+			case COMPUTER_COMPANY:
+				return qComputer.company.name.desc();
+			default:
+				String message = "Unknown order criteria : " + orderCriteria;
+				logger.error(message);
+				throw new DAOException(message);
+			}
+		} else {
+			String message = "Unknow order " + order;
+			logger.error(message);
+			throw new DAOException();
+		}
+	}
 
-    public List<Computer> getByName(String name, int offset, int limit) {
-    	return (List<Computer>) queryFactory.from(qComputer).where(qComputer.name.like("%"+name+"%")).limit(limit).offset(offset).fetch();
-    }
+	private void checkOrder(String order) throws DAOException {
+		if (!order.equalsIgnoreCase(ASCENDING) && !order.equalsIgnoreCase(DESCENDING)) {
+			String message = "Unknown parameter " + order;
+			logger.error(message);
+			throw new DAOException(message);
+		}
 
-    public List<Computer> getByOrder(String orderCriteria, String order, int offset, int limit)
-            throws DAOException {
-        checkOrder(order);
-        return (List<Computer>) queryFactory.from(qComputer).orderBy(getColumnName(orderCriteria)).limit(limit).offset(offset)
-        return jdbcTemplate.query(
-                SELECT_ORDER + " ORDER BY " + getColumnName(orderCriteria) + " " + order + " LIMIT ? OFFSET ?;",
-                new ComputerRowMapper(), limit, offset);
-    }
+	}
 
-    private Path<?> getColumnName(String orderCriteria) throws DAOException {
-    
-        switch (orderCriteria) {
-        case COMPUTER_ID:
-            return qComputer.id;
-        case COMPUTER_NAME:
-            return qComputer.name;
-        case COMPUTER_INTRO:
-            return qComputer.introduced;
-        case COMPUTER_DISC:
-            return qComputer.discontinued;
-        case COMPUTER_COMPANY:
-            return qComputer.company;
-        default:
-            String message = "Unknown order criteria : " + orderCriteria;
-            logger.error(message);
-            throw new DAOException(message);
-        }
-    }
-    
-    private long getOrder(String order, Path<?> path) {
-    	switch(order) {
-    	case ASCENDING:
-    		return path.asc();
-    	}
-    }
+	@Transactional
+	public List<Computer> getByOrder(String orderCriteria, String order, String search, long offset, long limit)
+			throws DAOException {
+		checkOrder(order);
+		try (Session session = sessionFactory.openSession()) {
+			HibernateQuery<Computer> query = new HibernateQuery<>(session);
+			String searchParam = "%" + search + "%";	
+			return query.from(qComputer).orderBy(getColumnName(orderCriteria, order))
+					.where(qComputer.name.like(searchParam).or(QCompany.company.name.like(searchParam))).limit(limit).offset(offset).fetch();
+		}
+	}
 
-    private void checkOrder(String order) throws DAOException {
-        if (!order.equalsIgnoreCase(ASCENDING) && !order.equalsIgnoreCase(DESCENDING)) {
-            String message = "Unknown parameter " + order;
-            logger.error(message);
-            throw new DAOException(message);
-        }
+	@Transactional
+	public long createComputer(Computer c)  {
+		try (Session session = sessionFactory.openSession()) {
+			session.save(c);
+			return c.getId();
+		}
+	}
 
-    }
+	@Transactional
+	public void update(Computer c) {
+		try (Session session = sessionFactory.openSession()) {
+			HibernateUpdateClause update = new HibernateUpdateClause(session, qComputer);
+			update.where(qComputer.id.eq(c.getId())).set(qComputer, c).execute();
+		}	
+		/* set(computer.name, c.getName()) .set(computer.longroduced,
+		 * c.getIntroduced()).set(computer.discontinued, c.getDiscontinued())
+		 * .set(computer.company, c.getCompany()) .execute();
+		 */
+	}
 
-    public List<Computer> getByOrder(String orderCriteria, String order, String search, int offset, int limit)
-            throws DAOException {
-        checkOrder(order);
-        String searchParam = "%" + search + "%";
-        return jdbcTemplate.query(
-                SELECT_ORDER + " WHERE (computer.name LIKE ? OR company.name LIKE ?) ORDER BY "
-                        + getColumnName(orderCriteria) + " " + order + " LIMIT ? OFFSET ?;",
-                        new ComputerRowMapper(), searchParam, searchParam, limit, offset);
+	@Transactional
+	public void delete(long id) {
+		try (Session session = sessionFactory.openSession()) {
+			HibernateDeleteClause delete = new HibernateDeleteClause(session, qComputer);
+			delete.where(qComputer.id.eq(id)).execute();
+		}	
+	}
 
-    }
+	@Transactional
+	public void deleteCompany(long id) {
+		try (Session session = sessionFactory.openSession()) {
+			HibernateDeleteClause delete = new HibernateDeleteClause(session, qComputer);
+			delete.where(qComputer.company.id.eq(id)).execute();
+		}	
+	}
 
+	
+	@Transactional
+	public void delete(List<Long> ids) {
+		try (Session session = sessionFactory.openSession()) {
+			HibernateDeleteClause delete = new HibernateDeleteClause(session, qComputer);
+			for (long id : ids) {
+				delete.where(qComputer.id.eq(id)).execute();
+			}
+		}	
+	}
 
+	@Transactional
+	public long count() {
+		try (Session session = sessionFactory.openSession()) {
+			HibernateQuery<Computer> query = new HibernateQuery<>(session);
+			return query.from(qComputer).fetchCount();
+		}
+	}
 
-    public long createComputer(Computer c) throws DAOException {
-        sessionFactory.openSession().save(c);
-        return c.getId();
-    }
-
-    public void update(Computer c) {
-    	QComputer computer = QComputer.computer;
-    	queryFactory.update(computer).where(computer.id.eq(c.getId()))
-    	.set(computer.name, c.getName())
-    	.set(computer.introduced, c.getIntroduced())
-    	.set(computer.discontinued, c.getDiscontinued())
-    	.set(computer.company, c.getCompany())
-    	.execute();
-    }
-
-    public void delete(long id) {
-    	queryFactory.delete(qComputer).where(qComputer.id.eq(id))
-    	.execute();
-    }
-
-    public void deleteCompany(long id) {
-    	queryFactory.delete(qComputer).where(qComputer.company.id.eq(id));
-    }
-
-    public void delete(List<Long> ids) {
-        for (long id : ids) {
-        	queryFactory.delete(qComputer).where(qComputer.id.eq(id));
-        }
-    }
-
-    public int count() {
-    	return (int) queryFactory.from(qComputer).fetchCount();
-    }
-
-    public int count(String name) {
-    	return (int) queryFactory.from(qComputer).where(qComputer.name.like("%"+name+"%")).fetchCount();
-    }
-
+	@Transactional
+	public long count(String name) {
+		try (Session session = sessionFactory.openSession()) {
+			HibernateQuery<Computer> query = new HibernateQuery<>(session);
+			String search = "%" + name + "%";
+			return query.from(qComputer)
+					.where(qComputer.name.like(search).or(QCompany.company.name.like(search))).fetchCount();
+		}
+	}
 }

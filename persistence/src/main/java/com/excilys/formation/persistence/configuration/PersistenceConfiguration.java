@@ -1,4 +1,5 @@
 package com.excilys.formation.persistence.configuration;
+
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -20,62 +21,50 @@ import com.excilys.formation.core.entities.Computer;
 @PropertySource(value = { "classpath:datasource.properties" })
 public class PersistenceConfiguration {
 
-    @Value("${driver}")
-    private String driver;
+	@Value("${driver}")
+	private String driver;
 
-    @Value("${url}")
-    private String url;
+	@Value("${url}")
+	private String url;
 
-    @Value("${dbuser}")
-    private String user;
+	@Value("${dbuser}")
+	private String user;
 
-    @Value("${dbpass}")
-    private String pass;
+	@Value("${dbpass}")
+	private String pass;
 
-    @Bean
-    public LocalSessionFactoryBean sessionFactory() {
-        LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-        sessionFactory.setDataSource(dataSource());
-        sessionFactory.setAnnotatedClasses(Company.class, Computer.class);
-        sessionFactory.setPackagesToScan("com.excilys.formation.core.entities" );
-        sessionFactory.setHibernateProperties(hibernateProperties());
-        return sessionFactory;
-    }
-    
-    @Bean
-    public DataSource dataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(driver);
-        dataSource.setUrl(url);
-        dataSource.setUsername(user);
-        dataSource.setPassword(pass);
+	@Bean
+	public LocalSessionFactoryBean sessionFactory() {
+		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+		sessionFactory.setDataSource(dataSource());
+		sessionFactory.setAnnotatedClasses(Company.class, Computer.class);
+		sessionFactory.setPackagesToScan("com.excilys.formation.core.entities");
+		sessionFactory.setHibernateProperties(hibernateProperties());
+		return sessionFactory;
+	}
 
-        return dataSource;
-    }
+	@Bean
+	public DataSource dataSource() {
+		DriverManagerDataSource dataSource = new DriverManagerDataSource();
+		dataSource.setDriverClassName(driver);
+		dataSource.setUrl(url);
+		dataSource.setUsername(user);
+		dataSource.setPassword(pass);
+		return dataSource;
+	}
 
-    @Bean
-    public PlatformTransactionManager hibernateTransactionManager() {
-        HibernateTransactionManager transactionManager
-          = new HibernateTransactionManager();
-        transactionManager.setSessionFactory(sessionFactory().getObject());
-        return transactionManager;
-    }
-    
-    private final Properties hibernateProperties() {
-        Properties hibernateProperties = new Properties();
-       /* hibernateProperties.setProperty(
-          "hibernate.hbm2ddl.auto", "create-drop");*/
-        hibernateProperties.setProperty(
-          "hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
- 
-        return hibernateProperties;
-    }
-    /*
-    @Bean
-    public PlatformTransactionManager txManager() {
-        DataSourceTransactionManager txManager = new DataSourceTransactionManager();
-        txManager.setDataSource(dataSource());
-        return txManager;
-    }*/
+	@Bean
+	public PlatformTransactionManager hibernateTransactionManager() {
+		HibernateTransactionManager transactionManager = new HibernateTransactionManager();
+		transactionManager.setSessionFactory(sessionFactory().getObject());
+		return transactionManager;
+	}
+
+	private final Properties hibernateProperties() {
+		Properties hibernateProperties = new Properties();
+		hibernateProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
+		hibernateProperties.setProperty("hibernate.current_session_context_class", "thread");
+		return hibernateProperties;
+	}
 
 }

@@ -5,12 +5,15 @@ import java.util.List;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.excilys.formation.core.entities.Company;
 import com.excilys.formation.core.entities.QCompany;
 import com.excilys.formation.persistence.daoexceptions.DAOException;
 import com.querydsl.jpa.hibernate.HibernateQueryFactory;
 
 @Repository
+@Transactional
 public class CompanyDAOJdbc {
 
    
@@ -29,7 +32,7 @@ public class CompanyDAOJdbc {
     	return (List<Company>) queryFactory.from(QCompany.company).fetch();
     }
 
-    public List<Company> get(int offset, int size) {
+    public List<Company> get(long offset, long size) {
     	return (List<Company>) queryFactory.from(QCompany.company).offset(offset).limit(size).fetch();
    
     }

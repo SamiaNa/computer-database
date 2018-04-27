@@ -6,35 +6,35 @@ import com.excilys.formation.service.validator.ValidatorException;
 
 public abstract class Page {
 
-    protected int offset;
-    protected int size;
-    protected int count;
-    protected int number;
+    protected long offset;
+    protected long size;
+    protected long count;
+    protected long number;
 
-    protected static final int DEFAULT_SIZE = 10;
+    protected static final long DEFAULT_SIZE = 10;
 
-    public abstract void nextPage() throws ServiceException, ValidatorException;
+    public abstract void nextPage() throws ValidatorException, ServiceException;
 
-    public abstract void prevPage() throws ServiceException, ValidatorException;
+    public abstract void prevPage() throws  ValidatorException, ServiceException;
 
-    public abstract void getPage(int pageNumber, int pageSize) throws ServiceException, ValidatorException;
+    public abstract void getPage(long pageNumber, long pageSize) throws ValidatorException, ServiceException;
 
-    public int getSize() {
+    public long getSize() {
         return size;
     }
 
-    public int getNumber() {
+    public long getNumber() {
         return number;
     }
 
-    public int offsetNextPage(int dbSize) {
+    public long offsetNextPage(long dbSize) {
         if (offset + size <= dbSize) {
             offset += size;
         }
         return offset;
     }
 
-    public int offsetPrevPage() {
+    public long offsetPrevPage() {
         offset -= size;
         if (offset < 0) {
             offset = 0;
@@ -42,11 +42,11 @@ public abstract class Page {
         return offset;
     }
 
-    public int getNumberOfPages() {
+    public long getNumberOfPages() {
         return (this.count / this.size) + ((this.count % this.size) == 0 ? 0 : 1);
     }
 
-    public int offsetGetPage(int number, int dbSize) {
+    public long offsetGetPage(long number, long dbSize) {
         if (size > dbSize) {
             this.number = 1;
             this.offset = 0;
@@ -60,11 +60,11 @@ public abstract class Page {
         return this.offset;
     }
 
-    public int getCount() {
+    public long getCount() {
         return count;
     }
 
-    public abstract void getPage(String orderCriteria, String order, String search, int pageNumber, int pageSize)
+    public abstract void getPage(String orderCriteria, String order, String search, long pageNumber, long pageSize)
             throws ValidatorException, ServiceException, DAOException;
 
 }
