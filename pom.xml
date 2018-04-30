@@ -76,7 +76,7 @@
 
 		<!-- spring -->
 
-		<spring.version>5.0.5.RELEASE</spring.version>
+		<spring.version>5.0.4.RELEASE</spring.version>
 		<spring-boot.version>2.0.1.RELEASE</spring-boot.version>
 
 	</properties>
@@ -357,6 +357,27 @@
 				<artifactId>spring-web</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-web</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+
+
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-config</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+
+
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-core</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+
 
 			<dependency>
 				<groupId>com.querydsl</groupId>

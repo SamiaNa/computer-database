@@ -17,6 +17,7 @@ import com.excilys.formation.core.dtos.ComputerDTO;
 import com.excilys.formation.core.dtos.ComputerDTO.Builder;
 import com.excilys.formation.core.entities.Company;
 import com.excilys.formation.core.entities.Computer;
+import com.excilys.formation.persistence.dao.UserDAO;
 import com.excilys.formation.persistence.daoexceptions.DAOException;
 import com.excilys.formation.service.page.CompanyPage;
 import com.excilys.formation.service.page.ComputerPage;
@@ -33,13 +34,15 @@ public class UserInterface {
     private ComputerService computerService;
     private CompanyService companyService;
     private ComputerDTOMapper computerDTOMapper;
-
+    private UserDAO userDAO;
+    
     @Autowired
     public UserInterface(ComputerService computerService, CompanyService companyService,
-            ComputerDTOMapper computerDTOMapper) {
+            ComputerDTOMapper computerDTOMapper, UserDAO userDAO) {
         this.computerService = computerService;
         this.companyService = companyService;
         this.computerDTOMapper = computerDTOMapper;
+        this.userDAO = userDAO;
 
     }
 
@@ -238,7 +241,8 @@ public class UserInterface {
     }
 
     public void startUI(Scanner scanner) throws ServiceException, ValidatorException {
-        while (true) {
+    	System.out.println(userDAO.getUserInfo("user").getPassword());
+    	while (true) {
             System.out.println("Computer database application\n" + "Select operation:\n" + "1. List computers\n"
                     + "2. List companies\n" + "3. Show computer details (by id)\n" + "4. Create a computer\n"
                     + "5. Update a computer\n" + "6. Delete a computer\n" + "7. Find company by name\n"

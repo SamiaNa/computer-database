@@ -29,7 +29,7 @@ public class CompanyService {
         return companyDAO.get(offset, size);
     }
 
-    public int count() {
+    public long count() {
         return companyDAO.count();
     }
 

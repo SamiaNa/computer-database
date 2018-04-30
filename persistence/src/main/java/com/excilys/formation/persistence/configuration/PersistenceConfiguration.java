@@ -15,6 +15,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import com.excilys.formation.core.entities.Company;
 import com.excilys.formation.core.entities.Computer;
+import com.excilys.formation.core.entities.UserInfo;
 
 @Configuration
 @ComponentScan(basePackages = { "com.excilys.formation.persistence" })
@@ -37,7 +38,7 @@ public class PersistenceConfiguration {
 	public LocalSessionFactoryBean sessionFactory() {
 		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
 		sessionFactory.setDataSource(dataSource());
-		sessionFactory.setAnnotatedClasses(Company.class, Computer.class);
+		sessionFactory.setAnnotatedClasses(Company.class, Computer.class, UserInfo.class);
 		sessionFactory.setPackagesToScan("com.excilys.formation.core.entities");
 		sessionFactory.setHibernateProperties(hibernateProperties());
 		return sessionFactory;
@@ -62,6 +63,7 @@ public class PersistenceConfiguration {
 
 	private final Properties hibernateProperties() {
 		Properties hibernateProperties = new Properties();
+		hibernateProperties.setProperty("hibernate.show_sql", "hibernate.show_sql");
 		hibernateProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
 		hibernateProperties.setProperty("hibernate.current_session_context_class", "thread");
 		return hibernateProperties;

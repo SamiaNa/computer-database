@@ -2,65 +2,80 @@ package com.excilys.formation.persistence.dao;
 
 import java.util.List;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.formation.core.entities.Company;
 import com.excilys.formation.core.entities.QCompany;
 import com.excilys.formation.persistence.daoexceptions.DAOException;
-import com.querydsl.jpa.hibernate.HibernateQueryFactory;
+import com.querydsl.jpa.hibernate.HibernateDeleteClause;
+import com.querydsl.jpa.hibernate.HibernateQuery;
 
 @Repository
-@Transactional
 public class CompanyDAOJdbc {
 
-   
-    private ComputerDAOJdbc computerDAO;
-    private HibernateQueryFactory queryFactory;
-    
+	private static QCompany qCompany = QCompany.company;
+	private ComputerDAOJdbc computerDAO;
+	private SessionFactory sessionFactory;
 
-    @Autowired
-    public CompanyDAOJdbc(ComputerDAOJdbc computerDAO, SessionFactory sessionFactory) {
-        this.computerDAO = computerDAO;
-        this.queryFactory = new HibernateQueryFactory(sessionFactory.openSession());
-    }
+	@Autowired
+	public CompanyDAOJdbc(ComputerDAOJdbc computerDAO, SessionFactory sessionFactory) {
+		this.computerDAO = computerDAO;
+		this.sessionFactory = sessionFactory;
+	}
 
+	public List<Company> getAll() {
+		try (Session session = sessionFactory.openSession()) {
+			HibernateQuery<Company> query = new HibernateQuery<>(session);
+			return query.from(qCompany).fetch();
+		}
 
-    public List<Company> getAll() {
-    	return (List<Company>) queryFactory.from(QCompany.company).fetch();
-    }
+	}
 
-    public List<Company> get(long offset, long size) {
-    	return (List<Company>) queryFactory.from(QCompany.company).offset(offset).limit(size).fetch();
-   
-    }
+	public List<Company> get(long offset, long size) {
+		try (Session session = sessionFactory.openSession()){
+			HibernateQuery<Company> query = new HibernateQuery<>(session);
+			return query.from(qCompany).offset(offset).limit(size).fetch();
+		}
+	}
 
-    public List<Company> getByName(String name) {
-    	QCompany company = QCompany.company;
-    	return (List<Company>) queryFactory.from(company).where(company.name.like("%"+name+"%")).fetch();
-    }
+	public List<Company> getByName(String name) {
+		try (Session session = sessionFactory.openSession()){
+			HibernateQuery<Company> query = new HibernateQuery<>(session);
+			return query.from(qCompany).where(qCompany.name.like("%" + name + "%")).fetch();
+		}
+	}
 
-    public boolean checkCompanyById(long id) throws DAOException {
-    	QCompany company = QCompany.company;
-        List<Company> companies = (List<Company>) queryFactory.from(company).where(company.id.eq(id)).fetch();
-        if (companies.size() == 1) {
-            return true;
-        }
-        if (companies.isEmpty()) {
-            return false;
-        }
-        throw new DAOException("Expected number of rows : 0 or 1, actual number of rows " + companies.size());
-    }
+	public boolean checkCompanyById(long id) throws DAOException {
+		try (Session session = sessionFactory.openSession()){
+			HibernateQuery<Company> query = new HibernateQuery<>(session);
+			List<Company> companies = query.from(qCompany).where(qCompany.id.eq(id)).fetch();
+			if (companies.size() == 1) {
+				return true;
+			}
+			if (companies.isEmpty()) {
+				return false;
+			}
+			throw new DAOException("Expected number of rows : 0 or 1, actual number of rows " + companies.size());
 
-    public int count() {
-    	return (int) queryFactory.from(QCompany.company).fetchCount();
-    }
+		}
+		
+	}
 
-    public void delete(long id) {
-    	QCompany company = QCompany.company;
-        computerDAO.deleteCompany(id);
-        queryFactory.delete(QCompany.company).where(company.id.eq(id)).execute();
-    }
+	public long count() {
+		try (Session session = sessionFactory.openSession()){
+			HibernateQuery<Company> query = new HibernateQuery<>(session);
+			return query.from(qCompany).fetchCount();
+		}
+	}
+
+	public void delete(long id) {
+		try (Session session = sessionFactory.openSession()) {
+			computerDAO.deleteCompany(id);
+			HibernateDeleteClause delete = new HibernateDeleteClause(session, qCompany);
+			delete.where(qCompany.id.eq(id)).execute();
+		}
+	}
 }

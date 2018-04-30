@@ -2,16 +2,26 @@ package com.excilys.formation.configuration;
 
 import java.util.Properties;
 
-import javax.sql.DataSource;
-
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.BeanIds;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.web.configuration.*;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.User.UserBuilder;
+import org.springframework.security.core.userdetails.UserCache;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.cache.SpringCacheBasedUserCache;
+import org.springframework.security.crypto.password.StandardPasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.ConversionNotSupportedException;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
@@ -19,9 +29,6 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotWritableException;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.LocaleResolver;
@@ -37,25 +44,24 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
-import com.excilys.formation.service.configuration.ServiceConfiguration;
 
 @Configuration
 @EnableWebMvc
 @EnableTransactionManagement
 @ComponentScan(basePackages = { "com.excilys.formation"})
 @PropertySource(value = { "classpath:datasource.properties" })
-@Import(ServiceConfiguration.class)
 @Profile("!CLI")
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled=true)
 public class ComputerDatabaseConfiguration implements WebMvcConfigurer {
 
-  
-    private Logger logger = LoggerFactory.getLogger(ComputerDatabaseConfiguration.class);
-
-   
+    
+   @Autowired
+    Authentication auth;
+    
     @Bean
     public LocaleResolver localeResolver() {
-        CookieLocaleResolver localeResolver = new CookieLocaleResolver();
-        return localeResolver;
+        return new CookieLocaleResolver();
     }
 
     @Bean
@@ -113,5 +119,42 @@ public class ComputerDatabaseConfiguration implements WebMvcConfigurer {
         s.setOrder(Ordered.HIGHEST_PRECEDENCE);
         return s;
     }
+/*
+   @Bean
+	public UserDetailsService userDetailsService() throws Exception {
+	   InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
+	   manager.createUser(auth.loadUserByUsername("user"));
+	   //manager.createUser(User.withDefaultPasswordEncoder().username("user").password("pass").roles("USER").build());
+	   return manager;
+	}
+    
+
+    
+   @Bean
+   UserCache digestUserCache() throws Exception {
+     return new SpringCacheBasedUserCache(new ConcurrentMapCache("digestUserCache"));
+   }
+    
+
+   
+    @Bean 
+    public DigestAuthenticationEntryPoint entryPoint() {
+    	DigestAuthenticationEntryPoint entryPoint = new DigestAuthenticationEntryPoint();
+    	entryPoint.setRealmName("Contacts Realm via Digest Authentication");
+    	entryPoint.setKey("acegi");
+    	entryPoint.setNonceValiditySeconds(10);
+    	return entryPoint;
+    }
+   
+    @Bean
+    public DigestAuthenticationFilter digestFilter(DigestAuthenticationEntryPoint entryPoint) throws Exception {
+    	DigestAuthenticationFilter filter = new DigestAuthenticationFilter();
+    	filter.setUserDetailsService(userDetailsService());
+    	filter.setAuthenticationEntryPoint(entryPoint());
+        filter.setUserCache(digestUserCache());
+        filter.setPasswordAlreadyEncoded(true);
+    	return filter;
+    }*/
+ 
 
 }
