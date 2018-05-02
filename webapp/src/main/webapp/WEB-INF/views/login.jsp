@@ -27,27 +27,33 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-xs-8 col-xs-offset-2 box">
-			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+				<input type="hidden" name="${_csrf.parameterName}"
+					value="${_csrf.token}" />
 				<h1>Login</h1>
-				<c:if test="${param.error}">
-					<div class="alert alert-error">Invalid username and password.
+
+				<c:if test="${param.error != null}">
+					<div class="alert alert-danger">
+						Invalid username and password. <br/>
 					</div>
 				</c:if>
-				<c:if test="${param.logout}">
-					<div class="alert alert-success">You
-						have been logged out.</div>
+				<c:if test="${param.logout != null}">
+					<div class="alert alert-success">
+						You have been logged out. <br/>
+					</div>
 				</c:if>
 				<form:form action="login" method="POST">
 					<fieldset>
 						<div class="form-group">
-							Username <input type="text" id="login" />
+							<label>Username</label> <input type="text" name="username"
+								class="form-control" value="" />
 						</div>
 						<div class="form-group">
-							Password <input type="password" id="password" />
+							<label>Password</label> <input type="password"
+								class="form-control" name="password" />
 						</div>
 					</fieldset>
-					<div class="actions pull-center">
-						<input type="submit" name="submit" value="Login"
+					<div class="actions pull-right">
+						<input type="submit" name="submit" value="Submit"
 							class="btn btn-primary">
 					</div>
 				</form:form>

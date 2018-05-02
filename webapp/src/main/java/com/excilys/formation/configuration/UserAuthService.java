@@ -15,12 +15,12 @@ public class UserAuthService implements UserDetailsService {
 
 	@Autowired
 	UserDAO userDAO;
-	
+
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		UserInfo user = userDAO.getUserInfo(username);
 		return User
-				.withUsername(user.getUsername()).password(user.getPassword()).roles(user.getRole()).build();
+				.withDefaultPasswordEncoder().username(user.getUsername()).password(user.getPassword()).roles(user.getRole()).build();
 
 	}
 }

@@ -20,6 +20,14 @@
 		<div class="container">
 			<a class="navbar-brand" href="Dashboard"> <spring:message
 					code="application.applicationName" /></a>
+						<div class="pull-right">
+			<form id="logout-form" action="<c:url value="/logout"/>"
+				method="post">
+				<input type="hidden" name="${_csrf.parameterName}"
+					value="${_csrf.token}" />
+			</form>
+			<a href="#" class="navbar-brand" onclick="document.getElementById('logout-form').submit();"> Logout </a>
+		</div>
 		</div>
 	</header>
 	<section id="main">

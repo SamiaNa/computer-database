@@ -22,6 +22,16 @@
 		<a class="navbar-brand" href="Dashboard"> <spring:message
 				code="application.applicationName" />
 		</a>
+		<div class="pull-right">
+			<form id="logout-form" action="<c:url value="/logout"/>"
+				method="post">
+				<input type="hidden" name="${_csrf.parameterName}"
+					value="${_csrf.token}" />
+			</form>
+			<a href="#" class="navbar-brand"
+				onclick="document.getElementById('logout-form').submit();">
+				Logout </a>
+		</div>
 	</div>
 	</header>
 
@@ -38,9 +48,7 @@
 					<fieldset>
 						<div class="form-group">
 							<spring:message code="computer.name" var="computerName" />
-							<label for="computerName">
-							${computerName}
-							</label>
+							<label for="computerName"> ${computerName} </label>
 							<form:input data-validation="custom"
 								data-validation-regexp="^[\wÀ-ÿ]+[\wÀ-ÿ_\-'\+\* \.]+$"
 								type="text" class="form-control" name="name" id="computerName"
@@ -49,24 +57,22 @@
 						<div class="form-group">
 							<spring:message code="computer.introducedDate"
 								var="introducedDate" />
-							<label for="introduced" >
-							${introducedDate}
-							</label>
-							<form:input data-validation="date" data-validation-format="yyyy-mm-dd"
+							<label for="introduced"> ${introducedDate} </label>
+							<form:input data-validation="date"
+								data-validation-format="yyyy-mm-dd"
 								data-validation-optional="true" type="date" class="form-control"
-								name="introduced" id="introduced"
-								path="introduced" placeholder="${introducedDate}"/>
+								name="introduced" id="introduced" path="introduced"
+								placeholder="${introducedDate}" />
 						</div>
 						<div class="form-group">
 							<spring:message code="computer.discontinuedDate"
 								var="discontinuedDate" />
-							<label for="discontinued" >
-							${discontinuedDate }
-							</label>
-							<form:input data-validation="date" data-validation-format="yyyy-mm-dd"
+							<label for="discontinued"> ${discontinuedDate } </label>
+							<form:input data-validation="date"
+								data-validation-format="yyyy-mm-dd"
 								data-validation-optional="true" type="date" class="form-control"
-								name="discontinued" id="discontinued"
-								path="discontinued" placeholder="${discontinuedDate}"/>
+								name="discontinued" id="discontinued" path="discontinued"
+								placeholder="${discontinuedDate}" />
 						</div>
 						<div class="form-group">
 							<form:label for="company" path="company">
