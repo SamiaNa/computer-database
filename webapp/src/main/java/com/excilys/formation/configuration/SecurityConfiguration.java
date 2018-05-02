@@ -31,10 +31,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		 http.authorizeRequests()
-		 .antMatchers("/AddComputer").access("hasRole('ADMIN')")
-		 .antMatchers("/Dashboard").access("hasRole('USER')")
-	    // .anyRequest().authenticated()
-	     .and().formLogin()
+		 .antMatchers("/AddComputer", "/EditComputer", "/Delete").access("hasRole('ADMIN')")
+		 .antMatchers("/").access("hasRole('USER')")
+	     .and().formLogin().permitAll()
 	     .loginPage("/login").permitAll()
 	     .and().csrf();
 	}
@@ -43,14 +42,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	public AuthenticationProvider authenticationProvider() {
 	    DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 	    authProvider.setUserDetailsService(userDetailsService);
-	   // authProvider.setPasswordEncoder(encoder());
+	    authProvider.setPasswordEncoder(encoder());
 	    return authProvider;
 	}
 	 
-	/*@Bean
+	@Bean
 	public PasswordEncoder encoder() {
 	    return new BCryptPasswordEncoder();
-	}*/
+	}
 }
 	 
 

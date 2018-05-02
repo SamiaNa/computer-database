@@ -17,49 +17,45 @@
 </head>
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
-		<div class="container">
-			<a class="navbar-brand" href="Dashboard"> <spring:message
-					code="application.applicationName" /></a>
-		</div>
+	<div class="container">
+		<a class="navbar-brand" href="Dashboard"> <spring:message
+				code="application.applicationName" /></a>
+	</div>
 	</header>
-	
+
 	<section id="main">
-		<div class="container">
-			<div class="row">
-				<div class="col-xs-8 col-xs-offset-2 box">
-					<div class="label label-default pull-right">
-						id:
-						<c:out value="${param.id}" />
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-8 col-xs-offset-2 box">
+			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+				<h1>Login</h1>
+				<c:if test="${param.error}">
+					<div class="alert alert-error">Invalid username and password.
 					</div>
-					<h1>
-						<spring:message code="editComputer.editComputer" />
-					</h1>
-					<form:form action="EditComputer" method="POST"
-						modelAttribute="computer">
-						<fieldset>
-							<div class="form-group">
-								Login
-									<input id="login"/>
-							</div>
-							<div class="form-group">
-								Password
-									<input id="password"/>
-							</div>
-						</fieldset>
-						<div class="actions pull-right">
-							<input type="submit" name="submit"
-								value=<spring:message code="editComputer.edit"/>
-								class="btn btn-primary">
-							<spring:message code="editComputer.or" />
-							<a href="Dashboard" class="btn btn-default"><spring:message
-									code="editComputer.cancel" /></a>
+				</c:if>
+				<c:if test="${param.logout}">
+					<div class="alert alert-success">You
+						have been logged out.</div>
+				</c:if>
+				<form:form action="login" method="POST">
+					<fieldset>
+						<div class="form-group">
+							Username <input type="text" id="login" />
 						</div>
-					</form:form>
-				</div>
+						<div class="form-group">
+							Password <input type="password" id="password" />
+						</div>
+					</fieldset>
+					<div class="actions pull-center">
+						<input type="submit" name="submit" value="Login"
+							class="btn btn-primary">
+					</div>
+				</form:form>
 			</div>
 		</div>
+	</div>
 	</section>
-	
+
 
 </body>
 </html>
