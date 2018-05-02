@@ -189,5 +189,6 @@ public class ComputerDatabaseController {
         logger.info("set Attributes page {}", page.getElements());
         model.addAttribute("page", page);
     }
-
+    
+ 
 }

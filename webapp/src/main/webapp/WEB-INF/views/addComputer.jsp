@@ -25,9 +25,7 @@
 	</div>
 	</header>
 
-	<c:if test="${companyList == null}">
-		<c:redirect url="/AddComputer" />
-	</c:if>
+
 	<section id="main">
 	<div class="container">
 		<div class="row">
@@ -98,14 +96,5 @@
 	</div>
 	</section>
 </body>
-<script
-	src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script
-	src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
-<script>
-	$.validate({
-		lang : 'en',
-		modules : 'html5'
-	});
-</script>
+
 </html>

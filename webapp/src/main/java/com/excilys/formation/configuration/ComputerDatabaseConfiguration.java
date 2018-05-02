@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.cache.SpringCacheBasedUserCache;
 import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.authentication.www.DigestAuthenticationEntryPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.ConversionNotSupportedException;
@@ -37,6 +38,7 @@ import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
@@ -51,13 +53,8 @@ import org.springframework.web.servlet.view.JstlView;
 @ComponentScan(basePackages = { "com.excilys.formation"})
 @PropertySource(value = { "classpath:datasource.properties" })
 @Profile("!CLI")
-@EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled=true)
 public class ComputerDatabaseConfiguration implements WebMvcConfigurer {
 
-    
-   @Autowired
-    Authentication auth;
     
     @Bean
     public LocaleResolver localeResolver() {
@@ -119,42 +116,14 @@ public class ComputerDatabaseConfiguration implements WebMvcConfigurer {
         s.setOrder(Ordered.HIGHEST_PRECEDENCE);
         return s;
     }
-/*
-   @Bean
-	public UserDetailsService userDetailsService() throws Exception {
-	   InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-	   manager.createUser(auth.loadUserByUsername("user"));
-	   //manager.createUser(User.withDefaultPasswordEncoder().username("user").password("pass").roles("USER").build());
-	   return manager;
-	}
     
-
-    
-   @Bean
-   UserCache digestUserCache() throws Exception {
-     return new SpringCacheBasedUserCache(new ConcurrentMapCache("digestUserCache"));
-   }
-    
-
-   
-    @Bean 
-    public DigestAuthenticationEntryPoint entryPoint() {
-    	DigestAuthenticationEntryPoint entryPoint = new DigestAuthenticationEntryPoint();
-    	entryPoint.setRealmName("Contacts Realm via Digest Authentication");
-    	entryPoint.setKey("acegi");
-    	entryPoint.setNonceValiditySeconds(10);
-    	return entryPoint;
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/login").setViewName("login");
+        registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
     }
-   
-    @Bean
-    public DigestAuthenticationFilter digestFilter(DigestAuthenticationEntryPoint entryPoint) throws Exception {
-    	DigestAuthenticationFilter filter = new DigestAuthenticationFilter();
-    	filter.setUserDetailsService(userDetailsService());
-    	filter.setAuthenticationEntryPoint(entryPoint());
-        filter.setUserCache(digestUserCache());
-        filter.setPasswordAlreadyEncoded(true);
-    	return filter;
-    }*/
- 
+    
+
+
 
 }
