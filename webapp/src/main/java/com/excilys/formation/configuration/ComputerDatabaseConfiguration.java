@@ -2,6 +2,7 @@ package com.excilys.formation.configuration;
 
 import java.util.Properties;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -28,6 +29,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.Ordered;
+import org.springframework.dao.PermissionDeniedDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -109,9 +111,11 @@ public class ComputerDatabaseConfiguration implements WebMvcConfigurer {
         p.setProperty(NoHandlerFoundException.class.getName(), "404");
         p.setProperty(HttpMessageNotWritableException.class.getName(), "500");
         p.setProperty(ConversionNotSupportedException.class.getName(), "500");
+        p.setProperty(AccessDeniedException.class.getName(), "403");
         s.setExceptionMappings(p);
         s.addStatusCode("404", HttpStatus.NOT_FOUND.value());
         s.addStatusCode("403", HttpStatus.FORBIDDEN.value());
+        s.addStatusCode("403", HttpStatus.UNAUTHORIZED.value());
         s.addStatusCode("500", HttpStatus.INTERNAL_SERVER_ERROR.value());
         s.setOrder(Ordered.HIGHEST_PRECEDENCE);
         return s;

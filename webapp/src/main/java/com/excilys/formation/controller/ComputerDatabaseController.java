@@ -150,6 +150,13 @@ public class ComputerDatabaseController {
         model.addAttribute("companyList", companyList);
         return "addComputer";
     }
+    
+    @GetMapping(value = { "/403" })
+    @PostMapping(value = {"/403"})
+    public String denied() {
+            return "403";
+
+        }
 
     @PostMapping(value = { "/AddComputer" })
     public String doPost(ModelMap model, @Valid @ModelAttribute("computerDTO") ComputerDTO computerDTO,
