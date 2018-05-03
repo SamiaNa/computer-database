@@ -23,12 +23,14 @@
 				code="application.applicationName" />
 		</a>
 		<div class="pull-right">
-			<form id="logout-form" action="<c:url value="/logout"/>"
-				method="post">
+
+			<form id="logout-form" method="post" action="logout">
 				<input type="hidden" name="${_csrf.parameterName}"
 					value="${_csrf.token}" />
 			</form>
-			<a href="#" class="navbar-brand" onclick="document.getElementById('logout-form').submit();"> Logout </a>
+			<button class="btn btn-link"
+				onclick="document.getElementById('logout-form').submit();">Logout</button>
+
 		</div>
 	</div>
 	</header>
@@ -54,14 +56,18 @@
 			<div class="pull-right">
 				<a class="btn btn-success" id="addComputer" href="AddComputer"><spring:message
 						code="dashboard.addComputer" /></a> <a class="btn btn-default"
-					id="deleteComputer" href="#" onclick="$.fn.toggleEditMode();"><spring:message
+					id="deleteComputer" href="#delete" onclick="$.fn.toggleEditMode();"><spring:message
 						code="dashboard.delete" /></a>
 			</div>
 		</div>
 	</div>
 
 	<form id="deleteForm" action="Dashboard" method="POST">
-		<input type="hidden" id="selection" name="selection" value="">
+
+		<input type="hidden" name="${_csrf.parameterName}"
+			value="${_csrf.token}" />
+			 <input type="hidden" id="selection"
+			name="selection" value="">
 	</form>
 
 	<div class="container" style="margin-top: 10px;">
@@ -133,6 +139,9 @@
 					formaction="Dashboard?pageNumber=${page.number}&pageSize=50&search=${search}&by=${by}&order=${order}">50</button>
 				<button type="submit" class="btn btn-default"
 					formaction="Dashboard?pageNumber=${page.number}&pageSize=100&search=${search}&by=${by}&order=${order}">100</button>
+
+				<input type="hidden" name="${_csrf.parameterName}"
+					value="${_csrf.token}" />
 			</form>
 		</div>
 	</div>

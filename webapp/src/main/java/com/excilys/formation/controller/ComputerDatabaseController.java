@@ -110,9 +110,6 @@ public class ComputerDatabaseController {
                 return "404";
             }
             return "editComputer";
-        /*} catch (DAOException e) {
-            model.addAttribute("stacktrace", e.getStackTrace());
-            return "500";*/
         }catch (NumberFormatException e) {
             logger.error("Exception in doGet EditComputer", e);
             return "404";
@@ -153,10 +150,9 @@ public class ComputerDatabaseController {
     
     @GetMapping(value = { "/403" })
     @PostMapping(value = {"/403"})
-    public String denied() {
+    public String accessDenied() {
             return "403";
-
-        }
+    }
 
     @PostMapping(value = { "/AddComputer" })
     public String doPost(ModelMap model, @Valid @ModelAttribute("computerDTO") ComputerDTO computerDTO,

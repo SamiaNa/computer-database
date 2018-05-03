@@ -27,8 +27,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-xs-8 col-xs-offset-2 box">
-				<input type="hidden" name="${_csrf.parameterName}"
-					value="${_csrf.token}" />
+				
 				<h1>Login</h1>
 
 				<c:if test="${param.error != null}">
@@ -42,6 +41,8 @@
 					</div>
 				</c:if>
 				<form:form action="login" method="POST">
+				<input type="hidden" name="${_csrf.parameterName}"
+					value="${_csrf.token}" />
 					<fieldset>
 						<div class="form-group">
 							<label>Username</label> <input type="text" name="username"
