@@ -27,10 +27,9 @@
 			<form id="logout-form" method="post" action="logout">
 				<input type="hidden" name="${_csrf.parameterName}"
 					value="${_csrf.token}" />
+				<input type="submit" class="btn btn-link" value="Logout"></input>
 			</form>
-			<button class="btn btn-link"
-				onclick="document.getElementById('logout-form').submit();">Logout</button>
-
+			
 		</div>
 	</div>
 	</header>
