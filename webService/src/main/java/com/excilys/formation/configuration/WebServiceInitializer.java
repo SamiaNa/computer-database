@@ -19,11 +19,4 @@ public class WebServiceInitializer extends AbstractAnnotationConfigDispatcherSer
         return new String[] { "/" };
     }
 
-    /*@Override
-    protected FrameworkServlet createDispatcherServlet(WebApplicationContext wac) {
-        DispatcherServlet ds = new DispatcherServlet(wac);
-        ds.setThrowExceptionIfNoHandlerFound(true);
-        return ds;
-   }*/
-
 }

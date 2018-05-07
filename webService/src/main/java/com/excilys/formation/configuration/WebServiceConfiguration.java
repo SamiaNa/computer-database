@@ -12,8 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @EnableWebMvc
 @Configuration
-@PropertySource(value = { "classpath:datasource.properties" })
-@ComponentScan(basePackages = { "com.excilys.formation"})
+@ComponentScan(basePackages = { "com.excilys.formation" })
 public class WebServiceConfiguration implements WebMvcConfigurer{
     
    @Override
