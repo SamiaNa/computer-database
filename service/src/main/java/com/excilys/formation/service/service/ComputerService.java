@@ -47,13 +47,11 @@ public class ComputerService {
 	}
 
 	public List<Computer> getByOrder(String orderBy, String by, String name, long offset, long size)
-			throws ValidatorException, DAOException {
-		computerValidator.checkName(name);
+			throws DAOException {
 		return computerDAO.getByOrder(orderBy, by, name, offset, size);
 	}
 
-	public List<Computer> getByName(String name, long offset, long size) throws ValidatorException {
-		computerValidator.checkName(name);
+	public List<Computer> getByName(String name, long offset, long size) {
 		return computerDAO.getByName(name, offset, size);
 	}
 
@@ -65,6 +63,7 @@ public class ComputerService {
 	@Transactional(rollbackFor = Exception.class)
 	public long createComputer(Computer computer) throws ValidatorException {
 		computerValidator.checkComputer(companyDAO, computer);
+		computerValidator.checkDates(computer);
 		return computerDAO.createComputer(computer);
 
 	}
@@ -73,7 +72,7 @@ public class ComputerService {
 	public void updateComputer(Computer computer) throws ValidatorException {
 		logger.info("Update Computer, {}", computer);
 		computerValidator.checkComputer(companyDAO, computer);
-		logger.info("UPDATE Computer, after check");
+		computerValidator.checkDates(computer);
 		computerDAO.update(computer);
 	}
 
@@ -91,8 +90,7 @@ public class ComputerService {
 		return computerDAO.count();
 	}
 
-	public long count(String name) throws ValidatorException {
-		computerValidator.checkName(name);
+	public long count(String name)  {
 		return computerDAO.count(name);
 	}
 

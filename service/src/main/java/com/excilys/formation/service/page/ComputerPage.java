@@ -9,11 +9,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.excilys.formation.service.validator.ValidatorException;
 import com.excilys.formation.core.entities.Computer;
 import com.excilys.formation.persistence.daoexceptions.DAOException;
 import com.excilys.formation.service.service.ComputerService;
 import com.excilys.formation.service.service.ServiceException;
-import com.excilys.formation.service.validator.ValidatorException;
 
 @Component
 public class ComputerPage extends Page {

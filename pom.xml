@@ -18,6 +18,7 @@
 		<module>persistence</module>
 		<module>service</module>
 		<module>webapp</module>
+		<module>webService</module>
 	</modules>
 
 	<properties>
@@ -59,6 +60,8 @@
 		<javax.servlet.version>2.2.1-b03</javax.servlet.version>
 		<querydsl.version>4.2.1</querydsl.version>
 		<hibernate.version>5.1.13.Final</hibernate.version>
+		<javax.persistence.version>1.0.2</javax.persistence.version>
+		<jackson.version>2.9.5</jackson.version>
 
 		<!-- maven -->
 
@@ -415,9 +418,14 @@
 			<dependency>
 				<groupId>javax.persistence</groupId>
 				<artifactId>persistence-api</artifactId>
-				<version>1.0.2</version>
+				<version>${javax.persistence.version}</version>
 			</dependency>
 
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
 
 
 

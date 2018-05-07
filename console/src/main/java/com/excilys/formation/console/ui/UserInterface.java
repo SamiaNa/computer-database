@@ -11,6 +11,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.stereotype.Component;
 
 import com.excilys.formation.binding.mappers.ComputerDTOMapper;
+import com.excilys.formation.service.validator.ValidatorException;
 import com.excilys.formation.console.configuration.CLIConfiguration;
 import com.excilys.formation.core.dtos.CompanyDTO;
 import com.excilys.formation.core.dtos.ComputerDTO;
@@ -25,7 +26,6 @@ import com.excilys.formation.service.page.Page;
 import com.excilys.formation.service.service.CompanyService;
 import com.excilys.formation.service.service.ComputerService;
 import com.excilys.formation.service.service.ServiceException;
-import com.excilys.formation.service.validator.ValidatorException;
 
 @Component
 public class UserInterface {

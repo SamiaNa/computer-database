@@ -28,7 +28,7 @@ public class PaginationTag extends SimpleTagSupport {
         this.page = page;
     }
 
-    public String getTarget() {
+    public String getTargt() {
         return target;
     }
 

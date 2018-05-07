@@ -1,8 +1,8 @@
 package com.excilys.formation.service.page;
 
+import com.excilys.formation.service.validator.ValidatorException;
 import com.excilys.formation.persistence.daoexceptions.DAOException;
 import com.excilys.formation.service.service.ServiceException;
-import com.excilys.formation.service.validator.ValidatorException;
 
 public abstract class Page {
 

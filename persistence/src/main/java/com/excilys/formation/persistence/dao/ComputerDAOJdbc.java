@@ -89,15 +89,15 @@ public class ComputerDAOJdbc {
 		checkOrder(order);
 		switch (orderCriteria) {
 		case COMPUTER_ID:
-			return ASCENDING.equals(order) ? qComputer.id.asc() : qComputer.id.desc();
+			return ASCENDING.equalsIgnoreCase(order) ? qComputer.id.asc() : qComputer.id.desc();
 		case COMPUTER_NAME:
-			return ASCENDING.equals(order) ? qComputer.name.asc() : qComputer.name.desc();
+			return ASCENDING.equalsIgnoreCase(order) ? qComputer.name.asc() : qComputer.name.desc();
 		case COMPUTER_INTRO:
-			return ASCENDING.equals(order) ? qComputer.introduced.asc() : qComputer.introduced.desc();
+			return ASCENDING.equalsIgnoreCase(order) ? qComputer.introduced.asc() : qComputer.introduced.desc();
 		case COMPUTER_DISC:
-			return ASCENDING.equals(order) ? qComputer.discontinued.asc() : qComputer.discontinued.desc();
+			return ASCENDING.equalsIgnoreCase(order) ? qComputer.discontinued.asc() : qComputer.discontinued.desc();
 		case COMPUTER_COMPANY:
-			return ASCENDING.equals(order) ? qComputer.company.name.asc() : qComputer.company.name.desc();
+			return ASCENDING.equalsIgnoreCase(order) ? qComputer.company.name.asc() : qComputer.company.name.desc();
 		default:
 			String message = "Unknown order criteria : " + orderCriteria;
 			logger.error(message);

@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.excilys.formation.binding.mappers.CompanyDTOMapper;
 import com.excilys.formation.binding.mappers.ComputerDTOMapper;
+import com.excilys.formation.service.validator.ValidatorException;
 import com.excilys.formation.core.dtos.CompanyDTO;
 import com.excilys.formation.core.dtos.ComputerDTO;
 import com.excilys.formation.core.entities.Company;
@@ -31,7 +32,6 @@ import com.excilys.formation.service.page.ComputerDTOPage;
 import com.excilys.formation.service.service.CompanyService;
 import com.excilys.formation.service.service.ComputerService;
 import com.excilys.formation.service.service.ServiceException;
-import com.excilys.formation.service.validator.ValidatorException;
 @Controller
 @Profile("!CLI")
 public class ComputerDatabaseController {

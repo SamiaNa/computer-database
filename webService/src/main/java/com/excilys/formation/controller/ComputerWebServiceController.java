@@ -27,13 +27,13 @@ import com.excilys.formation.service.service.ComputerService;
 
 @RestController
 @RequestMapping("/ComputerDatabaseService")
-public class ComputerDatabaseServiceController {
+public class ComputerWebServiceController {
 
 	private ComputerService computerService;
 	private ComputerDTOMapper computerDTOMapper;
 
 	@Autowired
-	public ComputerDatabaseServiceController(ComputerService computerService, ComputerDTOMapper computerDTOMapper) {
+	public ComputerWebServiceController(ComputerService computerService, ComputerDTOMapper computerDTOMapper) {
 		this.computerService = computerService;
 		this.computerDTOMapper = computerDTOMapper;
 	}

@@ -18,6 +18,12 @@
 			<artifactId>computer-database-binding</artifactId>
 			<version>0.1.1-SNAPSHOT</version>
 		</dependency>
+		
+		
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework</groupId>

@@ -6,12 +6,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import com.excilys.formation.service.validator.CompanyValidator;
+import com.excilys.formation.service.validator.ValidatorException;
 import com.excilys.formation.core.entities.Company;
 import com.excilys.formation.persistence.dao.CompanyDAOJdbc;
 import com.excilys.formation.persistence.daoexceptions.DAOException;
 
 @Component
-public class CompanyValidator implements Validator {
+public class CompanyValidator  {
 
     private static final Logger logger = LoggerFactory.getLogger(CompanyValidator.class);
 
@@ -59,14 +61,6 @@ public class CompanyValidator implements Validator {
         }
     }
 
-    @Override
-    public boolean supports(Class<?> clazz) {
-        return Company.class.isAssignableFrom(clazz);
-    }
 
-    @Override
-    public void validate(Object target, Errors errors) {
-        // TODO Auto-generated method stub
-
-    }
+  
 }
