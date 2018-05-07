@@ -27,7 +27,7 @@ public class CompanyWebServiceController {
 		this.companyService = companyService;
 		this.companyDTOMapper = companyDTOMapper;
 	}
-	
+	 
 	@GetMapping("company/{pageNumber}/{pageSize}")
     public List<CompanyDTO> getCompanyList(@PathVariable Long pageNumber, @PathVariable Long pageSize) {
         return companyDTOMapper.toDTOList(companyService.getCompanyList(pageNumber * pageSize, pageSize));

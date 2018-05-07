@@ -5,11 +5,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
-
 import com.excilys.formation.binding.mappers.ComputerDTOMapper;
 import com.excilys.formation.service.validator.ValidatorException;
 import com.excilys.formation.console.configuration.CLIConfiguration;
@@ -31,9 +33,12 @@ import com.excilys.formation.service.service.ServiceException;
 public class UserInterface {
 
     private static final int PAGE_SIZE = 10;
+    private static final String COMPUTER_URI = "http://localhost:8080/computer-database/ComputerDatabaseService/computer";
+    private static final String COMPANY_URI = "http://localhost:8080/computer-database/CompanyDatabaseService/company";
     private ComputerService computerService;
     private CompanyService companyService;
     private ComputerDTOMapper computerDTOMapper;
+    private Client client = ClientBuilder.newClient();
     private UserDAO userDAO;
     
     @Autowired
@@ -153,6 +158,7 @@ public class UserInterface {
             Builder computerDTOBuilder = new Builder();
             computerDTOBuilder.withName(name).withIntroduced(introducedStr).withDiscontinued(discontinuedStr)
             .withCompany(companyDTO);
+            //client.target(COMPANY_URI).path(String.valueOf(companyId)).request().delete();
             computerService.createComputer(computerDTOMapper.toComputer(computerDTOBuilder.build()));
 
         } catch (ValidatorException e) {
@@ -223,8 +229,7 @@ public class UserInterface {
         System.out.println("Enter id of computer : ");
         try {
             Long computerId = scanner.nextLong();
-            computerService.deleteComputer(computerId);
-
+            client.target(COMPUTER_URI).path(String.valueOf(computerId)).request().delete();
         } catch (InputMismatchException e) {
             System.out.println("Only numbers are accepted as id");
         }
@@ -234,6 +239,7 @@ public class UserInterface {
         System.out.println("Enter id of company to delete :");
         try {
             Long companyId = scanner.nextLong();
+            client.target(COMPANY_URI).path(String.valueOf(companyId)).request().delete();
             companyService.delete(companyId);
         } catch (InputMismatchException e) {
             System.out.println("Only numbers are accepted as id");
