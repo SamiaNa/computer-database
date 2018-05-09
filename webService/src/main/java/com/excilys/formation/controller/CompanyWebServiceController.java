@@ -28,7 +28,7 @@ public class CompanyWebServiceController {
 		this.companyDTOMapper = companyDTOMapper;
 	}
 	 
-	@GetMapping("company/{pageNumber}/{pageSize}")
+	@GetMapping("company/number/{pageNumber}/size/{pageSize}")
     public List<CompanyDTO> getCompanyList(@PathVariable Long pageNumber, @PathVariable Long pageSize) {
         return companyDTOMapper.toDTOList(companyService.getCompanyList(pageNumber * pageSize, pageSize));
     }
@@ -38,7 +38,7 @@ public class CompanyWebServiceController {
 		return companyService.count();
     }
 
-	@GetMapping("company/{name}")
+	@GetMapping("company/search/{name}")
     public List<CompanyDTO> getCompaniesByName(@PathVariable String name) {
     	return companyDTOMapper.toDTOList(companyService.getCompaniesByName(name));
     }

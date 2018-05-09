@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.excilys.formation.binding.mappers.ComputerDTOMapper;
 import com.excilys.formation.service.validator.ValidatorException;
 import com.excilys.formation.core.dtos.ComputerDTO;
+import com.excilys.formation.core.dtos.PageDTO;
 import com.excilys.formation.core.entities.Computer;
 import com.excilys.formation.persistence.daoexceptions.DAOException;
 import com.excilys.formation.service.service.ComputerService;
@@ -48,30 +49,30 @@ public class ComputerWebServiceController {
 		}
 	}
 
-	@GetMapping("computer/{pageNumber}/{pageSize}")
+	@GetMapping("computer/number/{pageNumber}/size/{pageSize}")
 	public List<ComputerDTO> getComputers(@PathVariable Long pageNumber, @PathVariable Long pageSize) {
 		return computerDTOMapper.toDTOList(computerService.getComputerList(pageSize * pageNumber, pageSize));
 	}
 
-	@GetMapping("computer/{pageNumber}/{pageSize}/{name}")
+	@GetMapping("computer/number/{pageNumber}/size/{pageSize}/search/{name}")
 	public List<ComputerDTO> getComputersByName(@PathVariable Long pageNumber, @PathVariable Long pageSize,
 			@PathVariable String name) {
 		return computerDTOMapper.toDTOList(computerService.getByName(name, pageSize * pageNumber, pageSize));
 	}
 
-	@GetMapping("computer/{pageNumber}/{pageSize}/{orderBy}/{order}")
+	@GetMapping("computer/number/{pageNumber}/size/{pageSize}/by/{orderBy}/order/{order}")
 	public List<ComputerDTO> getComputerByOrder(@PathVariable Long pageNumber, @PathVariable Long pageSize,
 			@PathVariable String orderBy, @PathVariable String order, HttpServletResponse response) {
 		List <Computer> computers = new ArrayList<>();
 		try {
 			computers = computerService.getByOrder(orderBy, order, pageSize * pageNumber, pageSize);
-		}catch(DAOException e) {
+		} catch(DAOException e) {
 			response.setStatus(HttpStatus.UNPROCESSABLE_ENTITY.value());
 		}
 		return computerDTOMapper.toDTOList(computers);
 	}
 	
-	@GetMapping("computer/{pageNumber}/{pageSize}/{orderBy}/{order}/{name}")
+	@GetMapping("computer/number/{pageNumber}/size/{pageSize}/by/{orderBy}/order/{order}/search/{name}")
 	public List<ComputerDTO> getComputerByOrderBy(@PathVariable Long pageNumber, @PathVariable Long pageSize,
 		@PathVariable String orderBy, @PathVariable String order, @PathVariable String name, HttpServletResponse response){
 		List <Computer> computers = new ArrayList<>();

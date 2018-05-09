@@ -7,6 +7,7 @@ import java.util.Scanner;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,37 +50,30 @@ public class UserInterface {
 		this.userDAO = userDAO;
 
 	}
-
-	private void printElements(Page page) {
-		if (page instanceof ComputerPage) {
-			ComputerPage computerPage = (ComputerPage) page;
-			for (Computer c : computerPage.getElements()) {
-				System.out.println(c);
-			}
-		} else if (page instanceof CompanyPage) {
-			CompanyPage compantPage = (CompanyPage) page;
-			for (Company c : compantPage.getElements()) {
-				System.out.println(c);
-			}
-		}
-	}
-
-	private void printPagedList(Scanner scanner, Page page) throws ValidatorException, ServiceException {
+	
+	private void printComputerList(Scanner scanner) {
 		scanner.nextLine();
-		page.getPage(1, PAGE_SIZE);
+		int pageNumber = 0;
 		while (true) {
-			printElements(page);
+			List<ComputerDTO> computers = client
+					.target(COMPUTER_URI)
+					.path("/number/"+pageNumber+"/size/"+PAGE_SIZE)
+					.request(MediaType.APPLICATION_JSON)
+					.get(new GenericType<List<ComputerDTO>>(){});
+			for (ComputerDTO computer : computers){
+				System.out.println(computer);
+			}
 			System.out.println("p : previous page, n : next page, q : quit, g : goto page");
 			switch (PageActionEnum.getAction(scanner.nextLine())) {
 			case PREVIOUS:
-				page.prevPage();
+				pageNumber --;
 				break;
 			case NEXT:
-				page.nextPage();
+				pageNumber ++;
 				break;
 			case GOTO:
 				System.out.println("Enter page number");
-				page.getPage(scanner.nextInt(), PAGE_SIZE);
+				pageNumber = scanner.nextInt();
 				scanner.nextLine();
 				break;
 			case EXIT:
@@ -90,14 +84,53 @@ public class UserInterface {
 		}
 	}
 
-	private void findCompanyByName(Scanner scanner, CompanyService companyService) throws ServiceException {
+	/*private void printCompanyList(Scanner scanner) {
+		scanner.nextLine();
+		int pageNumber = 0;
+		while (true) {
+			List<CompanyDTO> companies = client
+					.target(COMPANY_URI)
+					.path("/number/"+pageNumber+"/size/"+PAGE_SIZE)
+					.request(MediaType.APPLICATION_JSON)
+					.get(new GenericType<List<ComputerDTO>>(){});
+			for (CompanyDTO computer : companies){
+				System.out.println(computer);
+			}
+			System.out.println("p : previous page, n : next page, q : quit, g : goto page");
+			switch (PageActionEnum.getAction(scanner.nextLine())) {
+			case PREVIOUS:
+				pageNumber --;
+				break;
+			case NEXT:
+				pageNumber ++;
+				break;
+			case GOTO:
+				System.out.println("Enter page number");
+				pageNumber = scanner.nextInt();
+				scanner.nextLine();
+				break;
+			case EXIT:
+				return;
+			case DEFAULT:
+				break;
+			}
+		}
+	}*/
+
+
+	private void findCompanyByName(Scanner scanner) {
 		System.out.println("Enter name :");
 		scanner.nextLine();
-		List<Company> companies = companyService.getCompaniesByName(scanner.nextLine());
+		String name = scanner.nextLine();
+		List<CompanyDTO> companies = client
+				.target(COMPANY_URI)
+				.path(name)
+				.request(MediaType.APPLICATION_JSON)
+				.get(new GenericType<List<CompanyDTO>>(){});
 		if (companies.size() == 0)
 			System.out.println("No companies found");
 		else {
-			for (Company c : companies) {
+			for (CompanyDTO c : companies) {
 				System.out.println(c);
 			}
 		}
@@ -265,10 +298,11 @@ public class UserInterface {
 			}
 			switch (CLIActionEnum.values()[featureChoice]) {
 			case LIST_COMPUTERS:
-				printPagedList(scanner, new ComputerPage(computerService, 1, PAGE_SIZE));
+				printComputerList(scanner);
+				//printPagedList(scanner, new ComputerPage(computerService, 1, PAGE_SIZE));
 				break;
 			case LIST_COMPANIES:
-				printPagedList(scanner, new CompanyPage(companyService, 1, PAGE_SIZE));
+				//printPagedList(scanner, new CompanyPage(companyService, 1, PAGE_SIZE));
 				break;
 			case COMPUTER_DETAILS:
 				printComputerByID(scanner);
@@ -283,7 +317,7 @@ public class UserInterface {
 				deleteComputer(scanner);
 				break;
 			case COMPANY_BY_NAME:
-				findCompanyByName(scanner, companyService);
+				findCompanyByName(scanner);
 				break;
 			case DELETE_COMPANY:
 				deleteCompany(scanner);

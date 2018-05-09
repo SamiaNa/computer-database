@@ -44,6 +44,12 @@ public class CompanyDTO {
     }
 
     @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder();
+        str.append("Id=").append(this.id).append(", name=").append(this.name);
+        return str.toString();
+    }
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
