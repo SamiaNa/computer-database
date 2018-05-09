@@ -422,6 +422,7 @@
 				<version>${javax.persistence.version}</version>
 			</dependency>
 
+
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
 				<artifactId>jackson-databind</artifactId>
@@ -429,15 +430,24 @@
 			</dependency>
 
 			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-annotations	</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+
+
+			<dependency>
 				<groupId>org.glassfish.jersey.core</groupId>
 				<artifactId>jersey-client</artifactId>
 				<version>${jersey.version}</version>
 			</dependency>
 
+
 			<dependency>
 				<groupId>org.glassfish.jersey.media</groupId>
 				<artifactId>jersey-media-json-jackson</artifactId>
 				<version>${jersey.version}</version>
+
 			</dependency>
 
 			<dependency>
@@ -445,7 +455,7 @@
 				<artifactId>jersey-hk2</artifactId>
 				<version>${jersey.version}</version>
 			</dependency>
-			
+
 		</dependencies>
 	</dependencyManagement>
 
