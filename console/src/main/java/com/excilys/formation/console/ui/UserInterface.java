@@ -83,8 +83,8 @@ public class UserInterface {
 			}
 		}
 	}
-
-	/*private void printCompanyList(Scanner scanner) {
+	
+	private void printCompanyList(Scanner scanner) {
 		scanner.nextLine();
 		int pageNumber = 0;
 		while (true) {
@@ -92,9 +92,9 @@ public class UserInterface {
 					.target(COMPANY_URI)
 					.path("/number/"+pageNumber+"/size/"+PAGE_SIZE)
 					.request(MediaType.APPLICATION_JSON)
-					.get(new GenericType<List<ComputerDTO>>(){});
-			for (CompanyDTO computer : companies){
-				System.out.println(computer);
+					.get(new GenericType<List<CompanyDTO>>(){});
+			for (CompanyDTO company : companies){
+				System.out.println(company);
 			}
 			System.out.println("p : previous page, n : next page, q : quit, g : goto page");
 			switch (PageActionEnum.getAction(scanner.nextLine())) {
@@ -115,7 +115,7 @@ public class UserInterface {
 				break;
 			}
 		}
-	}*/
+	}
 
 
 	private void findCompanyByName(Scanner scanner) {
@@ -299,10 +299,9 @@ public class UserInterface {
 			switch (CLIActionEnum.values()[featureChoice]) {
 			case LIST_COMPUTERS:
 				printComputerList(scanner);
-				//printPagedList(scanner, new ComputerPage(computerService, 1, PAGE_SIZE));
 				break;
 			case LIST_COMPANIES:
-				//printPagedList(scanner, new CompanyPage(companyService, 1, PAGE_SIZE));
+				printCompanyList(scanner);
 				break;
 			case COMPUTER_DETAILS:
 				printComputerByID(scanner);
