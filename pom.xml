@@ -134,7 +134,37 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>${maven-surefire.version}</version>
 			</plugin>
+			
+			
+            <!-- Tomcat deployment plugin -->
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>${tomcat7.version}</version>
+                <configuration>
+                    <url>http://localhost:8080/manager/text</url>
+                    <server>TomcatServer</server>
+                    <webapps>
+                        <webapp>
+                            <groupId>com.excilys.formation.cdb.webapp</groupId>
+                            <artifactId>computer-database-webapp</artifactId>
+                            <path>/computer-database</path>
+                            <asWebapp>true</asWebapp>
+                            <type>war</type>
+                        </webapp>
+                        <webapp>
+                            <groupId>com.excilys.formation.cdb.webservice</groupId>
+                            <artifactId>computer-database-webservice</artifactId>
+                            <type>war</type>
+                        </webapp>
+                    </webapps>
+                    <username>admin</username>
+                    <password>admin</password>
+                </configuration>
+            </plugin>
 
+			
+<!-- 
 			<plugin>
 				<groupId>org.apache.tomcat.maven</groupId>
 				<artifactId>tomcat7-maven-plugin</artifactId>
@@ -145,7 +175,7 @@
 					<path>/computer-database</path>
 				</configuration>
 			</plugin>
-
+-->
 
 			<plugin>
 				<groupId>com.mysema.maven</groupId>
