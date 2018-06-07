@@ -56,7 +56,7 @@ public class PersistenceConfiguration {
 		dataSource.setUrl(url);
 		dataSource.setUsername(user);
 		dataSource.setPassword(pass);
-		logger.debug(" {}, {}, {}, {}", driver, url, user, pass);
+		logger.error(" {}, {}, {}, {}", driver, url, user, pass);
 		return dataSource;
 	}
 
