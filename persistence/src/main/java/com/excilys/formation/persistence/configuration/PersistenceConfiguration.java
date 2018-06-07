@@ -3,6 +3,9 @@ package com.excilys.formation.persistence.configuration;
 import java.util.Properties;
 
 import javax.sql.DataSource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -33,6 +36,8 @@ public class PersistenceConfiguration {
 
 	@Value("${dbpass}")
 	private String pass;
+	
+	private Logger logger = LoggerFactory.getLogger(PersistenceConfiguration.class);
 
 	@Bean
 	public LocalSessionFactoryBean sessionFactory() {
@@ -51,6 +56,7 @@ public class PersistenceConfiguration {
 		dataSource.setUrl(url);
 		dataSource.setUsername(user);
 		dataSource.setPassword(pass);
+		logger.debug(" {}, {}, {}, {}", driver, url, user, pass);
 		return dataSource;
 	}
 
